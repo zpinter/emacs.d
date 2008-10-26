@@ -1,16 +1,7 @@
-(require 'hippie-exp)
+(add-module-path "js2")
 
-(global-set-key [(control ? )] 'hippie-expand)
+(autoload 'js2-mode "js2" nil t)
 
-; default list
-;; (setq hippie-expand-try-functions-list
-;;   '(try-complete-file-name-partially
-;;     try-complete-file-name
-;;     try-expand-all-abbrevs
-;;     try-expand-list
-;;     try-expand-line
-;;     try-expand-dabbrev
-;;     try-expand-dabbrev-all-buffers
-;;     try-expand-dabbrev-from-kill
-;;     try-complete-lisp-symbol-partially
-;;     try-complete-lisp-symbol))
+(add-to-list 'auto-mode-alist '("\\.js$" . js2-mode))
+(add-to-list 'auto-mode-alist '("\\.jsx$" . js2-mode))
+(add-to-list 'auto-mode-alist '("\\.jsfl$" . js2-mode))

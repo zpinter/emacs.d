@@ -1,5 +1,5 @@
-(add-module-path "nxml-mode")
-(load "rng-auto.el")
+(add-module-path "nxhtml")
+(load "autostart.el")
 
 (fset 'xml-mode 'nxml-mode)
 (fset 'sgml-mode 'nxml-mode)
@@ -10,3 +10,4 @@
   )
 
 (add-hook 'nxml-mode-hook 'nxml-mode-additional-keys)
+

@@ -66,3 +66,25 @@
 
 
 (define-key global-map [(meta return)] 'mac-toggle-max-window)
+
+
+(require 'misc) ;;needed for zap-up-to-char
+(global-set-key "\M-z" 'zap-up-to-char)
+(global-set-key "\M-Z" 'zap-to-char)
+
+(defalias 'dtw 'delete-trailing-whitespace)
+
+(custom-set-faces
+ '(flymake-errline ((t :underline "red")))
+ '(flymake-warnline ((t :underline "green"))))
+
+(global-set-key [(control return)] 'set-mark-command)
+
+(defun reload-file ()
+  (interactive)
+  (find-file (buffer-name))
+  )
+
+(defalias 'rlf 'reload-file)
+
+(transient-mark-mode t)
