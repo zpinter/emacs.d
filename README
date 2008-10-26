@@ -1,0 +1,15 @@
+This is my Emacs config, made public
+
+Initial Setup:
+Clone the repository to ~/emacs.d
+Create a symlink to ~/.emacs (e.g.  ln -s ~/emacs.d/.emacs ~/.emacs)
+
+Core Ideas:
+
+"Modules" are created by adding a folder to ~/emacs.d in the following format: ###-modulename
+The number of the module determines the sequence in which it gets loaded.
+Every module has an init.el file that sets up paths, loads files, defines keybindings, etc
+A module can optionally include a private.el file, which gets loaded before the init.el file. These private files are kept from being versioned (via .gitignore), so you can store passwords here.
+
+To disable a module:
+Simple rename it. OFF-modulename would never get loaded, since "OFF" is not a number.
