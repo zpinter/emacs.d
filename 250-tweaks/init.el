@@ -88,3 +88,5 @@
 (defalias 'rlf 'reload-file)
 
 (transient-mark-mode t)
+
+(server-start)
