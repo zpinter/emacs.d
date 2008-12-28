@@ -1,6 +1,8 @@
 This is my Emacs config, made public
 
 Initial Setup:
+Install the inconsolita font, or edit 010-window-settings
+
 Clone the repository to ~/emacs.d
 Create a symlink to ~/.emacs (e.g.  ln -s ~/emacs.d/.emacs ~/.emacs)
 

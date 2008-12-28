@@ -15,3 +15,7 @@ determining the maximize number of columns to fit on a display"
 (require 'maxframe)
 (setq mf-max-width 1600)
 (add-hook 'window-setup-hook 'maximize-frame t)
+
+(require 'carbon-font)
+(fixed-width-set-default-fontset
+       "-apple-inconsolata-medium-r-normal--14-*-*-*-*-*-iso10646-1")
