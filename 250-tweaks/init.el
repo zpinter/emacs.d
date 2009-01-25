@@ -89,4 +89,8 @@
 
 (transient-mark-mode t)
 
+(setq default-major-mode 'org-mode)
+
+(add-to-list 'auto-mode-alist '("\\.el$" . lisp-mode))
+
 (server-start)
