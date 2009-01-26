@@ -1,0 +1,158 @@
+2009-01-16  Carsten Dominik  <carsten.dominik@gmail.com>
+
+	* lisp/org-depend.el (org-depend-block-todo): Set a tag when a
+	state change is blocked.
+	(org-depend-tag-blocked): New option.
+
+2009-01-03  Carsten Dominik  <carsten.dominik@gmail.com>
+
+	* lisp/org-mtags.el (org-mtags-replace): Extend muse tags syntax
+	to cater for the new export switched in src and example tags.
+	(org-mtags-replace): Fix bugs in prefix processing.
+	(org-mtags-get-tag-and-attributes): Add local variable bindings.
+
+2008-12-19  Carsten Dominik  <carsten.dominik@gmail.com>
+
+	* lisp/org-exp-blocks.el (org-export-blocks-format-ditaa): Catch
+	lines that have no space after the colon.
+
+2008-12-08  Carsten Dominik  <carsten.dominik@gmail.com>
+
+	* lisp/org-browser-url.el: New file.
+
+	* lisp/org-registry.el (org-registry-before-first-heading-p):
+	Function renamed to `org-before-first-heading-p', and moved to
+	org.el.
+
+2008-09-20  James TD Smith  <ahktenzero@mohorovi.cc>
+
+	* lisp/org-checklist.el: New file.
+
+2008-09-02  Carsten Dominik  <dominik@science.uva.nl>
+
+	* lisp/org-mairix.el: Update to version 0.5.
+
+2008-07-04  Christian Egli  <christian.egli@alumni.ethz.ch>
+
+	* scripts/org2hpda: the default location of the diary file should
+	of course be ~/diary
+
+2008-07-02  Carsten Dominik  <dominik@science.uva.nl>
+
+	* lisp/org-mtags.el (org-mtags-replace): Allow prefix and prefix1
+	as options in the include directive.
+
+2008-06-18  Christian Egli  <christian.egli@alumni.ethz.ch>
+
+	* scripts/org2hpda (DIARY): Make the location of the diary file
+	configurable.
+	(all): reduce links to their destination, i.e. change
+	'[[http://foo][bar]]' to 'bar'
+
+2008-05-28  Carsten Dominik  <dominik@science.uva.nl>
+
+	* lisp/org-mtags.el (org-mtags-replace)
+	(org-mtags-supported-tags): Fixed typo in contents tag.
+	(org-mtags-replace): Fix but that could lead to an infinite loop
+	for a partial tag.
+
+2008-05-19  Carsten Dominik  <dominik@science.uva.nl>
+
+	* lisp/org-annotation-helper.el: Remove John Rakestraw from author
+	list, upon his request.
+
+2008-05-17  Carsten Dominik  <dominik@science.uva.nl>
+
+	* lisp/org-annotation-helper.el: New file.
+
+2008-05-15  Carsten Dominik  <dominik@science.uva.nl>
+
+	* lisp/org-id.el (org-id-include-domain): New option.
+	(org-id-new): Add the domain name to an ID if
+	`org-id-include-domain' is set.
+
+2008-05-04  Jason Riedy  <jason@acm.org>
+
+	* lisp/orgtbl-sqlinsert.el (orgtbl-to-sqlinsert): Use the
+	default fmt function, collect only the first header line for
+	field names, and don't call plist-get for the table name on
+	every line.
+
+2008-04-15  Jason Riedy  <jason@acm.org>
+
+	* lisp/orgtbl-sqlinsert.el: New file.
+	* README: Add to list.
+
+2008-04-07  Carsten Dominik  <dominik@science.uva.nl>
+
+	* lisp/org-iswitchb.el: File removed, because the functionality is
+	now in org.el, in the core.
+
+	* lisp/org-mew.el: File moved into the core.
+
+2008-03-14  Carsten Dominik  <dominik@science.uva.nl>
+
+	* lisp/org-depend.el: Add `provide' for the module system.
+
+	* lisp/org-man.el: Add `provide' for the module system.
+
+	* lisp/org-interactive-query.el: Renamed from org-iq.el.
+
+2008-03-05  Bastien Guerry  <bzg@altern.org>
+
+	* lisp/org-elisp-symbol.el (org-elisp-symbol-store-link):
+	Correctly handle function with no documentation.
+
+2008-02-29  Tokuya Kameshima <kames@fa2.so-net.ne.jp>
+
+	* lisp/org-bookmark.el (org-bookmark-store-link): Use
+	`bookmark-all-names' instead of `bookmark-alist'.
+
+2008-02-29  Bastien Guerry  <bzg@altern.org>
+
+	* lisp/org-bookmark.el (org-bookmark-in-dired)
+	(org-bookmark-when-visiting-a-file)
+	(org-bookmark-use-first-bookmark): New options.
+	(org-bookmark-store-link): Behave according to options.
+
+2008-02-29  Bastien Guerry  <bzg@altern.org>
+
+	* lisp/org-mairix.el (org-mairix): Use `org-link' group.
+
+2008-02-28  Bastien Guerry  <bzg@altern.org>
+
+	* lisp/org-bookmark.el: New file.
+
+2008-02-26  Carsten Dominik  <dominik@science.uva.nl>
+
+	* lisp/org-id.el: New file.
+
+2008-02-21  Carsten Dominik  <dominik@science.uva.nl>
+
+	* lisp/org-screen.el: New file.
+
+2008-02-17  Christian Egli  <christian.egli@alumni.ethz.ch>
+
+	* scripts/org2hpda: Added a Makefile for generation of hipster pda
+	style printouts
+
+2008-02-08  Phil Jackson  <phil@shellarchive.co.uk>
+
+	* scripts/dir2org.zsh: New file.
+
+2008-02-07  Phil Jackson  <phil@shellarchive.co.uk>
+
+	* lisp/org-annotate-file.el: New file.
+
+2008-02-07  Bastien Guerry  <bzg@altern.org>
+
+	* Added org-expiry.el org-registry.el org-iswitchb.el org2rem.el
+	to CONTRIB/lisp/.
+
+2008-02-07  Phil Jackson  <phil@shellarchive.co.uk>
+
+	* lisp/org-irc.el: New file.
+
+	* ChangeLog: New file.
+
+

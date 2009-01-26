@@ -89,8 +89,12 @@
 
 (transient-mark-mode t)
 
-(setq default-major-mode 'org-mode)
+;(setq default-major-mode 'org-mode)
 
 (add-to-list 'auto-mode-alist '("\\.el$" . lisp-mode))
+(add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
+
+(setq org-return-follows-link t)
+(setq org-tab-follows-link t)
 
 (server-start)

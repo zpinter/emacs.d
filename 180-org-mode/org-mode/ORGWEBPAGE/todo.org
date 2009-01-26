@@ -1,0 +1,218 @@
+#         -*- mode:org -*-
+
+#+STARTUP:   align
+#+TYP_TODO:  TODO IDEA WISH QUESTION INCONSISTENCY BUG | DONE DECLINED 
+#+TAGS:      NEW(n)
+#+OPTIONS:   H:2 num:t toc:t \n:nil @:t ::t |:t ^:t *:t TeX:t
+#+ARCHIVE:   ::** Archived Tasks
+#+EMAIL:     carsten.dominik@gmail.com
+#+TITLE:     The Org-mode TODO list
+
+* Introduction
+
+This is a loose collection of ideas and TODO items for the future
+development of Org-mode.  These ideas come from various sources,
+mostly from emacs-orgmode@gnu.org, from direct emails to me, or from
+my own day-dreaming.  I don't always mention the source of an idea,
+out of laziness.  However, when I implement a good idea, I try to
+mention the origin of this idea in the /Acknowledgments/ section of
+the manual - let me know if I forgot to give /you/ credit for
+something.
+
+** Nomenclature
+   On this page, I am using TODO keywords in the following way:
+   |-----------------+----------------------------------------------------|
+   | *Keyword*       | Intention                                          |
+   |-----------------+----------------------------------------------------|
+   | *TODO*          | A development  that is going to happen, once I have time or once I figure out how to do it. |
+   | *IDEA*          | A new idea, I have not yet decided what if anything I will do about it. |
+   | *WISH*          | A wish, probably voiced by someone on  emacs-orgmode@gnu.org.  This is less than a new idea, more a change in existing behavior. |
+   | *QUESTION*      | A question someone asked, that needs some thinking before it can be answered |
+   | *DECLINED*      | I have decided not to implement this feature, but I am keeping it in the list so that people can see it, complain, or still try to convince me. |
+   | *INCONSISTENCY* | Some behavior in Org-mode that is not as clean and consistent as I would like it to be. |
+   | *BUG*           | This needs to be fixed, as soon as possible.       |
+   | *DONE*          | Well, done is done.                                |
+   | /NEW/           | This is a tag, indicating recently added entries   |
+   |                 | <50>                                               |
+   |-----------------+----------------------------------------------------|
+
+   
+* Tasks
+
+** Structure
+*** TODO Get rid of all the \r instances, which were used only for XEmacs.
+*** TODO proper visibility cycling for items
+    Make them not hide the text after the final list item.
+    This is not trivial, we cannot usenormal outline stuff,
+    needs a separate implementaiton.
+*** WISH Inline TODO entries
+    A way to put a TODO entry without starting a new section.
+
+** Agenda issues
+*** WISH Make more modes changeable from the agenda
+    These could be made available for toggling, just like
+    follow-mode. Examples:
+    - org-agenda-todo-list-sublevels
+    - org-tags-match-list-sublevels
+    - org-agenda-todo-ignore-scheduled
+
+** Links
+*** WISH Variable of standard links for completion with C-c C-l
+    Or something like that, to make standard links fast.
+*** IDEA Find all links to a specific file
+*** IDEA Make info HTML links work for links to Info files
+    Info links of course only work inside Emacs.  However, many info
+    documents are on the web, so the HTML exporter could try to be
+    smart and convert an Info link into the corresponding link on the
+    web.  For example, we could use the GNU software site then
+    Name.HTML.  Here is the link to be used:
+    http://www.gnu.org/software/emacs/manual/html_node/ Another
+    question is, is this URL going to be stable so that it makes sense
+    to actually put this into org.el?
+
+*** TODO Remove irretrievable links from /published/ HTML output
+    This is on David's table, and he will hopefully integrate a
+    mechanism for this into org-publish.el.  The discussion about this
+    was started by [[http://thread.gmane.org/gmane.emacs.orgmode/281][Austin Frank]]
+
+*** TODO Document the character protection in links
+    I don't think this is really covered anywhere.
+    Maybe we also should protect characters in the visible part, to
+    make sure thing will never be on two lines...?
+
+*** WISH Radio targets across files
+    I guess each org file could write a .orgtargets.filename file, if
+    it has any radio targets.
+
+** Tables
+
+*** WISH Row formulas
+    @4=.....
+
+*** WISH Make a variable that current line should be recomputed always
+    in each table, skipping headers of course.
+
+*** BUG When computing in a narrowed column, aligning may go wrong.
+    Computing changes fields and does not yet see correctly if the column
+    width has changed, in the case of a narrowed column.
+
+** Compatibility issues
+*** Emacs 21 compatibility
+    This is being phased out.  Almost everything works under Emacs 21,
+    but in the future I will make little effort to support it.
+
+*** XEmacs compatibility
+
+** Exporting
+*** IDEA Convert links to footnotes for ASCII export.
+    But the question is:  where should these footnotes be placed?
+
+** Publishing
+
+We need to simplify the publishing options.  Here are some of the
+options for publishing projects
+
+*** Publishing options
+
+:`:base-directory'       Directory containing publishing source files
+:
+:`:publishing-directory' Directory (possibly remote) where output files
+:                        will be published.
+:
+:`:preparation-function' Function called before starting publishing
+:                        process, for example to run `make' for updating
+:                        files to be published.
+:
+:`:base-extension'  Extension (without the dot!) of source files.  This
+:                   actually is a regular expression.
+:
+:`:exclude'         Regular expression to match file names that should
+:                   not be published, even though they have been selected
+:                   on the basis of their extension.
+:
+:`:include'         List of files to be included regardless of
+:                   `:base-extension' and `:exclude'.
+:
+:`:publishing-function' Function executing the publication of a file.
+:                       This may also be a list of functions, which will
+:                       all be called in turn.
+:
+:`:link-validation-function'   Function to validate links
+:
+:`:auto-index'      When non-nil, publish an index during
+:                   org-publish-current-project or org-publish-all.
+:
+:`:index-filename'  Filename for output of index. Defaults to `index.org'
+:                   (which becomes `index.html').
+:
+:`:index-title'     Title of index page. Defaults to name of file.
+:
+:`:index-function'  Plug-in function to use for generation of index.
+:                   Defaults to `org-publish-org-index', which generates
+:                   a plain list of links to all files in the project.
+
+*** TODO Document the :recursive option
+*** QUESTION Does anyone use the index related options
+*** QUESTION Remove :base-extension and only use :include
+*** WISH Simple interaction between :include :exclude :recursive
+*** QUESTION Use an export-directory option per file?
+
+For now we use publishing-directory but this is not consistent with the
+convention of using "publishing" when there is a /project/ to publish.
+
+** Miscellaneous Stuff
+*** BUG Comments cannot be filled
+*** WISH Inlining of images in Org-mode files
+*** TODO Fixup outline-magic.el, so that it can be used.
+    
+*** TODO Use the new argument of bibtex-url
+    Roland Winkler was kind enough to implement a new argument to the
+    `bibtex-url' command that allows me to retrieve the corresponding
+    URL, whether it is taken from a URL field or constructed in some
+    clever way.  Currently I am not using this, because too many
+    people use an old Emacs version which does not have this.
+    however, eventually I will implement this.
+
+*** QUESTION Do we need a 43 folders implementation?
+    That could easily be done in an org-mode file.  But then, maybe
+    this should really be a paper thing. 
+
+*** Priorities
+    Here is some information about priorities, which is not yet
+    documented.  Actually, I am not sur if the list here is correct
+**** QUOTE Priorities
+    TODO entries: 1 or 1,2,...
+    DEADLINE is 10-ddays, i.e. it is 10 on the due day
+                          i.e. it goes above top todo stuff 7 days
+                               before due
+    SCHEDULED is 5-ddays, i.e. it is 5 on the due date
+                          i.e. it goes above top todo on the due day
+    TIMESTAMP is 0        i.e. always at bottom
+                          but as a deadline it is 100
+                          but if scheduled it is 99
+    TIMERANGE is 0        i.e. always at bottom
+    DIARY is 0            i.e. always at bottom
+
+    Priority * 1000
+
+*** INCONSISTENCY: items don't grow/shrink due to promotion.
+    In plain lists, multiple demote/promote commands executed directly
+    after each other don't change the scope of the command - the
+    initially selected text continues to be selected.  This is
+    inconsistent with the behavior of outline sections, were the subtree
+    for promotion/demotion is newly defined after each command.  Which
+    convention is better?  Should this be consistent between trees and
+    plain lists?
+
+*** QUESTION grep on directory does not yet work.
+    I am actually not sure, I might have addressed this already, but
+    my memory is failing me.  Needs some checking.
+
+
+* Archive
+** Archived Tasks
+* COMMENT HTML style specifications
+
+# Local Variables: 
+# org-export-html-style: "<link rel=stylesheet href=\"freeshell2.css\" type=\"text/css\"> <style type=\"text/css\"> .tag { color: red; font-weight:bold}</style>" 
+# End:
