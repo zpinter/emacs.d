@@ -93,6 +93,7 @@
 
 (add-to-list 'auto-mode-alist '("\\.el$" . lisp-mode))
 (add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
+(add-to-list 'auto-mode-alist '("\\.txt$" . org-mode))
 
 (setq org-return-follows-link t)
 (setq org-tab-follows-link t)
