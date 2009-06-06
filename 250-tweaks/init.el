@@ -1,5 +1,10 @@
 (fset 'yes-or-no-p 'y-or-n-p)
 
+(require 'uniquify)
+(setq uniquify-buffer-name-style 'post-forward-angle-brackets)
+
+(global-set-key (kbd "C-x C-r") 'bookmark-jump)
+
 (defun iwb ()
   "indent whole buffer"
   (interactive)
@@ -78,7 +83,7 @@
  '(flymake-errline ((t :underline "red")))
  '(flymake-warnline ((t :underline "green"))))
 
-(global-set-key [(control return)] 'set-mark-command)
+;(global-set-key [(control return)] 'set-mark-command)
 
 (defun reload-file ()
   (interactive)
@@ -97,5 +102,13 @@
 
 (setq org-return-follows-link t)
 (setq org-tab-follows-link t)
+(setq tab-width 3)
+(setq default-tab-width 3)
+
+(setq truncate-partial-width-windows nil)
+(setq default-truncate-lines nil)
+(global-set-key (kbd "<f7>") 'toggle-truncate-lines)
+
+(smex-initialize)
 
 (server-start)

@@ -9,6 +9,7 @@ it.  Feedback is welcome!
 
 Magit can be installed with the popular recipe of
 
+   $ ./autogen.sh     # If you got the sources directly from Git
    $ ./configure
    $ make install
 
@@ -33,6 +34,10 @@ help.  You can read it in Emacs with 'C-u C-h i magit.info' for
 example, or on the web at
 
     http://zagadka.vm.bytemark.co.uk/magit/magit.html
+
+If you have questions, please use the mailing list at
+
+    http://groups.google.com/group/magit/
 
 Magit's web home is currently at
 

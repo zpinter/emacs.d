@@ -1,6 +1,6 @@
 (require 'hippie-exp)
 
-(global-set-key [(control ? )] 'hippie-expand)
+(global-set-key (kbd "M-/") 'hippie-expand)
 
 ; default list
 ;; (setq hippie-expand-try-functions-list
