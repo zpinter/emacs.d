@@ -1,11 +1,12 @@
 ;;; org-compat.el --- Compatibility code for Org-mode
 
-;; Copyright (C) 2004, 2005, 2006, 2007, 2008, 2009 Free Software Foundation, Inc.
+;; Copyright (C) 2004, 2005, 2006, 2007, 2008, 2009
+;;   Free Software Foundation, Inc.
 
 ;; Author: Carsten Dominik <carsten at orgmode dot org>
 ;; Keywords: outlines, hypermedia, calendar, wp
 ;; Homepage: http://orgmode.org
-;; Version: 6.19a
+;; Version: 6.27a
 ;;
 ;; This file is part of GNU Emacs.
 ;;
@@ -30,7 +31,12 @@
 
 ;;; Code:
 
+(eval-when-compile
+  (require 'cl))
+
 (require 'org-macs)
+
+(declare-function find-library-name             "find-func"  (library))
 
 (defconst org-xemacs-p (featurep 'xemacs)) ; not used by org.el itself
 (defconst org-format-transports-properties-p
@@ -184,6 +190,11 @@ Works on both Emacs and XEmacs."
 	  (use-region-p)
 	(and transient-mark-mode mark-active))))) ; Emacs 22 and before
 
+(defun org-cursor-to-region-beginning ()
+  (when (and (org-region-active-p)
+	     (> (point) (region-beginning)))
+    (exchange-point-and-mark)))
+
 ;; Invisibility compatibility
 
 (defun org-add-to-invisibility-spec (arg)
@@ -288,6 +299,16 @@ that can be added."
   (if (featurep 'xemacs)
       (org-no-properties (substring string (or from 0) to))
     (substring-no-properties string from to)))
+
+(defun org-find-library-name (library)
+  (if (fboundp 'find-library-name)
+      (file-name-directory (find-library-name library))
+    ; XEmacs does not have `find-library-name'
+    (flet ((find-library-name-helper (filename ignored-codesys)
+				     filename)
+	   (find-library-name (library)
+	    (find-library library nil 'find-library-name-helper)))
+      (file-name-directory (find-library-name library)))))
 
 (defun org-count-lines (s)
   "How many lines in string S?"

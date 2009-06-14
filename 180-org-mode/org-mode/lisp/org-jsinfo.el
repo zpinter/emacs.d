@@ -1,11 +1,12 @@
 ;;; org-jsinfo.el --- Support for org-info.js Javascript in Org HTML export
 
-;; Copyright (C) 2004, 2005, 2006, 2007, 2008, 2009 Free Software Foundation, Inc.
+;; Copyright (C) 2004, 2005, 2006, 2007, 2008, 2009
+;;   Free Software Foundation, Inc.
 
 ;; Author: Carsten Dominik <carsten at orgmode dot org>
 ;; Keywords: outlines, hypermedia, calendar, wp
 ;; Homepage: http://orgmode.org
-;; Version: 6.19a
+;; Version: 6.27a
 ;;
 ;; This file is part of GNU Emacs.
 ;;
@@ -40,6 +41,7 @@
 ;;; Code:
 
 (require 'org-exp)
+(require 'org-html)
 
 (add-to-list 'org-export-inbuffer-options-extra '("INFOJS_OPT" :infojs-opt))
 (add-hook 'org-export-options-filters 'org-infojs-handle-options)
@@ -109,7 +111,7 @@ means to use the maximum value consistent with other options."
 <!--/*--><![CDATA[/*><!--*/
 %MANAGER_OPTIONS
 org_html_manager.setup();  // activate after the parameters are set
-/*]]>*/-->
+/*]]>*///-->
 </script>"
   "The template for the export style additions when org-info.js is used.
 Option settings will replace the %MANAGER-OPTIONS cookie."
@@ -129,7 +131,7 @@ Option settings will replace the %MANAGER-OPTIONS cookie."
     (let ((template org-infojs-template)
 	(ptoc (plist-get exp-plist :table-of-contents))
 	(hlevels (plist-get exp-plist :headline-levels))
-	tdepth sdepth p1 s p v a1 tmp e opt var val table default)
+	tdepth sdepth s v e opt var val table default)
     (setq sdepth hlevels
 	  tdepth hlevels)
     (if (integerp ptoc) (setq tdepth (min ptoc tdepth)))
@@ -167,7 +169,7 @@ Option settings will replace the %MANAGER-OPTIONS cookie."
     ;; actually be displayed is governed by the TDEPTH option.
     (setq exp-plist (plist-put exp-plist :table-of-contents sdepth))
 
-    ;; The table of contents should ot show more sections then we generate
+    ;; The table of contents should not show more sections then we generate
     (setq tdepth (min tdepth sdepth))
     (push (cons "TOC_DEPTH" tdepth) s)
 

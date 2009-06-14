@@ -2,9 +2,9 @@
 ;; Copyright (C) 2006, 2007, 2008, 2009  Free Software Foundation, Inc.
 
 ;; Author: David O'Toole <dto@gnu.org>
-;; Maintainer: Bastien Guerry <bzg AT altern DOT org>
+;; Maintainer: Carsten Dominik <carsten DOT dominik AT gmail DOT com>
 ;; Keywords: hypermedia, outlines, wp
-;; Version: 6.19a
+;; Version: 6.27a
 
 ;; This file is part of GNU Emacs.
 ;;
@@ -28,120 +28,14 @@
 ;;
 ;; org-publish.el can do the following:
 ;;
-;; + Publish all one's org-files to HTML or LaTeX
+;; + Publish all one's org-files to HTML or PDF
 ;; + Upload HTML, images, attachments and other files to a web server
 ;; + Exclude selected private pages from publishing
 ;; + Publish a clickable index of pages
 ;; + Manage local timestamps for publishing only changed files
 ;; + Accept plugin functions to extend range of publishable content
 ;;
-;; Special thanks to the org-mode maintainer Carsten Dominik for his
-;; ideas, enthusiasm, and cooperation.
-
-;;; Installation:
-
-;; Put org-publish.el in your load path, byte-compile it, and then add
-;; the following lines to your emacs initialization file:
-
-;; (autoload 'org-publish "org-publish" nil t)
-;; (autoload 'org-publish "org-publish-all" nil t)
-;; (autoload 'org-publish "org-publish-current-file" nil t)
-;; (autoload 'org-publish "org-publish-current-project" nil t)
-
-;; NOTE: When org-publish.el is included with org.el, those forms are
-;; already in the file org-install.el, and hence don't need to be put
-;; in your emacs initialization file in this case.
-
-;;; Usage:
-;;
-;; The program's main configuration variable is
-;; `org-publish-project-alist'. See below for example configurations
-;; with commentary.
-
-;; The main interactive functions are:
-;;
-;; M-x org-publish
-;; M-x org-publish-all
-;; M-x org-publish-current-file
-;; M-x org-publish-current-project
-
-;;;; Simple example configuration:
-
-;; (setq org-publish-project-alist
-;;       (list
-;;        '("org" . (:base-directory "~/org/"
-;;		     :base-extension "org"
-;;		     :publishing-directory "~/public_html"
-;;		     :with-section-numbers nil
-;;		     :table-of-contents nil
-;;		     :recursive t
-;;		     :style "<link rel="stylesheet" href=\"../other/mystyle.css\" type=\"text/css\">")))
-
-;;;; More complex example configuration:
-
-;; Imagine your *.org files are kept in ~/org, your images in
-;; ~/images, and stylesheets in ~/other. Now imagine you want to
-;; publish the files through an ssh connection to a remote host, via
-;; Tramp-mode. To maintain relative links from *.org files to /images
-;; and /other, we should replicate the same directory structure in
-;; your web server account's designated html root (in this case,
-;; assumed to be ~/html)
-
-;; Once you've done created the proper directories, you can adapt the
-;; following example configuration to your specific paths, run M-x
-;; org-publish-all, and it should publish the files to the correct
-;; directories on the web server, transforming the *.org files into
-;; HTML, and leaving other files alone.
-
-;; (setq org-publish-project-alist
-;;       (list
-;;        '("orgfiles" :base-directory "~/org/"
-;;		       :base-extension "org"
-;;		       :publishing-directory "/ssh:user@host:~/html/notebook/"
-;;		       :publishing-function org-publish-org-to-html
-;;		       :exclude "PrivatePage.org"   ;; regexp
-;;		       :headline-levels 3
-;;		       :with-section-numbers nil
-;;		       :table-of-contents nil
-;;		       :style "<link rel="stylesheet" href=\"../other/mystyle.css\" type=\"text/css\">"
-;;		       :auto-preamble t
-;;		       :auto-postamble nil)
-;;	   ("images" :base-directory "~/images/"
-;;		     :base-extension "jpg\\|gif\\|png"
-;;		     :publishing-directory "/ssh:user@host:~/html/images/"
-;;		     :publishing-function org-publish-attachment)
-;;	   ("other"  :base-directory "~/other/"
-;;		     :base-extension "css"
-;;		     :publishing-directory "/ssh:user@host:~/html/other/"
-;;		     :publishing-function org-publish-attachment)
-;;         ("website" :components ("orgfiles" "images" "other"))))
-
-;; For more information, see the documentation for the variable
-;; `org-publish-project-alist'.
-
-;; Of course, you don't have to publish to remote directories from
-;; within emacs. You can always just publish to local folders, and
-;; then use the synchronization/upload tool of your choice.
-
-;;; List of user-visible changes since version 1.27
-
-;; 1.78: Allow list-valued :publishing-function
-;; 1.77: Added :preparation-function, this allows you to use GNU Make etc.
-;; 1.65: Remove old "composite projects". They're redundant.
-;; 1.64: Allow meta-projects with :components
-;; 1.57: Timestamps flag is now called "org-publish-use-timestamps-flag"
-;; 1.52: Properly set default for :index-filename
-;; 1.48: Composite projects allowed.
-;;       :include keyword allowed.
-;; 1.43: Index no longer includes itself in the index.
-;; 1.42: Fix "function definition is void" error
-;;       when :publishing-function not set in org-publish-current-file.
-;; 1.41: Fixed bug where index isn't published on first try.
-;; 1.37: Added interactive function "org-publish". Prompts for particular
-;;       project name to publish.
-;; 1.34: Added force-publish option to all interactive functions.
-;; 1.32: Fixed "index.org has changed on disk" error during index publishing.
-;; 1.30: Fixed startup error caused by (require 'em-unix)
+;; Documentation for publishing is in the manual.
 
 ;;; Code:
 
@@ -256,7 +150,7 @@ index of files or summary page for a given project.
   :auto-index            Whether to publish an index during
                          `org-publish-current-project' or `org-publish-all'.
   :index-filename        Filename for output of index.  Defaults
-                         to 'index.org' (which becomes 'index.html').
+                         to 'sitemap.org' (which becomes 'sitemap.html').
   :index-title           Title of index page.  Defaults to name of file.
   :index-function        Plugin function to use for generation of index.
                          Defaults to `org-publish-org-index', which
@@ -284,15 +178,14 @@ When nil, do no timestamp checking and always publish all files."
 
 (defcustom org-publish-before-export-hook nil
   "Hook run before export on the Org file.
-If the functions in this hook modify the original Org buffer, the
-modified buffer will be used for export, but the buffer will be
-restored and saved back to its initial state after export."
+The hook may modify the file in arbitrary ways before publishing happens.
+The orgiginal version of the buffer will be restored after publishing."
   :group 'org-publish
   :type 'hook)
 
 (defcustom org-publish-after-export-hook nil
   "Hook run after export on the exported buffer.
-If functions in this hook modify the buffer, it will be saved."
+Any changes made by this hook will be saved."
   :group 'org-publish
   :type 'hook)
 
@@ -454,7 +347,9 @@ matching filenames."
 	 (include-list (plist-get project-plist :include))
 	 (recurse (plist-get project-plist :recursive))
 	 (extension (or (plist-get project-plist :base-extension) "org"))
-	 (match (concat "^[^\\.].*\\.\\(" extension "\\)$")))
+	 (match (if (eq extension 'any)
+                    "^[^\\.]"
+		  (concat "^[^\\.].*\\.\\(" extension "\\)$"))))
     (setq org-publish-temp-files nil)
     (org-publish-get-base-files-1 base-dir recurse match
 				  ;; FIXME distinguish exclude regexp
@@ -467,13 +362,14 @@ matching filenames."
 	  include-list)
     org-publish-temp-files))
 
-(defun org-publish-get-project-from-filename (filename)
+(defun org-publish-get-project-from-filename (filename &optional up)
   "Return the project FILENAME belongs."
   (let* ((project-name (cdr (assoc (expand-file-name filename)
 				   org-publish-files-alist))))
-    (dolist (prj org-publish-project-alist)
-      (if (member project-name (plist-get (cdr prj) :components))
-	  (setq project-name (car prj))))
+    (when up
+      (dolist (prj org-publish-project-alist)
+	(if (member project-name (plist-get (cdr prj) :components))
+	    (setq project-name (car prj)))))
     (assoc project-name org-publish-project-alist)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -534,13 +430,20 @@ See `org-publish-org-to' to the list of arguments."
 See `org-publish-org-to' to the list of arguments."
   (org-publish-org-to "html" plist filename pub-dir))
 
+(defun org-publish-org-to-org (plist filename pub-dir)
+  "Publish an org file to HTML.
+See `org-publish-org-to' to the list of arguments."
+  (org-publish-org-to "org" plist filename pub-dir))
+
 (defun org-publish-attachment (plist filename pub-dir)
   "Publish a file with no transformation of any kind.
 See `org-publish-org-to' to the list of arguments."
   ;; make sure eshell/cp code is loaded
   (unless (file-directory-p pub-dir)
     (make-directory pub-dir t))
-  (copy-file filename pub-dir t))
+  (or (equal (expand-file-name (file-name-directory filename))
+	     (file-name-as-directory (expand-file-name pub-dir)))
+      (copy-file filename pub-dir t)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Publishing files, sets of files, and indices
@@ -593,7 +496,7 @@ If :auto-index is set, publish the index too."
 	  (exclude-regexp (plist-get project-plist :exclude))
 	  (index-p (plist-get project-plist :auto-index))
 	  (index-filename (or (plist-get project-plist :index-filename)
-			      "index.org"))
+			      "sitemap.org"))
 	  (index-function (or (plist-get project-plist :index-function)
 			      'org-publish-org-index))
 	  (preparation-function (plist-get project-plist :preparation-function))
@@ -609,7 +512,7 @@ If :auto-index is set, publish the index too."
 (defun org-publish-org-index (project &optional index-filename)
   "Create an index of pages in set defined by PROJECT.
 Optionally set the filename of the index with INDEX-FILENAME.
-Default for INDEX-FILENAME is 'index.org'."
+Default for INDEX-FILENAME is 'sitemap.org'."
   (let* ((project-plist (cdr project))
 	 (dir (file-name-as-directory
 	       (plist-get project-plist :base-directory)))
@@ -617,7 +520,7 @@ Default for INDEX-FILENAME is 'index.org'."
 	 (indent-str (make-string 2 ?\ ))
 	 (exclude-regexp (plist-get project-plist :exclude))
 	 (files (nreverse (org-publish-get-base-files project exclude-regexp)))
-	 (index-filename (concat dir (or index-filename "index.org")))
+	 (index-filename (concat dir (or index-filename "sitemap.org")))
 	 (index-title (or (plist-get project-plist :index-title)
 			  (concat "Index for project " (car project))))
 	 (index-style (or (plist-get project-plist :index-style)
@@ -697,18 +600,18 @@ Default for INDEX-FILENAME is 'index.org'."
 ;;;###autoload
 (defun org-publish (project &optional force)
   "Publish PROJECT."
-  (interactive "P")
+  (interactive
+   (list
+    (assoc (org-ido-completing-read
+	    "Publish project: "
+	    org-publish-project-alist nil t)
+	   org-publish-project-alist)
+    current-prefix-arg))
   (setq org-publish-initial-buffer (current-buffer))
   (save-window-excursion
-    (let* ((force current-prefix-arg)
-	   (org-publish-use-timestamps-flag
+    (let* ((org-publish-use-timestamps-flag
 	    (if force nil org-publish-use-timestamps-flag)))
-      (org-publish-projects
-       (list (or project
-		 (assoc (org-ido-completing-read
-			 "Publish project: "
-			 org-publish-project-alist nil t)
-			org-publish-project-alist)))))))
+      (org-publish-projects (list project)))))
 
 ;;;###autoload
 (defun org-publish-all (&optional force)
@@ -740,7 +643,7 @@ the project."
   (interactive "P")
   (org-publish-initialize-files-alist)
   (save-window-excursion
-    (let ((project (org-publish-get-project-from-filename (buffer-file-name)))
+    (let ((project (org-publish-get-project-from-filename (buffer-file-name) 'up))
 	  (org-publish-use-timestamps-flag
 	   (if force nil org-publish-use-timestamps-flag)))
       (if (not project)

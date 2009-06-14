@@ -11,34 +11,26 @@
 ##----------------------------------------------------------------------
 
 # Name of your emacs binary
-#EMACS=emacs
-EMACS=/Applications/Emacs.app/Contents/MacOS/Emacs
+EMACS=emacs
 
 # Where local software is found
 prefix=/usr/local
 
 # Where local lisp files go.
-#lispdir = $(prefix)/share/emacs/site-lisp
-lispdir = /Applications/Emacs.app/Contents/Resources/lisp
-lispdir2 = /Applications/Emacs.app/Contents/Resources/lisp/international
-lispdir3 = /Applications/Emacs.app/Contents/Resources/site-lisp
+lispdir = $(prefix)/share/emacs/site-lisp
 
 # Where info files go.
-infodir = /Applications/Emacs.app/Contents/Resources/info
+infodir = $(prefix)/share/info
 
 ##----------------------------------------------------------------------
 ## YOU MAY NEED TO EDIT THESE
 ##----------------------------------------------------------------------
 
 # Using emacs in batch mode.
-# BATCH=$(EMACS) -batch -q
-# BATCH=$(EMACS) -batch -q -eval "(add-to-list (quote load-path) \".\")"
 
-BATCH=$(EMACS) -batch -q -eval                             \
+BATCH=$(EMACS) -batch -q -no-site-file -eval                             \
  "(progn (add-to-list (quote load-path) (expand-file-name \"./lisp/\")) \
-        (add-to-list (quote load-path) \"$(lispdir)\") \
-        (add-to-list (quote load-path) \"$(lispdir2)\") \
-        (add-to-list (quote load-path) \"$(lispdir3)\"))"
+        (add-to-list (quote load-path) \"$(lispdir)\"))"
 
 # Specify the byte-compiler for compiling org-mode files
 ELC= $(BATCH) -f batch-byte-compile
@@ -68,6 +60,7 @@ INSTALL_INFO=install-info
 # The following variables need to be defined by the maintainer
 LISPF      = 	org.el			\
 		org-agenda.el		\
+		org-ascii.el		\
 	     	org-attach.el		\
 	     	org-archive.el		\
 		org-bbdb.el		\
@@ -77,14 +70,19 @@ LISPF      = 	org.el			\
 	     	org-colview-xemacs.el	\
 	     	org-compat.el		\
 		org-exp.el		\
-		org-export-latex.el	\
+		org-docbook.el		\
 		org-faces.el		\
+		org-feed.el		\
 		org-footnote.el		\
 		org-gnus.el		\
+		org-html.el		\
+		org-icalendar.el	\
 		org-id.el		\
 		org-info.el		\
+		org-inlinetask.el	\
 		org-jsinfo.el		\
 		org-irc.el		\
+		org-latex.el		\
 		org-list.el		\
 		org-mac-message.el	\
 	     	org-macs.el		\
@@ -93,13 +91,15 @@ LISPF      = 	org.el			\
 		org-mouse.el		\
 		org-publish.el		\
 		org-plot.el		\
+		org-protocol.el		\
 		org-remember.el		\
 		org-rmail.el		\
 		org-table.el		\
 		org-timer.el		\
 		org-vm.el		\
 		org-w3m.el              \
-		org-wl.el
+		org-wl.el		\
+		org-xoxo.el
 
 LISPFILES0 = $(LISPF:%=lisp/%)
 LISPFILES  = $(LISPFILES0) lisp/org-install.el
@@ -143,6 +143,9 @@ install-info: $(INFOFILES)
 	if [ ! -d $(infodir) ]; then $(MKDIR) $(infodir); else true; fi ;
 	$(CP) $(INFOFILES) $(infodir)
 	$(INSTALL_INFO) --info-file=$(INFOFILES) --info-dir=$(infodir)
+
+install-info-debian: $(INFOFILES)
+	$(INSTALL_INFO) --infodir=$(infodir) $(INFOFILES)
 
 install-noutline: xemacs/noutline.elc
 	if [ ! -d $(lispdir) ]; then $(MKDIR) $(lispdir); else true; fi ;
@@ -247,7 +250,13 @@ upload_release:
 	rsync -avuz RELEASEDIR/ cdominik@orgmode.org:orgmode.org/
 
 upload_manual:
-	rsync -avuz doc/manual/ cdominik@orgmode.org:orgmode.org/manual/
+	rsync -avuz --delete doc/manual/ cdominik@orgmode.org:orgmode.org/manual/
+
+snap:
+	make release TAG=snapshot
+	scp RELEASEDIR/org-snapshot.zip cdominik@orgmode.org:orgmode.org/
+	scp RELEASEDIR/org-snapshot.tar.gz cdominik@orgmode.org:orgmode.org/
+	make cleanrel
 
 relup0:
 	make release
@@ -276,7 +285,7 @@ cleandoc:
 cleanrel:
 	rm -rf RELEASEDIR
 	rm -rf org-6.*
-	rm -f org-6*zip org-6*tar.gz
+	rm -rf org-6*zip org-6*tar.gz org-snapshot*
 
 clean:
 	make cleanelc
@@ -308,37 +317,45 @@ dummy:
 
 # Dependencies
 
-lisp/org.elc:           lisp/org-macs.elc lisp/org-compat.elc lisp/org-faces.elc
-lisp/org-agenda.elc:       lisp/org.elc
-lisp/org-attach.elc:       lisp/org.elc lisp/org-id.elc
-lisp/org-archive.elc:      lisp/org.elc
-lisp/org-bbdb.elc:         lisp/org.elc
-lisp/org-bibtex.elc:       lisp/org.elc
-lisp/org-clock.elc:        lisp/org.elc
-lisp/org-colview.elc:      lisp/org.elc
-lisp/org-colview-xemacs.elc:      lisp/org.elc
-lisp/org-compat.elc:       lisp/org-macs.elc
-lisp/org-exp.elc:          lisp/org.elc lisp/org-agenda.elc
-lisp/org-export-latex.elc: lisp/org.elc lisp/org-exp.elc
-lisp/org-faces.elc:        lisp/org-macs.elc lisp/org-compat.elc
-lisp/org-footnotes.elc:    lisp/org-macs.elc lisp/org-compat.elc
-lisp/org-gnus.elc:         lisp/org.elc
-lisp/org-id.elc:           lisp/org.elc
-lisp/org-info.elc:         lisp/org.elc
-lisp/org-irc.elc:          lisp/org.elc
-lisp/org-jsinfo.elc:       lisp/org.elc lisp/org-exp.elc
-lisp/org-list.elc:         lisp/org-macs.elc lisp/org-compat.elc
-lisp/org-mac-message.elc:  lisp/org.elc
+lisp/org.elc:		lisp/org-macs.el lisp/org-compat.el lisp/org-faces.el
+lisp/org-agenda.elc:	lisp/org.el
+lisp/org-ascii.elc:	lisp/org-exp.el
+lisp/org-attach.elc:	lisp/org.el lisp/org-id.el
+lisp/org-archive.elc:	lisp/org.el
+lisp/org-bbdb.elc:	lisp/org.el
+lisp/org-bibtex.elc:	lisp/org.el
+lisp/org-clock.elc:	lisp/org.el
+lisp/org-colview.elc:	lisp/org.el
+lisp/org-colview-xemacs.elc:	lisp/org.el
+lisp/org-compat.elc:	lisp/org-macs.el
+lisp/org-exp.elc:	lisp/org.el lisp/org-agenda.el
+lisp/org-latex.elc:	lisp/org.el lisp/org-exp.el
+lisp/org-docbook.elc:	lisp/org.el lisp/org-exp.el
+lisp/org-faces.elc:	lisp/org-macs.el lisp/org-compat.el
+lisp/org-feed.elc:	lisp/org.el
+lisp/org-footnotes.elc:	lisp/org-macs.el lisp/org-compat.el
+lisp/org-gnus.elc:	lisp/org.el
+lisp/org-html.elc:	lisp/org-exp.el
+lisp/org-icalendar.elc:	lisp/org-exp.el
+lisp/org-id.elc:	lisp/org.el
+lisp/org-info.elc:	lisp/org.el
+lisp/org-inlinetask.elc:
+lisp/org-irc.elc:	lisp/org.el
+lisp/org-jsinfo.elc:	lisp/org.el lisp/org-exp.el
+lisp/org-list.elc:	lisp/org-macs.el lisp/org-compat.el
+lisp/org-mac-message.elc:	lisp/org.el
 lisp/org-macs.elc:
-lisp/org-mew.elc:          lisp/org.elc
-lisp/org-mhe.elc:          lisp/org.elc
-lisp/org-mouse.elc:        lisp/org.elc
-lisp/org-plot.elc:         lisp/org.elc lisp/org-exp.elc lisp/org-table.elc
+lisp/org-mew.elc:	lisp/org.el
+lisp/org-mhe.elc:	lisp/org.el
+lisp/org-mouse.elc:	lisp/org.el
+lisp/org-plot.elc:	lisp/org.el lisp/org-exp.el lisp/org-table.el
 lisp/org-publish.elc:
-lisp/org-remember.elc:     lisp/org.elc
-lisp/org-rmail.elc:        lisp/org.elc
-lisp/org-table.elc:        lisp/org.elc
-lisp/org-timer.el:         lisp/org.elc
-lisp/org-vm.elc:           lisp/org.elc
-lisp/org-w3m.elc:          lisp/org.elc
-lisp/org-wl.elc:           lisp/org.elc
+lisp/org-protocol.elc:	lisp/org.el
+lisp/org-remember.elc:	lisp/org.el
+lisp/org-rmail.elc:	lisp/org.el
+lisp/org-table.elc:	lisp/org.el
+lisp/org-timer.elc:	lisp/org.el
+lisp/org-vm.elc:	lisp/org.el
+lisp/org-w3m.elc:	lisp/org.el
+lisp/org-wl.elc:	lisp/org.el
+lisp/org-xoxo.elc:	lisp/org-exp.el

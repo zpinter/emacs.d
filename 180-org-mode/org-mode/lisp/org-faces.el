@@ -1,11 +1,12 @@
 ;;; org-faces.el --- Face definitions for Org-mode.
 
-;; Copyright (C) 2004, 2005, 2006, 2007, 2008, 2009 Free Software Foundation, Inc.
+;; Copyright (C) 2004, 2005, 2006, 2007, 2008, 2009
+;;   Free Software Foundation, Inc.
 
 ;; Author: Carsten Dominik <carsten at orgmode dot org>
 ;; Keywords: outlines, hypermedia, calendar, wp
 ;; Homepage: http://orgmode.org
-;; Version: 6.19a
+;; Version: 6.27a
 ;;
 ;; This file is part of GNU Emacs.
 ;;
@@ -300,6 +301,20 @@ specific tags."
   "Face used for todo keywords that indicate DONE items."
   :group 'org-faces)
 
+(defface org-agenda-done ;; originally copied from font-lock-type-face
+  (org-compatible-face nil
+    '((((class color) (min-colors 16) (background light)) (:foreground "ForestGreen"))
+      (((class color) (min-colors 16) (background dark)) (:foreground "PaleGreen"))
+      (((class color) (min-colors 8)) (:foreground "green"))
+      (t (:bold nil))))
+  "Face used in agenda, to indicate lines switched to DONE.
+This face is used to de-emphasize items that where brightly colord in the
+agenda because they were things to do, or overdue.  The DONE state itself
+is of course immediately visible, but for example a passed deadline is
+\(by default) very bright read.  This face could be simply the default face
+of the frame, for example."
+  :group 'org-faces)
+
 (defface org-headline-done ;; originally copied from font-lock-string-face
   (org-compatible-face nil
     '((((class color) (min-colors 16) (background light)) (:foreground "RosyBrown"))
@@ -322,6 +337,18 @@ list of attributes, like (:foreground \"blue\" :weight bold :underline t)."
 	   (string :tag "keyword")
 	   (sexp :tag "face"))))
 
+(defcustom org-priority-faces nil
+  "Faces for specific Priorities.
+This is a list of cons cells, with priority character in the car
+and faces in the cdr.  The face can be a symbol, or a property
+list of attributes, like (:foreground \"blue\" :weight bold :underline t)."
+  :group 'org-faces
+  :group 'org-todo
+  :type '(repeat
+	  (cons
+	   (character :tag "Priority")
+	   (sexp :tag "face"))))
+
 (defvar org-tags-special-faces-re nil)
 (defun org-set-tag-faces (var value)
   (set var value)
@@ -329,6 +356,12 @@ list of attributes, like (:foreground \"blue\" :weight bold :underline t)."
       (setq org-tags-special-faces-re nil)
     (setq org-tags-special-faces-re
 	  (concat ":\\(" (mapconcat 'car value "\\|") "\\):"))))
+
+(defface org-checkbox
+  (org-compatible-face 'bold
+    '((t (:bold t))))
+  "Face for checkboxes"
+  :group 'org-faces)
 
 (defcustom org-tag-faces nil
   "Faces for specific tags.
@@ -399,15 +432,15 @@ changes."
 (defface org-clock-overlay ;; copied from secondary-selection
   (org-compatible-face nil
     '((((class color) (min-colors 88) (background light))
-       :background "yellow1")
+       (:background "yellow1"))
       (((class color) (min-colors 88) (background dark))
-       :background "SkyBlue4")
+       (:background "SkyBlue4"))
       (((class color) (min-colors 16) (background light))
-       :background "yellow")
+       (:background "yellow"))
       (((class color) (min-colors 16) (background dark))
-       :background "SkyBlue4")
+       (:background "SkyBlue4"))
       (((class color) (min-colors 8))
-       :background "cyan" :foreground "black")
+       (:background "cyan" :foreground "black"))
       (t (:inverse-video t))))
     "Basic face for displaying the secondary selection."
     :group 'org-faces)
@@ -427,6 +460,13 @@ changes."
   (copy-face 'org-agenda-structure 'org-agenda-date)
   (set-face-doc-string 'org-agenda-date
 		       "Face used in agenda for normal days."))
+
+(unless (facep 'org-agenda-date-today)
+  (copy-face 'org-agenda-date 'org-agenda-date-today)
+  (set-face-doc-string 'org-agenda-date-today
+ 		       "Face used in agenda for today.")
+  (when (fboundp 'set-face-attribute)
+    (set-face-attribute 'org-agenda-date-today nil :weight 'bold :italic 't)))
 
 (unless (facep 'org-agenda-date-weekend)
   (copy-face 'org-agenda-date 'org-agenda-date-weekend)
@@ -455,6 +495,11 @@ belong to the weekend.")
   "Face for items scheduled for a certain day."
   :group 'org-faces)
 
+(defface org-agenda-dimmed-todo-face
+  '((((background light)) (:foreground "grey50"))
+    (((background dark)) (:foreground "grey50")))
+  "Face used to dimm blocked tasks in the agenda."
+  :group 'org-faces)
 
 (defface org-scheduled-previously
   (org-compatible-face nil
@@ -529,7 +574,7 @@ month and 365.24 days for a year)."
   "The number of different faces to be used for headlines.
 Org-mode defines 8 different headline faces, so this can be at most 8.
 If it is less than 8, the level-1 face gets re-used for level N+1 etc."
-  :type 'number
+  :type 'integer
   :group 'org-faces)
 
 (defface org-latex-and-export-specials

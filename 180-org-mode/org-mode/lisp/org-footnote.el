@@ -5,7 +5,7 @@
 ;; Author: Carsten Dominik <carsten at orgmode dot org>
 ;; Keywords: outlines, hypermedia, calendar, wp
 ;; Homepage: http://orgmode.org
-;; Version: 6.19a
+;; Version: 6.27a
 ;;
 ;; This file is part of GNU Emacs.
 ;;
@@ -124,7 +124,7 @@ extracted will be filled again."
 If yes, return the beginning position, the label, and the definition, if local."
   (when (org-in-regexp org-footnote-re 15)
     (list (match-beginning 0)
-	  (or (match-string 1) 
+	  (or (match-string 1)
 	      (if (equal (match-string 2) "fn:") nil (match-string 2)))
 	  (match-string 4))))
 
@@ -133,7 +133,7 @@ If yes, return the beginning position, the label, and the definition, if local."
 This matches only pure definitions like [1] or [fn:name] at the beginning
 of a line.  It does not a references like [fn:name:definition], where the
 footnote text is included and defined locally.
-The return value will be nil if not at a foornote definition, and a list
+The return value will be nil if not at a footnote definition, and a list
 with start and label of the footnote if there is a definition at point."
   (save-excursion
     (end-of-line 1)
@@ -255,7 +255,7 @@ or new, let the user edit the definition of the footnote."
   "Start the definition of a footnote with label LABEL."
   (interactive "sLabel: ")
   (setq label (org-footnote-normalize-label label))
-  (let (re p)
+  (let (re)
     (cond
      ((org-mode-p)
       (if (not org-footnote-section)
@@ -287,7 +287,7 @@ or new, let the user edit the definition of the footnote."
 ;;;###autoload
 (defun org-footnote-action (&optional special)
   "Do the right thing for footnotes.
-When at a foornote reference, jump to the definition.  When at a definition,
+When at a footnote reference, jump to the definition.  When at a definition,
 jump to the refernces.  When neither at definition or reference,
 create a new footnote, interactively.
 With prefix arg SPECIAL, offer additional commands in a menu."
@@ -322,7 +322,7 @@ Org-mode exporters.
 When SORT-ONLY is set, only sort the footnote definitions into the
 referenced sequence."
   ;; This is based on Paul's function, but rewritten.
-  (let ((count 0) ref def idef ref-table liste beg beg1 marker a before
+  (let ((count 0) ref def idef ref-table beg beg1 marker a before
 	ins-point)
      (save-excursion
       ;; Now find footnote references, and extract the definitions
@@ -362,7 +362,7 @@ referenced sequence."
 	   (and idef
 		org-footnote-fill-after-inline-note-extraction
 		(fill-paragraph)))
-	 (if (not a) (push (list ref marker def) ref-table))))
+	 (if (not a) (push (list ref marker def (if idef t nil)) ref-table))))
       
       ;; First find and remove the footnote section
       (goto-char (point-min))
@@ -402,11 +402,12 @@ referenced sequence."
       (goto-char (or ins-point (point-max)))
       (setq ref-table (reverse ref-table))
       (when sort-only
-	;; remove anonymous fotnotes from the list
+	;; remove anonymous and inline footnotes from the list
 	(setq ref-table
 	      (delq nil (mapcar
 			 (lambda (x) (and (car x)
 					  (not (equal (car x) "fn:"))
+					  (not (nth 3 x))
 					  x))
 			 ref-table))))
       ;; Make sure each footnote has a description, or an error message.
@@ -443,12 +444,11 @@ referenced sequence."
   "Find first reference of footnote ENTRY and insert the definition there.
 ENTRY is (fn-label num-mark definition)."
   (when (car entry)
-    (let ((pos (point)))
-      (goto-char (point-min))
-      (when (re-search-forward (format ".\\[%s[]:]" (regexp-quote (car entry)))
-			       nil t)
-	(org-footnote-goto-local-insertion-point)
-	(insert (format "\n\n[%s] %s" (car entry) (nth 2 entry)))))))
+    (goto-char (point-min))
+    (when (re-search-forward (format ".\\[%s[]:]" (regexp-quote (car entry)))
+			     nil t)
+      (org-footnote-goto-local-insertion-point)
+      (insert (format "\n\n[%s] %s" (car entry) (nth 2 entry))))))
 
 (defun org-footnote-goto-local-insertion-point ()
   "Find insertion point for footnote, just before next outline heading."

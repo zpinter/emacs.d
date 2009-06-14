@@ -1,3 +1,82 @@
+2009-05-10  Carsten Dominik  <carsten.dominik@gmail.com>
+
+	* lisp/org-exp-blocks.el (org-export-blocks-format-ditaa)
+	(org-export-blocks-format-dot): Support ditaa export also for the
+	docbook exporter.
+
+2009-05-07  Carsten Dominik  <carsten.dominik@gmail.com>
+
+	* lisp/org-special-blocks.el: New file.
+
+2009-04-08  Carsten Dominik  <carsten.dominik@gmail.com>
+
+	* lisp/org-choose.el (org-choose-get-fn-map-group): Fix bug with
+	level selection.
+
+2009-04-01  Carsten Dominik  <carsten.dominik@gmail.com>
+
+	* lisp/org-exp-bibtex.el (org-export-bibtex-preprocess): Handle
+	multiple keys in a single \cite command.
+
+2009-03-30  Carsten Dominik  <carsten.dominik@gmail.com>
+
+	* lisp/org-mtags.el: Fix copyright year.
+
+2009-03-13  Carsten Dominik  <carsten.dominik@gmail.com>
+
+	* lisp/org-mtags.el (org-mtags-replace): Support literal docbook.
+
+2009-03-12  Carsten Dominik  <carsten.dominik@gmail.com>
+
+	* lisp/org-exp-bibtex.el (org-export-bibtex-preprocess): Analyze
+	return value of the call to bibtex2html.
+	(org-export-bibtex-preprocess): Change Class to ID, there can only
+	be one.
+	(org-exp-bibtex-docites): Generalize the regexp looking for
+	citations.
+
+2009-02-26  Carsten Dominik  <carsten.dominik@gmail.com>
+
+	* lisp/org2rem.el: New version from Shatad Pratap.
+
+2009-02-24  Carsten Dominik  <carsten.dominik@gmail.com>
+
+	* lisp/org-choose.el (org-choose-get-fn-map-group): Only check
+	true siblings.
+
+2009-02-18  Carsten Dominik  <carsten.dominik@gmail.com>
+
+	* lisp/org-R.el: New file.
+
+2009-02-13  Carsten Dominik  <carsten.dominik@gmail.com>
+
+	* lisp/org-choose.el (org-choose-get-fn-map-group): Require
+	`org-agenda'.
+	(cl): Require `cl' at runtime.
+	(org-choose-filter-one): Use `org-split-string' for consistency
+	accross Emacs version.
+
+2009-02-12  Carsten Dominik  <carsten.dominik@gmail.com>
+
+	* lisp/org-choose.el ("org"): Use file name instead of feature for
+	`eval-after-load', this is XEmacs compatible.
+
+2009-02-10  Carsten Dominik  <carsten.dominik@gmail.com>
+
+	* lisp/org-choose.el (org-choose-get-fn-map-group): Call
+	`org-up-heading-all' instead of `outline-up-heading-all', which
+	does not exist.
+
+2009-02-04  Carsten Dominik  <carsten.dominik@gmail.com>
+
+	* lisp/org-depend.el (org-depend-act-on-sibling): New macro.
+	(org-depend-trigger-todo): Call `org-depend-act-on-sibling',
+	implement reacting on new keyword `chain-sibling-cheduled'.
+
+2009-02-03  Carsten Dominik  <carsten.dominik@gmail.com>
+
+	* lisp/org-exp-blocks.el (org-exp-blocks): Provide this feature.
+
 2009-01-16  Carsten Dominik  <carsten.dominik@gmail.com>
 
 	* lisp/org-depend.el (org-depend-block-todo): Set a tag when a

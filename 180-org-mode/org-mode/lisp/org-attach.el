@@ -4,7 +4,7 @@
 
 ;; Author: John Wiegley <johnw@newartisans.com>
 ;; Keywords: org data task
-;; Version: 6.19a
+;; Version: 6.27a
 
 ;; This file is part of GNU Emacs.
 ;;
@@ -26,7 +26,7 @@
 ;; See the Org-mode manual for information on how to use it.
 ;;
 ;; Attachments are managed in a special directory called "data", which
-;; lives in the directory given by `org-directory'.  If this data
+;; lives in the same directory as the org file itself.  If this data
 ;; directory is initialized as a Git repository, then org-attach will
 ;; automatically commit changes when it sees them.
 ;;

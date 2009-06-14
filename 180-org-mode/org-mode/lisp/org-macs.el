@@ -1,11 +1,12 @@
 ;;; org-macs.el --- Top-level definitions for Org-mode
 
-;; Copyright (C) 2004, 2005, 2006, 2007, 2008, 2009 Free Software Foundation, Inc.
+;; Copyright (C) 2004, 2005, 2006, 2007, 2008, 2009
+;;   Free Software Foundation, Inc.
 
 ;; Author: Carsten Dominik <carsten at orgmode dot org>
 ;; Keywords: outlines, hypermedia, calendar, wp
 ;; Homepage: http://orgmode.org
-;; Version: 6.19a
+;; Version: 6.27a
 ;;
 ;; This file is part of GNU Emacs.
 ;;
@@ -109,6 +110,11 @@ We use a macro so that the test can happen at compilation time."
   `(unless (get-text-property (1- (point)) 'org-protected)
      ,@body))
 
+(defmacro org-if-unprotected-at (pos &rest body)
+  "Execute BODY if there is no `org-protected' text property at point-1."
+  `(unless (get-text-property ,pos 'org-protected)
+     ,@body))
+
 (defmacro org-with-remote-undo (_buffer &rest _body)
   "Execute BODY while recording undo information in two buffers."
   `(let ((_cline (org-current-line))
@@ -158,6 +164,18 @@ We use a macro so that the test can happen at compilation time."
 	((eq option t) t)
 	((assoc key option) (cdr (assoc key option)))
 	(t (cdr (assq 'default option)))))
+
+(defsubst org-check-external-command (cmd &optional use no-error)
+  "Check if external progam CMD for USE exists, error if not.
+When the program does exist, return it's path.
+When it does not exist and NO-ERROR is set, return nil.
+Otherwise, throw an error.  The optional argument USE can describe what this
+program is needed for, so that the error message can be more informative."
+  (or (executable-find cmd)
+      (if no-error
+	  nil
+	(error "Can't find `%s'%s" cmd
+	       (if use (format " (%s)" use) "")))))
 
 (defsubst org-inhibit-invisibility ()
   "Modified `buffer-invisibility-spec' for Emacs 21.

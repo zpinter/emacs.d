@@ -1,11 +1,12 @@
 ;;; org-archive.el --- Archiving for Org-mode
 
-;; Copyright (C) 2004, 2005, 2006, 2007, 2008, 2009 Free Software Foundation, Inc.
+;; Copyright (C) 2004, 2005, 2006, 2007, 2008, 2009
+;;   Free Software Foundation, Inc.
 
 ;; Author: Carsten Dominik <carsten at orgmode dot org>
 ;; Keywords: outlines, hypermedia, calendar, wp
 ;; Homepage: http://orgmode.org
-;; Version: 6.19a
+;; Version: 6.27a
 ;;
 ;; This file is part of GNU Emacs.
 ;;
@@ -269,7 +270,7 @@ this heading."
 	    ;; No specific heading, just go to end of file.
 	    (goto-char (point-max)) (insert "\n"))
 	  ;; Paste
-	  (org-paste-subtree (org-get-valid-level level 1))
+	  (org-paste-subtree (org-get-valid-level level (and heading 1)))
 
 	  ;; Mark the entry as done
 	  (when (and org-archive-mark-done

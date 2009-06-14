@@ -1,12 +1,13 @@
 ;;; org-list.el --- Plain lists for Org-mode
 ;;
-;; Copyright (C) 2004, 2005, 2006, 2007, 2008, 2009 Free Software Foundation, Inc.
+;; Copyright (C) 2004, 2005, 2006, 2007, 2008, 2009
+;;   Free Software Foundation, Inc.
 ;;
 ;; Author: Carsten Dominik <carsten at orgmode dot org>
 ;;	   Bastien Guerry <bzg AT altern DOT org>
 ;; Keywords: outlines, hypermedia, calendar, wp
 ;; Homepage: http://orgmode.org
-;; Version: 6.19a
+;; Version: 6.27a
 ;;
 ;; This file is part of GNU Emacs.
 ;;
@@ -47,6 +48,9 @@
 (declare-function org-get-indentation "org" (&optional line))
 (declare-function org-timer-item "org-timer" (&optional arg))
 (declare-function org-combine-plists "org" (&rest plists))
+(declare-function org-entry-get "org" (pom property &optional inherit))
+(declare-function org-narrow-to-subtree "org" ())
+(declare-function org-show-subtree "org" ())
 
 (defgroup org-plain-lists nil
   "Options concerning plain lists in Org-mode."
@@ -88,7 +92,7 @@ the bullet in each item of he list."
 
 (defcustom org-empty-line-terminates-plain-lists nil
   "Non-nil means, an empty line ends all plain list levels.
-When nil, empty lines are part of the preceeding item."
+When nil, empty lines are part of the preceding item."
   :group 'org-plain-lists
   :type 'boolean)
 
@@ -105,6 +109,12 @@ use \\[org-ctrl-c-ctrl-c] to trigger renumbering."
 When this is set, checkbox statistics is updated each time you either insert
 a new checkbox with \\[org-insert-todo-heading] or toggle a checkbox
 with \\[org-ctrl-c-ctrl-c\\]."
+  :group 'org-plain-lists
+  :type 'boolean)
+
+(defcustom org-hierarchical-checkbox-statistics t
+  "Non-nil means, checkbox statistics counts only the state of direct children.
+When nil, all boxes below the cookie are counted."
   :group 'org-plain-lists
   :type 'boolean)
 
@@ -158,8 +168,14 @@ list, obtained by prompting the user."
        (cond
 	((eq llt t)  "\\([ \t]*\\([-+]\\|\\([0-9]+[.)]\\)\\)\\|[ \t]+\\*\\)\\( \\|$\\)")
 	((= llt ?.)  "\\([ \t]*\\([-+]\\|\\([0-9]+\\.\\)\\)\\|[ \t]+\\*\\)\\( \\|$\\)")
-	((= llt ?\)) "\\([ \t]*\\([-+]\\|\\([0-9]+))\\)\\|[ \t]+\\*\\)\\( \\|$\\)")
+	((= llt ?\)) "\\([ \t]*\\([-+]\\|\\([0-9]+)\\)\\)\\|[ \t]+\\*\\)\\( \\|$\\)")
 	(t (error "Invalid value of `org-plain-list-ordered-item-terminator'")))))))
+
+(defun org-at-item-bullet-p ()
+  "Is point at the bullet of a plain list item?"
+  (and (org-at-item-p)
+       (not (member (char-after) '(?\  ?\t)))
+       (< (point) (match-end 0))))
 
 (defun org-in-item-p ()
   "It the cursor inside a plain list item.
@@ -201,7 +217,9 @@ Return t when things worked, nil when we are not in an item."
 					descp))))
 	   (eow (save-excursion (beginning-of-line 1) (looking-at "[ \t]*")
 				(match-end 0)))
-	   (blank-a (cdr (assq 'plain-list-item org-blank-before-new-entry)))
+	   (blank-a (if org-empty-line-terminates-plain-lists
+			nil
+		      (cdr (assq 'plain-list-item org-blank-before-new-entry))))
 	   (blank (if (eq blank-a 'auto) empty-line-p blank-a))
 	   pos)
       (if descp (setq checkbox nil))
@@ -241,42 +259,121 @@ Return t when things worked, nil when we are not in an item."
 	 (skip-chars-forward " \t")
 	 (looking-at "\\[[- X]\\]"))))
 
-(defun org-toggle-checkbox (&optional arg)
-  "Toggle the checkbox in the current line."
+(defun org-toggle-checkbox (&optional toggle-presence)
+  "Toggle the checkbox in the current line.
+With prefix arg TOGGLE-PRESENCE, add or remove checkboxes.
+With double prefix, set checkbox to [-].
+When there is an active region, toggle status or presence of the checkbox
+in the first line, and make every item in the region have the same
+status or presence, respectively.
+If the cursor is in a headline, apply this to all checkbox items in the
+text below the heading."
   (interactive "P")
   (catch 'exit
-    (let (beg end status (firstnew 'unknown))
+    (let (beg end status first-present first-status blocked)
       (cond
        ((org-region-active-p)
 	(setq beg (region-beginning) end (region-end)))
        ((org-on-heading-p)
 	(setq beg (point) end (save-excursion (outline-next-heading) (point))))
        ((org-at-item-checkbox-p)
-	(let ((pos (point)))
-	  (replace-match
-	   (cond (arg "[-]")
-		 ((member (match-string 0) '("[ ]" "[-]")) "[X]")
-		 (t "[ ]"))
-	   t t)
-	  (goto-char pos))
+	(save-excursion
+	  (if (equal toggle-presence '(4))
+	      (progn
+		(replace-match "")
+		(goto-char (match-beginning 0))
+		(just-one-space))
+	    (when (setq blocked (org-checkbox-blocked-p))
+	      (error "Checkbox blocked because of unchecked box in line %d"
+		     blocked))
+	    (replace-match
+	     (cond ((equal toggle-presence '(16)) "[-]")
+		   ((member (match-string 0) '("[ ]" "[-]")) "[X]")
+		   (t "[ ]"))
+	     t t)))
+	(throw 'exit t))
+       ((org-at-item-p)
+	;; add a checkbox
+	(save-excursion
+	  (goto-char (match-end 0))
+	  (insert "[ ] "))
 	(throw 'exit t))
        (t (error "Not at a checkbox or heading, and no active region")))
+      (setq end (move-marker (make-marker) end))
       (save-excursion
 	(goto-char beg)
+	(setq first-present (org-at-item-checkbox-p)
+	      first-status
+	      (save-excursion
+		(and (re-search-forward "[ \t]\\(\\[[ X]\\]\\)" end t)
+		     (equal (match-string 1) "[X]"))))
 	(while (< (point) end)
-	  (when (org-at-item-checkbox-p)
-	    (setq status (equal (match-string 0) "[X]"))
-	    (when (eq firstnew 'unknown)
-	      (setq firstnew (not status)))
-	    (replace-match
-	     (if (if arg (not status) firstnew) "[X]" "[ ]") t t))
+	  (if toggle-presence
+	      (cond
+	       ((and first-present (org-at-item-checkbox-p))
+		(save-excursion
+		  (replace-match "")
+		  (goto-char (match-beginning 0))
+		  (just-one-space)))
+	       ((and (not first-present) (not (org-at-item-checkbox-p))
+		     (org-at-item-p))
+		(save-excursion
+		  (goto-char (match-end 0))
+		  (insert "[ ] "))))
+	    (when (org-at-item-checkbox-p)
+	      (setq status (equal (match-string 0) "[X]"))
+	      (replace-match
+	       (if first-status "[ ]" "[X]") t t)))
 	  (beginning-of-line 2)))))
   (org-update-checkbox-count-maybe))
+
+(defun org-reset-checkbox-state-subtree ()
+  "Reset all checkboxes in an entry subtree."
+  (interactive "*")
+  (save-restriction
+    (save-excursion
+      (org-narrow-to-subtree)
+      (org-show-subtree)
+      (goto-char (point-min))
+      (let ((end (point-max)))
+	(while (< (point) end)
+	  (when (org-at-item-checkbox-p)
+	    (replace-match "[ ]" t t))
+	  (beginning-of-line 2))))
+    (org-update-checkbox-count-maybe)))
+
+(defun org-checkbox-blocked-p ()
+  "Is the current checkbox blocked from for being checked now?
+A checkbox is blocked if all of the following conditions are fulfilled:
+
+1. The checkbox is not checked already.
+2. The current entry has the ORDERED property set.
+3. There is an unchecked checkbox in this entry before the current line."
+  (catch 'exit
+    (save-match-data
+      (save-excursion
+	(unless (org-at-item-checkbox-p) (throw 'exit nil))
+	(when (equal (match-string 0) "[X]")
+	  ;; the box is already checked!
+	  (throw 'exit nil))
+	(let ((end (point-at-bol)))
+	  (condition-case nil (org-back-to-heading t)
+	    (error (throw 'exit nil)))
+	  (unless (org-entry-get nil "ORDERED") (throw 'exit nil))
+	  (if (re-search-forward "^[ \t]*[-+*0-9.)] \\[[- ]\\]" end t)
+	      (org-current-line)
+	    nil))))))
+
+(defvar org-checkbox-statistics-hook nil
+  "Hook that is run whenever Org thinks checkbox statistics should be updated.
+This hook runs even if `org-provide-checkbox-statistics' is nil, to it can
+be used to implement alternative ways of collecting statistics information.")
 
 (defun org-update-checkbox-count-maybe ()
   "Update checkbox statistics unless turned off by user."
   (when org-provide-checkbox-statistics
-    (org-update-checkbox-count)))
+    (org-update-checkbox-count))
+  (run-hooks 'org-checkbox-statistics-hook))
 
 (defun org-update-checkbox-count (&optional all)
  "Update the checkbox statistics in the current section.
@@ -296,6 +393,10 @@ the whole buffer."
 	  (re-find (concat re "\\|" re-box))
 	  beg-cookie end-cookie is-percent c-on c-off lim
 	  eline curr-ind next-ind continue-from startsearch
+	  (recursive
+	   (or (not org-hierarchical-checkbox-statistics)
+	       (string-match "\\<recursive\\>"
+			     (or (org-entry-get nil "COOKIE_DATA") ""))))
 	  (cstat 0)
 	  )
      (when all
@@ -303,13 +404,20 @@ the whole buffer."
        (outline-next-heading)
        (setq beg (point) end (point-max)))
      (goto-char end)
-     ;; find each statistic cookie
-     (while (re-search-backward re-find beg t)
+     ;; find each statistics cookie
+     (while (and (re-search-backward re-find beg t)
+		 (not (save-match-data
+			(and (org-on-heading-p)
+			     (string-match "\\<todo\\>"
+					   (downcase
+					    (or (org-entry-get
+						 nil "COOKIE_DATA")
+						"")))))))
        (setq beg-cookie (match-beginning 1)
 	     end-cookie (match-end 1)
 	     cstat (+ cstat (if end-cookie 1 0))
 	     startsearch (point-at-eol)
-	     continue-from (point-at-bol)
+	     continue-from (match-beginning 0)
 	     is-percent (match-beginning 2)
 	     lim (cond
 		  ((org-on-heading-p) (outline-next-heading) (point))
@@ -326,7 +434,10 @@ the whole buffer."
 	       (org-beginning-of-item)
 	       (setq curr-ind (org-get-indentation))
 	       (setq next-ind curr-ind)
-	       (while (and (bolp) (org-at-item-p) (= curr-ind next-ind))
+	       (while (and (bolp) (org-at-item-p)
+			   (if recursive
+			       (<= curr-ind next-ind)
+			     (= curr-ind next-ind)))
 		 (save-excursion (end-of-line) (setq eline (point)))
 		 (if (re-search-forward re-box eline t)
 		     (if (member (match-string 2) '("[ ]" "[-]"))
@@ -334,7 +445,11 @@ the whole buffer."
 		       (setq c-on (1+ c-on))
 		       )
 		   )
-		 (org-end-of-item)
+		 (if (not recursive)
+		     (org-end-of-item)
+		   (end-of-line)
+		   (when (re-search-forward org-list-beginning-re lim t)
+		     (beginning-of-line)))
 		 (setq next-ind (org-get-indentation))
 		 )))
 	 (goto-char continue-from)
@@ -666,7 +781,7 @@ with something like \"1.\" or \"2)\"."
     (org-beginning-of-item-list)
     (setq bobp (bobp))
     (looking-at "[ \t]*[0-9]+\\([.)]\\)")
-    (setq fmt (concat "%d" (match-string 1)))
+    (setq fmt (concat "%d" (or (match-string 1) ".")))
     (beginning-of-line 0)
     ;; walk forward and replace these numbers
     (catch 'exit
@@ -720,7 +835,7 @@ Also, fix the indentation."
 	  (skip-chars-forward " \t")
 	  (looking-at "\\S-+ *")
 	  (setq oldbullet (match-string 0))
-	  (replace-match bullet)
+	  (unless (equal bullet oldbullet) (replace-match bullet))
 	  (org-shift-item-indentation (- (length bullet) (length oldbullet))))))
     (goto-line line)
     (org-move-to-column col)
@@ -783,7 +898,9 @@ I.e. to the text after the last item."
 	(catch 'next
 	  (beginning-of-line 2)
 	  (if (looking-at "[ \t]*$")
-	      (throw (if (eobp) 'exit 'next) t))
+	      (if (eobp)
+		  (progn (setq pos (point)) (throw 'exit t))
+		(throw 'next t)))
 	  (skip-chars-forward " \t") (setq ind1 (current-column))
 	  (if (or (< ind1 ind)
 		  (and (= ind1 ind)
@@ -806,17 +923,19 @@ I.e. to the text after the last item."
 (defun org-indent-item (arg)
   "Indent a local list item."
   (interactive "p")
+  (and (org-region-active-p) (org-cursor-to-region-beginning))
   (unless (org-at-item-p)
     (error "Not on an item"))
   (save-excursion
     (let (beg end ind ind1 tmp delta ind-down ind-up)
+      (setq end (and (org-region-active-p) (region-end)))
       (if (memq last-command '(org-shiftmetaright org-shiftmetaleft))
 	  (setq beg org-last-indent-begin-marker
 		end org-last-indent-end-marker)
 	(org-beginning-of-item)
 	(setq beg (move-marker org-last-indent-begin-marker (point)))
 	(org-end-of-item)
-	(setq end (move-marker org-last-indent-end-marker (point))))
+	(setq end (move-marker org-last-indent-end-marker (or end (point)))))
       (goto-char beg)
       (setq tmp (org-item-indent-positions)
 	    ind (car tmp)

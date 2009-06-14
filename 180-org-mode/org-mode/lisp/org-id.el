@@ -5,7 +5,7 @@
 ;; Author: Carsten Dominik <carsten at orgmode dot org>
 ;; Keywords: outlines, hypermedia, calendar, wp
 ;; Homepage: http://orgmode.org
-;; Version: 6.19a
+;; Version: 6.27a
 ;;
 ;; This file is part of GNU Emacs.
 ;;
@@ -228,6 +228,7 @@ It returns the ID of the entry.  If necessary, the ID is created."
   (let* ((org-refile-targets (or targets '((nil . (:maxlevel . 10)))))
 	 (org-refile-use-outline-path
 	  (if (caar org-refile-targets) 'file t))
+	 (org-refile-target-verify-function nil)
 	 (spos (org-refile-get-location "Entry: "))
 	 (pom (and spos (move-marker (make-marker) (nth 3 spos)
 				     (get-file-buffer (nth 1 spos))))))
@@ -499,7 +500,7 @@ When CHECK is given, prepare detailed information about duplicate IDs."
   (let ((res (make-hash-table
 	      :test 'equal
 	      :size (apply '+ (mapcar 'length list))))
-	f i)
+	f)
     (mapc
      (lambda (x)
        (setq f (car x))
@@ -540,7 +541,7 @@ If that files does not exist, or if it does not contain this ID,
 return nil.
 The position is returned as a cons cell (file-name . position).  With
 optional argument MARKERP, return the position as a new marker."
-  (let (org-agenda-new-buffers m buf pos)
+  (let (org-agenda-new-buffers buf pos)
     (cond
      ((not file) nil)
      ((not (file-exists-p file)) nil)

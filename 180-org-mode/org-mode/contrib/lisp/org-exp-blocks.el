@@ -137,7 +137,7 @@ specified in BLOCKS which default to the value of
 	(goto-char (point-min))
 	(setf start (point))
 	(while (re-search-forward
-		"^#\\+begin_\\(\\S-+\\)[ \t]*\\(.*\\)?[\r\n]\\([^\000]*?\\)#\\+end_\\S-*[\r\n]" nil t)
+		"^#\\+begin_\\(\\S-+\\)[ \t]*\\(.*\\)?[\r\n]\\([^\000]*?\\)#\\+end_\\S-+.*" nil t)
 	  (save-match-data (setf type (intern (match-string 1))))
 	  (unless (memq type types) (setf types (cons type types)))
 	  (setf end (save-match-data (match-beginning 0)))
@@ -187,7 +187,7 @@ passed to the ditaa utility as command line arguments."
 			    (org-split-string body "\n")
 			    "\n")))
     (cond 
-     ((or htmlp latexp)
+     ((or htmlp latexp docbookp)
       (with-temp-file data-file (insert body))
       (message (concat "java -jar " org-ditaa-jar-path " " args " " data-file " " out-file))
       (shell-command (concat "java -jar " org-ditaa-jar-path " " args " " data-file " " out-file))
@@ -222,7 +222,7 @@ digraph data_relationships {
 	(args (if (cdr headers) (mapconcat 'identity (cdr headers) " ")))
 	(data-file (make-temp-file "org-ditaa")))
     (cond 
-     ((or htmlp latexp)
+     ((or htmlp latexp docbookp)
       (with-temp-file data-file (insert body))
       (message (concat "dot " data-file " " args " -o " out-file))
       (shell-command (concat "dot " data-file " " args " -o " out-file))
@@ -374,5 +374,7 @@ export."
 	       (message raw)
 	       (message (match-string 1 raw))
 	       (match-string 1 raw)))))))
+
+(provide 'org-exp-blocks)
 
 ;;; org-exp-blocks.el ends here

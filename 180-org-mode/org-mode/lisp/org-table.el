@@ -1,11 +1,12 @@
 ;;; org-table.el --- The table editor for Org-mode
 
-;; Copyright (C) 2004, 2005, 2006, 2007, 2008, 2009 Free Software Foundation, Inc.
+;; Copyright (C) 2004, 2005, 2006, 2007, 2008, 2009
+;;   Free Software Foundation, Inc.
 
 ;; Author: Carsten Dominik <carsten at orgmode dot org>
 ;; Keywords: outlines, hypermedia, calendar, wp
 ;; Homepage: http://orgmode.org
-;; Version: 6.19a
+;; Version: 6.27a
 ;;
 ;; This file is part of GNU Emacs.
 ;;
@@ -39,7 +40,8 @@
   (require 'cl))
 (require 'org)
 
-(declare-function org-table-clean-before-export "org-exp" (lines))
+(declare-function org-table-clean-before-export "org-exp"
+		  (lines &optional maybe-quoted))
 (declare-function org-format-org-table-html "org-exp" (lines &optional splice))
 (defvar orgtbl-mode) ; defined below
 (defvar orgtbl-mode-menu) ; defined when orgtbl mode get initialized
@@ -825,12 +827,47 @@ Before doing so, re-align the table if necessary."
       (org-table-align))
   (if (org-at-table-hline-p)
       (end-of-line 1))
-  (re-search-backward "|" (org-table-begin))
-  (re-search-backward "|" (org-table-begin))
+  (condition-case nil
+      (progn
+	(re-search-backward "|" (org-table-begin))
+	(re-search-backward "|" (org-table-begin)))
+    (error (error "Cannot move to previous table field")))
   (while (looking-at "|\\(-\\|[ \t]*$\\)")
     (re-search-backward "|" (org-table-begin)))
   (if (looking-at "| ?")
       (goto-char (match-end 0))))
+
+(defun org-table-beginning-of-field (&optional n)
+  "Move to the end of the current table field.
+If already at or after the end, move to the end of the next table field.
+With numeric argument N, move N-1 fields forward first."
+  (interactive "p")
+  (let ((pos (point)))
+    (while (> n 1)
+      (setq n (1- n))
+      (org-table-previous-field))
+    (if (not (re-search-backward "|" (point-at-bol 0) t))
+	(error "No more table fields before the current")
+      (goto-char (match-end 0))
+      (and (looking-at " ") (forward-char 1)))
+    (if (>= (point) pos) (org-table-beginning-of-field 2))))
+
+(defun org-table-end-of-field (&optional n)
+  "Move to the beginning of the current table field.
+If already at or before the beginning, move to the beginning of the
+previous field.
+With numeric argument N, move N-1 fields backward first."
+  (interactive "p")
+  (let ((pos (point)))
+    (while (> n 1)
+      (setq n (1- n))
+      (org-table-next-field))
+    (when (re-search-forward "|" (point-at-eol 1) t)
+      (backward-char 1)
+      (skip-chars-backward " ")
+      (if (and (equal (char-before (point)) ?|) (looking-at " "))
+	  (forward-char 1)))
+    (if (<= (point) pos) (org-table-end-of-field 2))))
 
 (defun org-table-next-row ()
   "Go to the next row (same column) in the current table.
@@ -1845,14 +1882,17 @@ For all numbers larger than LIMIT, shift them by DELTA."
 	    s n a)
 	(when remove
 	  (while (re-search-forward re2 (point-at-eol) t)
-	    (replace-match "")))
+	    (unless (save-match-data (org-in-regexp "remote([^)]+?)"))
+	      (replace-match ""))))
 	(while (re-search-forward re (point-at-eol) t)
-	  (setq s (match-string 1) n (string-to-number s))
-	  (cond
-	   ((setq a (assoc s replace))
-	    (replace-match (concat key (cdr a)) t t))
-	   ((and limit (> n limit))
-	    (replace-match (concat key (int-to-string (+ n delta))) t t))))))))
+	  (unless (save-match-data (org-in-regexp "remote([^)]+?)"))
+	    (setq s (match-string 1) n (string-to-number s))
+	    (cond
+	     ((setq a (assoc s replace))
+	      (replace-match (concat key (cdr a)) t t))
+	     ((and limit (> n limit))
+	      (replace-match (concat key (int-to-string (+ n delta)))
+			     t t)))))))))
 
 (defun org-table-get-specials ()
   "Get the column names and local parameters for this table."
@@ -3385,6 +3425,8 @@ to execute outside of tables."
 	  '("\C-c`"		 org-table-edit-field)
 	  '("\C-c*"		 org-table-recalculate)
 	  '("\C-c^"		 org-table-sort-lines)
+	  '("\M-a"		 org-table-beginning-of-field)
+	  '("\M-e"		 org-table-end-of-field)
 	  '([(control ?#)]       org-table-rotate-recalc-marks)))
 	elt key fun cmd)
     (while (setq elt (pop bindings))
@@ -3566,14 +3608,27 @@ overwritten, and the table is not marked as requiring realignment."
 	(goto-char (match-beginning 0))
 	(self-insert-command N))
     (setq org-table-may-need-update t)
-    (let (orgtbl-mode a)
-      (call-interactively
-       (or (key-binding
-	    (or (and (listp function-key-map)
-		     (setq a (assoc last-input-event function-key-map))
-		     (cdr a))
-		(vector last-input-event)))
-	   'self-insert-command)))))
+    (let* (orgtbl-mode
+	   a
+	   (cmd (or (key-binding
+		     (or (and (listp function-key-map)
+			      (setq a (assoc last-input-event function-key-map))
+			      (cdr a))
+			 (vector last-input-event)))
+	   'self-insert-command)))
+      (call-interactively cmd)
+      (if (and org-self-insert-cluster-for-undo
+	       (eq cmd 'self-insert-command))
+	  (if (not (eq last-command 'orgtbl-self-insert-command))
+	      (setq org-self-insert-command-undo-counter 1)
+	    (if (>= org-self-insert-command-undo-counter 20)
+		(setq org-self-insert-command-undo-counter 1)
+	      (and (> org-self-insert-command-undo-counter 0)
+		   buffer-undo-list
+		   (not (cadr buffer-undo-list)) ; remove nil entry
+		   (setcdr buffer-undo-list (cddr buffer-undo-list)))
+	      (setq org-self-insert-command-undo-counter
+		    (1+ org-self-insert-command-undo-counter))))))))
 
 (defvar orgtbl-exp-regexp "^\\([-+]?[0-9][0-9.]*\\)[eE]\\([-+]?[0-9]+\\)$"
   "Regular expression matching exponentials as produced by calc.")
@@ -4104,6 +4159,7 @@ list of the fields in the rectangle ."
 	  org-table-last-column-widths org-table-last-alignment
 	  org-table-last-column-widths tbeg
 	  buffer loc)
+      (setq form (org-table-convert-refs-to-rc form))
       (save-excursion
 	(save-restriction
 	  (widen)

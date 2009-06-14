@@ -1,3 +1,7 @@
+2009-03-31  Carsten Dominik  <carsten.dominik@gmail.com>
+
+	* Makefile (LISPF): Add org-inlinetask.el
+	(lisp/org-inlinetask.elc): No denpendencies.
 
 2009-01-19  Carsten Dominik  <carsten.dominik@gmail.com>
 

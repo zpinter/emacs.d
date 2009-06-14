@@ -14,6 +14,3 @@
 
 (setq swank-clojure-binary (concat clj-root "bin/clojure-emacs"))
 (require 'swank-clojure-autoload)
-
-
-
