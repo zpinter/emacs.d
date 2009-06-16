@@ -7,10 +7,10 @@
 ;; Author: Turadg Aleahmad, 1999-2004
 ;; Keywords: php languages oop
 ;; Created: 1999-05-17
-;; Modified: 2008-01-25T22:25:26+0100 Fri
+;; Modified: 2008-11-28 Fri
 ;; X-URL:   http://php-mode.sourceforge.net/
 
-(defconst php-mode-version-number "1.4.1d-nxhtml"
+(defconst php-mode-version-number "1.5.0-nxhtml"
   "PHP Mode version number.")
 
 ;;; License
@@ -58,7 +58,6 @@
 ;; handy IDE-type features such as documentation search and a source
 ;; and class browser.
 
-
 ;;; Contributors: (in chronological order)
 
 ;; Juanjo, Torsten Martinsen, Vinai Kopp, Sean Champ, Doug Marcey,
@@ -67,32 +66,34 @@
 ;; Sammartino, ppercot, Valentin Funk, Stig Bakken, Gregory Stark,
 ;; Chris Morris, Nils Rennebarth, Gerrit Riessen, Eric Mc Sween,
 ;; Ville Skytta, Giacomo Tesio, Lennart Borgman, Stefan Monnier,
-;; Aaron S. Hawley, Ian Eure, Bill Lovett
+;; Aaron S. Hawley, Ian Eure, Bill Lovett, Dias Badekas, David House
 
 ;;; Changelog:
 
-;; 1.4.1d-nxhtml
-;;   Move back point after checking indentation in
-;;   `php-check-html-for-indentation'.
-;;
-;; 1.4.1c-nxhtml
-;;   Add `c-at-vsemi-p-fn' etc after advice from Alan Mackenzi.
-;;
-;; 1.4.1b-nxhtml
+;; 1.5.0-nxhtml-1.61 (Lennart Borgman)
+;;   Added php-mode-to-use.
+;;   Made underscore be part of identifiers.
 ;;   Remove php-mode-to.
 ;;   Make the indentation check only on current line.
 ;;   Warn only once per session about indentation.
 ;;   Tell if can't complete in `php-complete-function'.
+;;   Move back point after checking indentation in
+;;   `php-check-html-for-indentation'.
+;;   Add `c-at-vsemi-p-fn' etc after advice from Alan Mackenzie.
 ;;
-;; 1.4.1a-nxhtml
-;;   Made underscore be part of identifiers.
-;;
-;; 1.4.1-nxhtml
-;;   Added php-mode-to-use.
-
-;; 1.4.1
-;;   Modified `php-check-html-for-indentation' to check for multiple
-;;   mode support libraries. (Lennart Borgman)
+;; 1.5
+;;   Support function keywords like public, private and the ampersand
+;;   character for function-based commands.  Support abstract, final,
+;;   static, public, private and protected keywords in Imenu.  Fix
+;;   reversed order of Imenu entries.  Use font-lock-preprocessor-face
+;;   for PHP and ASP tags.  Make php-mode-modified a literal value
+;;   rather than a computed string.  Add date and time constants of
+;;   PHP. (Dias Badekas) Fix false syntax highlighting of keywords
+;;   because of underscore character.  Change HTML indentation warning
+;;   to match only HTML at the beginning of the line.  Fix
+;;   byte-compiler warnings.  Clean-up whitespace and audited style
+;;   consistency of code.  Remove conditional bindings and XEmacs code
+;;   that likely does nothing.
 ;;
 ;; 1.4
 ;;   Updated GNU GPL to version 3.  Ported to Emacs 22 (CC mode
@@ -106,30 +107,16 @@
 ;;   Monnier to correct highlighting and indentation. (Lennart Borgman)
 ;;   Changed the highlighting of the HTML part. (Lennart Borgman)
 ;;
-;; 1.2
-;;   Implemented php-show-arglist, C-. (Engelke Eschner)
-;;   Implemented php-complete-function, M-tab (Engelke Eschner)
-;;   Re-enabled # comment detection in GNU Emacs (Urban Müller)
-;;   Fixed some keybindings and default settings (Engelke Eschner)
-;;
-;; 1.1
-;;   Added PHP5 support (Giacomo Tesio)
-;;     known problem: doesn't highlight after first 'implements'
-;;   Better XEmacs compatibility (imenu, regexp, and comments!) (Ville Skytta)
-;;   Improvement to php-conditional-key regexp (Eric Mc Sween)
-
-;; 1.05
-;;   Incorporated speedbar defs by Gerrit Riessen
-;;   Add "foreach" to conditional introducing keywords (Nils Rennebarth)
-;;   Cleared the Changelog
-;;   Moved contribution credits into comments above
+;; See the ChangeLog file included with the source package.
 
 
 ;;; Code:
 
+(require 'add-log)
 (require 'speedbar)
 (require 'font-lock)
 (require 'cc-mode)
+(require 'cc-langs)
 (require 'custom)
 (require 'etags)
 (eval-when-compile
@@ -147,7 +134,7 @@
   :group 'php)
 
 (defcustom php-speedbar-config t
-  "When set to true automatically configures Speedbar to observe PHP files.\
+  "When set to true automatically configures Speedbar to observe PHP files.
 Ignores php-file patterns option; fixed to expression \"\\.\\(inc\\|php[s34]?\\)\""
   :type 'boolean
   :set (lambda (sym val)
@@ -158,7 +145,7 @@ Ignores php-file patterns option; fixed to expression \"\\.\\(inc\\|php[s34]?\\)
   :group 'php)
 
 (defcustom php-mode-speedbar-open nil
-  "Normally `php-mode' starts with the speedbar closed.\
+  "Normally `php-mode' starts with the speedbar closed.
 Turning this on will open it whenever `php-mode' is loaded."
   :type 'boolean
   :set (lambda (sym val)
@@ -167,24 +154,40 @@ Turning this on will open it whenever `php-mode' is loaded."
              (speedbar 1)))
   :group 'php)
 
+(defvar php-imenu-generic-expression
+ '(
+   ("Private Methods"
+    "^\\s-*\\(?:\\(?:abstract\\|final\\)\\s-+\\)?private\\s-+\\(?:static\\s-+\\)?function\\s-+\\(\\(?:\\sw\\|\\s_\\)+\\)\\s-*(" 1)
+   ("Protected Methods"
+    "^\\s-*\\(?:\\(?:abstract\\|final\\)\\s-+\\)?protected\\s-+\\(?:static\\s-+\\)?function\\s-+\\(\\(?:\\sw\\|\\s_\\)+\\)\\s-*(" 1)
+   ("Public Methods"
+    "^\\s-*\\(?:\\(?:abstract\\|final\\)\\s-+\\)?public\\s-+\\(?:static\\s-+\\)?function\\s-+\\(\\(?:\\sw\\|\\s_\\)+\\)\\s-*(" 1)
+   ("Classes"
+    "^\\s-*class\\s-+\\(\\(?:\\sw\\|\\s_\\)+\\)\\s-*" 1)
+   ("All Functions"
+    "^\\s-*\\(?:\\(?:abstract\\|final\\|private\\|protected\\|public\\|static\\)\\s-+\\)*function\\s-+\\(\\(?:\\sw\\|\\s_\\)+\\)\\s-*(" 1)
+   )
+ "Imenu generic expression for PHP Mode. See `imenu-generic-expression'."
+ )
+
 (defcustom php-manual-url "http://www.php.net/manual/en/"
-  "URL at which to find PHP manual.\
+  "URL at which to find PHP manual.
 You can replace \"en\" with your ISO language code."
   :type 'string
   :group 'php)
 
 (defcustom php-search-url "http://www.php.net/"
-  "URL at which to search for documentation on a word"
+  "URL at which to search for documentation on a word."
   :type 'string
   :group 'php)
 
 (defcustom php-completion-file ""
-  "Path to the file which contains the function names known to PHP"
+  "Path to the file which contains the function names known to PHP."
   :type 'string
   :group 'php)
 
 (defcustom php-manual-path ""
-  "Path to the directory which contains the PHP manual"
+  "Path to the directory which contains the PHP manual."
   :type 'string
   :group 'php)
 
@@ -212,27 +215,22 @@ You can replace \"en\" with your ISO language code."
   :group 'php)
 
 (defcustom php-mode-force-pear nil
-  "Normally PEAR coding rules are enforced only when the filename contains \"PEAR\"\
+  "Normally PEAR coding rules are enforced only when the filename contains \"PEAR.\"
 Turning this on will force PEAR rules on all PHP files."
   :type 'boolean
   :group 'php)
 
-(eval-when-compile
-  (defconst php-mode-modified
-    (save-excursion
-      (and
-       (re-search-backward "^;; Modified: \\(.*\\)" nil 'noerror)
-       (match-string-no-properties 1)))
-    "PHP Mode version number."))
+(defconst php-mode-modified "2008-11-28 Fri"
+  "PHP Mode build date.")
 
 (defun php-mode-version ()
-  "Display string describing the version of PHP mode"
+  "Display string describing the version of PHP mode."
   (interactive)
   (message "PHP mode %s of %s"
            php-mode-version-number php-mode-modified))
 
 (defconst php-beginning-of-defun-regexp
-  "^\\s *function\\s +&?\\(\\(\\sw\\|\\s_\\)+\\)\\s *("
+  "^\\s-*\\(?:\\(?:abstract\\|final\\|private\\|protected\\|public\\|static\\)\\s-+\\)*function\\s-+&?\\(\\(?:\\sw\\|\\s_\\)+\\)\\s-*("
   "Regular expression for a PHP function.")
 
 (defun php-beginning-of-defun (&optional arg)
@@ -264,15 +262,12 @@ See `php-beginning-of-defun'."
   (php-beginning-of-defun (- (or arg 1))))
 
 
-(defvar php-completion-table nil
-  "Obarray of tag names defined in current tags table and functions know to PHP.")
-
 (defvar php-warned-bad-indent nil)
 ;;(make-variable-buffer-local 'php-warned-bad-indent)
 
 ;; Do it but tell it is not good if html tags in buffer.
 (defun php-check-html-for-indentation ()
-  (let ((html-tag-re "</?\\sw+.*?>")
+  (let ((html-tag-re "^\\s-*</?\\sw+.*?>")
         (here (point)))
     (goto-char (line-beginning-position))
     (if (or (when (boundp 'mumamo-multi-major-mode) mumamo-multi-major-mode)
@@ -352,6 +347,28 @@ example `html-mode'.  Known such libraries are:\n\t"
           (php-check-html-for-indentation))
       (funcall 'c-indent-line)))
 
+(defconst php-tags '("<?php" "?>" "<?" "<?="))
+(defconst php-tags-key (regexp-opt php-tags))
+
+(defconst php-block-stmt-1-kwds '("do" "else" "finally" "try"))
+(defconst php-block-stmt-2-kwds
+  '("for" "if" "while" "switch" "foreach" "elseif"  "catch all"))
+
+(defconst php-block-stmt-1-key
+  (regexp-opt php-block-stmt-1-kwds))
+(defconst php-block-stmt-2-key
+  (regexp-opt php-block-stmt-2-kwds))
+
+(defconst php-class-decl-kwds '("class" "interface"))
+
+(defconst php-class-key
+  (concat
+   "\\(" (regexp-opt php-class-decl-kwds) "\\)\\s-+"
+   (c-lang-const c-symbol-key c)                ;; Class name.
+   "\\(\\s-+extends\\s-+" (c-lang-const c-symbol-key c) "\\)?" ;; Name of superclass.
+   "\\(\\s-+implements\\s-+[^{]+{\\)?")) ;; List of any adopted protocols.
+
+
 (defun php-c-at-vsemi-p (&optional pos)
   "Return t on html lines (including php region border), otherwise nil.
 POS is a position on the line in question.
@@ -389,15 +406,27 @@ This is was done due to the problem reported here:
 ;;;###autoload
 (define-derived-mode php-mode c-mode "PHP"
   "Major mode for editing PHP code.\n\n\\{php-mode-map}"
-;;   (c-add-language 'php-mode 'c-mode)
+  (c-add-language 'php-mode 'c-mode)
 
-;;   (c-lang-defconst c-block-stmt-1-kwds
-;;     php php-block-stmt-1-kwds)
+;; PHP doesn't have C-style macros.
+;; HACK: Overwrite this syntax with rules to match <?php and others.
+;;   (c-lang-defconst c-opt-cpp-start php php-tags-key)
+;;   (c-lang-defvar c-opt-cpp-start (c-lang-const c-opt-cpp-start))
+  (set (make-local-variable 'c-opt-cpp-start) php-tags-key)
+;;   (c-lang-defconst c-opt-cpp-start php php-tags-key)
+;;   (c-lang-defvar c-opt-cpp-start (c-lang-const c-opt-cpp-start))
+  (set (make-local-variable 'c-opt-cpp-prefix) php-tags-key)
+
+  (c-set-offset 'cpp-macro 0)
+  
+;;   (c-lang-defconst c-block-stmt-1-kwds php php-block-stmt-1-kwds)
+;;   (c-lang-defvar c-block-stmt-1-kwds (c-lang-const c-block-stmt-1-kwds))
   (set (make-local-variable 'c-block-stmt-1-key) php-block-stmt-1-key)
 
-;;   (c-lang-defconst c-block-stmt-2-kwds
-;;     php php-block-stmt-2-kwds)
+;;   (c-lang-defconst c-block-stmt-2-kwds php php-block-stmt-2-kwds)
+;;   (c-lang-defvar c-block-stmt-2-kwds (c-lang-const c-block-stmt-2-kwds))
   (set (make-local-variable 'c-block-stmt-2-key) php-block-stmt-2-key)
+
   ;; Specify that cc-mode recognize Javadoc comment style
   (set (make-local-variable 'c-doc-comment-style)
     '((php-mode . javadoc)))
@@ -405,20 +434,6 @@ This is was done due to the problem reported here:
 ;;   (c-lang-defconst c-class-decl-kwds
 ;;     php php-class-decl-kwds)
   (set (make-local-variable 'c-class-key) php-class-key)
-
-  ;; this line makes $ into punctuation instead of a word constituent
-  ;; it used to be active, but it killed indenting of case lines that
-  ;; begin with '$' (many do).  If anyone has a solution to this
-  ;; problem, please let me know.  Of course, you're welcome to
-  ;; uncomment this line in your installation.
-;  (modify-syntax-entry ?$ "." php-mode-syntax-table)
-
-  ;; The above causes XEmacs to handle shell-style comments correctly,
-  ;; but fails to work in GNU Emacs which fails to interpret \n as the
-  ;; end of the comment.
-  (if (featurep 'xemacs) (progn
-                (modify-syntax-entry ?# "< b" php-mode-syntax-table)
-                (modify-syntax-entry ?\n "> b" php-mode-syntax-table)))
 
   (make-local-variable 'font-lock-defaults)
   (setq font-lock-defaults
@@ -428,11 +443,11 @@ This is was done due to the problem reported here:
                ;; extreme/ugly for you.
            php-font-lock-keywords-3)
           nil                               ; KEYWORDS-ONLY
-          nil                                 ; CASE-FOLD
-          nil                               ; SYNTAX-ALIST
+          t                                 ; CASE-FOLD
+          (("_" . "w"))                    ; SYNTAX-ALIST
           nil))                             ; SYNTAX-BEGIN
   (modify-syntax-entry ?# "< b" php-mode-syntax-table)
-  (modify-syntax-entry ?_ "w" php-mode-syntax-table)
+  ;;(modify-syntax-entry ?_ "w" php-mode-syntax-table)
 
   ;; Electric behaviour must be turned off, they do not work since
   ;; they can not find the correct syntax in embedded PHP.
@@ -481,7 +496,7 @@ This is was done due to the problem reported here:
   (set (make-local-variable 'open-paren-in-column-0-is-defun-start)
        nil)
   (set (make-local-variable 'defun-prompt-regexp)
-       "^\\s *function\\s +&?\\(\\(\\sw\\|\\s_\\)+\\)\\s *")
+       "^\\s-*function\\s-+&?\\s-*\\(\\(\\sw\\|\\s_\\)+\\)\\s-*")
   (set (make-local-variable 'add-log-current-defun-header-regexp)
        php-beginning-of-defun-regexp)
 
@@ -504,6 +519,9 @@ This is was done due to the problem reported here:
   '("Search documentation" . php-search-documentation))
 
 ;; Define function name completion function
+(defvar php-completion-table nil
+  "Obarray of tag names defined in current tags table and functions known to PHP.")
+
 (defun php-complete-function ()
   "Perform function completion on the text around point.
 Completes to the set of names listed in the current tags table
@@ -535,9 +553,10 @@ for \\[find-tag] (which see)."
                     (all-completions pattern php-functions)))
                  (message "Making completion list...%s" "done")))))))
 
-;; Build php-completion-table on demand.  The table includes the
-;; PHP functions and the tags from the current tags-file-name
 (defun php-completion-table ()
+  "Build variable `php-completion-table' on demand.
+The table includes the PHP functions and the tags from the
+current `tags-file-name'."
   (or (and tags-file-name
            (save-excursion (tags-verify-table tags-file-name))
            php-completion-table)
@@ -614,7 +633,6 @@ for \\[find-tag] (which see)."
                        (point))))
       nil)))
 
-
 (defun php-show-arglist ()
   (interactive)
   (let* ((tagname (php-get-pattern))
@@ -624,17 +642,17 @@ for \\[find-tag] (which see)."
       (set-buffer buf)
       (goto-char (point-min))
       (when (re-search-forward
-             (format "function[ \t]+%s[ \t]*(\\([^{]*\\))" tagname)
+             (format "function\\s-+%s\\s-*(\\([^{]*\\))" tagname)
              nil t)
         (setq arglist (buffer-substring-no-properties
                        (match-beginning 1) (match-end 1)))))
     (if arglist
         (message "Arglist for %s: %s" tagname arglist)
-        (message "unknown function: %s" tagname))))
+        (message "Unknown function: %s" tagname))))
 
 ;; Define function documentation function
 (defun php-search-documentation ()
-  "Search PHP documentation for the word at the point."
+  "Search PHP documentation for the word at point."
   (interactive)
   (browse-url (concat php-search-url (current-word t))))
 
@@ -667,9 +685,7 @@ for \\[find-tag] (which see)."
 ;; Use the Emacs standard indentation binding. This may upset c-mode
 ;; which does not follow this at the moment, but I see no better
 ;; choice.
-(define-key php-mode-map
-  [?\t]
-  'indent-for-tab-command)
+(define-key php-mode-map [?\t] 'indent-for-tab-command)
 
 
 (defconst php-constants
@@ -686,6 +702,12 @@ for \\[find-tag] (which see)."
        "PHP_BINDIR" "PHP_LIBDIR" "PHP_DATADIR" "PHP_SYSCONFDIR"
        "PHP_LOCALSTATEDIR" "PHP_CONFIG_FILE_PATH"
        "PHP_EOL"
+
+       ;; date and time constants
+       "DATE_ATOM" "DATE_COOKIE" "DATE_ISO8601"
+       "DATE_RFC822" "DATE_RFC850" "DATE_RFC1036" "DATE_RFC1123"
+       "DATE_RFC2822" "DATE_RFC3339"
+       "DATE_RSS" "DATE_W3C"
 
        ;; from ext/standard:
        "EXTR_OVERWRITE" "EXTR_SKIP" "EXTR_PREFIX_SAME"
@@ -861,6 +883,7 @@ for \\[find-tag] (which see)."
 ;        "MCAL_M_WEEKEND" "MCAL_M_ALLDAYS" "MCRYPT_" "MCRYPT_"
 ;        "MCRYPT_ENCRYPT" "MCRYPT_DECRYPT" "MCRYPT_DEV_RANDOM"
 ;        "MCRYPT_DEV_URANDOM" "MCRYPT_RAND" "SWFBUTTON_HIT"
+;        "SUNFUNCS_RET_STRING" "SUNFUNCS_RET_DOUBLE"
 ;        "SWFBUTTON_DOWN" "SWFBUTTON_OVER" "SWFBUTTON_UP"
 ;        "SWFBUTTON_MOUSEUPOUTSIDE" "SWFBUTTON_DRAGOVER"
 ;        "SWFBUTTON_DRAGOUT" "SWFBUTTON_MOUSEUP" "SWFBUTTON_MOUSEDOWN"
@@ -1038,7 +1061,7 @@ for \\[find-tag] (which see)."
        "endfor" "endforeach" "endif" "endswitch" "endwhile" "exit"
        "extends" "for" "foreach" "global" "if" "include" "include_once"
        "next" "or" "require" "require_once" "return" "static" "switch"
-       "then" "var" "while" "xor" "private" "throw" "catch" "try"
+       "then" "var" "while" "xor" "throw" "catch" "try"
        "instanceof" "catch all" "finally")))
   "PHP keywords.")
 
@@ -1065,19 +1088,19 @@ for \\[find-tag] (which see)."
   (list
    ;; Fontify constants
    (cons
-    (concat "\\<\\(" php-constants "\\)\\>")
-    'font-lock-constant-face)
+    (concat "[^_$]?\\<\\(" php-constants "\\)\\>[^_]?")
+    '(1 font-lock-constant-face))
 
    ;; Fontify keywords
    (cons
-    (concat "\\<\\(" php-keywords "\\)\\>")
-    'font-lock-keyword-face)
+    (concat "[^_$]?\\<\\(" php-keywords "\\)\\>[^_]?")
+    '(1 font-lock-keyword-face))
 
    ;; Fontify keywords and targets, and case default tags.
-   (list "\\<\\(break\\|case\\|continue\\)\\>[ \t]*\\(-?\\(?:\\sw\\|\\s_\\)+\\)?"
+   (list "\\<\\(break\\|case\\|continue\\)\\>\\s-+\\(-?\\sw+\\)?"
          '(1 font-lock-keyword-face) '(2 font-lock-constant-face t t))
    ;; This must come after the one for keywords and targets.
-   '(":" ("^[ \t]*\\(\\(?:\\sw\\|\\s_\\)+\\)[ \t]*:[ \t]*$"
+   '(":" ("^\\s-+\\(\\sw+\\)\\s-+\\s-+$"
           (beginning-of-line) (end-of-line)
           (1 font-lock-constant-face)))
 
@@ -1086,12 +1109,11 @@ for \\[find-tag] (which see)."
    '("\\<print\\>" . font-lock-keyword-face)
 
    ;; Fontify PHP tag
-   '("<\\?\\(php\\)?" . font-lock-constant-face)
-   '("\\?>" . font-lock-constant-face)
+   (cons php-tags-key font-lock-preprocessor-face)
 
    ;; Fontify ASP-style tag
-   '("<\\%\\(=\\)?" . font-lock-constant-face)
-   '("\\%>" . font-lock-constant-face)
+   '("<\\%\\(=\\)?" . font-lock-preprocessor-face)
+   '("\\%>" . font-lock-preprocessor-face)
 
    )
   "Subdued level highlighting for PHP mode.")
@@ -1102,33 +1124,33 @@ for \\[find-tag] (which see)."
    (list
 
     ;; class declaration
-    '("[^_]\\<\\(class\\|interface\\)[ \t]*\\(\\(?:\\sw\\|\\s_\\)+\\)?"
+    '("\\<\\(class\\|interface\\)\\s-+\\(\\sw+\\)?"
       (1 font-lock-keyword-face) (2 font-lock-type-face nil t))
     ;; handle several words specially, to include following word,
     ;; thereby excluding it from unknown-symbol checks later
     ;; FIX to handle implementing multiple
     ;; currently breaks on "class Foo implements Bar, Baz"
-    '("\\<\\(new\\|extends\\|implements\\)\\s-+\\$?\\(\\(?:\\sw\\|\\s_\\)+\\)"
+    '("\\<\\(new\\|extends\\|implements\\)\\s-+\\$?\\(\\sw+\\)"
       (1 font-lock-keyword-face) (2 font-lock-type-face))
 
     ;; function declaration
-    '("\\<\\(function\\)\\s-+&?\\(\\(?:\\sw\\|\\s_\\)+\\)\\s-*("
+    '("\\<\\(function\\)\\s-+&?\\(\\sw+\\)\\s-*("
       (1 font-lock-keyword-face)
       (2 font-lock-function-name-face nil t))
 
     ;; class hierarchy
-    '("\\(self\\|parent\\)\\W" (1 font-lock-constant-face nil nil))
+    '("\\<\\(self\\|parent\\)\\>" (1 font-lock-constant-face nil nil))
 
     ;; method and variable features
-    '("\\<\\(private\\|protected\\|public\\)\\s-+\\$?\\(?:\\sw\\|\\s_\\)+"
+    '("\\<\\(private\\|protected\\|public\\)\\s-+\\$?\\sw+"
       (1 font-lock-keyword-face))
 
     ;; method features
-    '("^[ \t]*\\(abstract\\|static\\|final\\)\\s-+\\$?\\(?:\\sw\\|\\s_\\)+"
+    '("^\\s-*\\(abstract\\|static\\|final\\)\\s-+\\$?\\sw+"
       (1 font-lock-keyword-face))
 
     ;; variable features
-    '("^[ \t]*\\(static\\|const\\)\\s-+\\$?\\(?:\\sw\\|\\s_\\)+"
+    '("^\\s-*\\(static\\|const\\)\\s-+\\$?\\sw+"
       (1 font-lock-keyword-face))
     ))
   "Medium level highlighting for PHP mode.")
@@ -1155,12 +1177,12 @@ for \\[find-tag] (which see)."
     ;;'("&\\w+;" . font-lock-variable-name-face)
 
     ;; warn about '$' immediately after ->
-    '("\\$\\(?:\\sw\\|\\s_\\)+->\\s-*\\(\\$\\)\\(\\(?:\\sw\\|\\s_\\)+\\)"
+    '("\\$\\sw+->\\s-*\\(\\$\\)\\(\\sw+\\)"
       (1 font-lock-warning-face) (2 php-default-face))
 
     ;; warn about $word.word -- it could be a valid concatenation,
     ;; but without any spaces we'll assume $word->word was meant.
-    '("\\$\\(?:\\sw\\|\\s_\\)+\\(\\.\\)\\sw"
+    '("\\$\\sw+\\(\\.\\)\\sw"
       1 font-lock-warning-face)
 
     ;; Warn about ==> instead of =>
@@ -1171,76 +1193,26 @@ for \\[find-tag] (which see)."
       1 font-lock-type-face)
 
     ;; PHP5: function declarations may contain classes as parameters type
-    `(,(concat "[(,]\\s-*\\(\\(?:\\sw\\|\\s_\\)+\\)\\s-+&?\\$\\(?:\\sw\\|\\s_\\)+\\>")
+    `(,(concat "[(,]\\s-*\\(\\sw+\\)\\s-+&?\\$\\sw+\\>")
       1 font-lock-type-face)
 
     ;; Fontify variables and function calls
     '("\\$\\(this\\|that\\)\\W" (1 font-lock-constant-face nil nil))
     `(,(concat "\\$\\(" php-superglobals "\\)\\W")
-      (1 font-lock-constant-face nil nil)) ; $_GET & co
-    '("\\$\\(\\(?:\\sw\\|\\s_\\)+\\)" (1 font-lock-variable-name-face)) ; $variable
-    '("->\\(\\(?:\\sw\\|\\s_\\)+\\)" (1 font-lock-variable-name-face t t)) ; ->variable
-    '("->\\(\\(?:\\sw\\|\\s_\\)+\\)\\s-*(" . (1 php-default-face t t)) ; ->function_call
-    '("\\(\\(?:\\sw\\|\\s_\\)+\\)::\\(?:\\sw\\|\\s_\\)+\\s-*(?" . (1 font-lock-type-face)) ; class::member
-    '("::\\(\\(?:\\sw\\|\\s_\\)+\\>[^(]\\)" . (1 php-default-face)) ; class::constant
-    '("\\<\\(?:\\sw\\|\\s_\\)+\\s-*[[(]" . php-default-face)    ; word( or word[
-    '("\\<[0-9]+" . php-default-face)           ; number (also matches word)
+      (1 font-lock-constant-face nil nil)) ;; $_GET & co
+    '("\\$\\(\\sw+\\)" (1 font-lock-variable-name-face)) ;; $variable
+    '("->\\(\\sw+\\)" (1 font-lock-variable-name-face t t)) ;; ->variable
+    '("->\\(\\sw+\\)\\s-*(" . (1 php-default-face t t)) ;; ->function_call
+    '("\\(\\sw+\\)::\\sw+\\s-*(?" . (1 font-lock-type-face)) ;; class::member
+    '("::\\(\\sw+\\>[^(]\\)" . (1 php-default-face)) ;; class::constant
+    '("\\<\\sw+\\s-*[[(]" . php-default-face) ;; word( or word[
+    '("\\<[0-9]+" . php-default-face) ;; number (also matches word)
 
     ;; Warn on any words not already fontified
-    '("\\<\\(?:\\sw\\|\\s_\\)+\\>" . font-lock-warning-face)
+    '("\\<\\sw+\\>" . font-lock-warning-face)
 
     ))
   "Gauchy level highlighting for PHP mode.")
-
-;; Define the imenu-generic-expression for PHP mode.
-;; To use, execute M-x imenu, then click on Functions or Classes,
-;; then select given function/class name to go to its definition.
-;; [Contributed by Gerrit Riessen]
-(defvar php-imenu-generic-expression
- '(
-   ("All Functions"
-    "^\\s-*function\\s-+\\([[:alnum:]_]+\\)\\s-*(" 1)
-   ("Classes"
-    "^\\s-*class\\s-+\\([[:alnum:]_]+\\)\\s-*" 1)
-   ("Public Methods"
-    "^\\s-*public function\\s-+\\([[:alnum:]_]+\\)\\s-*(" 1)
-   ("Protected Methods"
-    "^\\s-*protected function\\s-+\\([[:alnum:]_]+\\)\\s-*(" 1)
-   ("Private Methods"
-    "^\\s-*private function\\s-+\\([[:alnum:]_]+\\)\\s-*(" 1)
-   )
- "Imenu generic expression for PHP Mode. See `imenu-generic-expression'."
- )
-
-(defconst php-block-stmt-1-kwds '("do" "else" "finally" "try"))
-(defconst php-block-stmt-2-kwds
-  '("for" "if" "while" "switch" "foreach" "elseif"  "catch all"))
-
-(defconst php-block-stmt-1-key
-  (regexp-opt php-block-stmt-1-kwds))
-(defconst php-block-stmt-2-key
-  (regexp-opt php-block-stmt-2-kwds))
-
-(defconst php-class-decl-kwds '("class" "interface"))
-
-(defconst php-class-key
-  (concat
-   "\\(" (regexp-opt php-class-decl-kwds) "\\)\\s +"
-   c-symbol-key                                 ;; Class name.
-   "\\(\\s *extends\\s *" c-symbol-key "\\)?"   ;; Name of superclass.
-   "\\(\\s *implements *[^{]+{\\)?")) ;; List of any adopted protocols.
-
-;; Create "php-default-face" symbol for GNU Emacs so that both XEmacs
-;; and GNU emacs can refer to the default face.
-(unless (boundp 'php-default-face)
-   (defvar php-default-face 'php-default-face))
-
-;; Create faces for XEmacs
-(when (featurep 'xemacs)
-  (unless (boundp 'font-lock-keyword-face)
-    (copy-face 'bold 'font-lock-keyword-face))
-  (unless (boundp 'font-lock-constant-face)
-    (copy-face 'font-lock-keyword-face 'font-lock-constant-face)))
 
 (provide 'php-mode)
 

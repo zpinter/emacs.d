@@ -45,7 +45,9 @@
 ;;; Code:
 
 ;; Found this on the web. Maybe this could be an alternative completion function?
-(require 'anything)
+(eval-when-compile (require 'cl))
+(require 'anything nil t)
+
 (defmacro nxhtml-with-anything-sources (sources &rest body)
   (let ((saved-anything-souces (gensym)))
     `(let ((,saved-anything-souces anything-sources))

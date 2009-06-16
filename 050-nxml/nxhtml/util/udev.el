@@ -3,14 +3,14 @@
 ;; Author: Lennart Borgman (lennart O borgman A gmail O com)
 ;; Created: 2008-08-24
 (defconst udev:version "0.5");; Version:
-;; Last-Updated: 2008-08-24T18:19:41+0200 Sun
+;; Last-Updated: 2009-01-06 Tue
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `cl'.
+  ;; `cus-edit', `cus-face', `cus-load', `cus-start', `wid-edit'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -435,6 +435,21 @@ Return buffer containing DIFF-FILE."
 ;;(setq compilation-scroll-output t)
 ;;(add-to-list 'compilation-error-regexp-alist 'cvs)
 ;;(setq compilation-error-regexp-alist (delq 'cvs compilation-error-regexp-alist))
+
+;;; Misc
+
+(defun udev-send-buffer-process (str)
+  (interactive "sString to send to process: ")
+  (let* ((procs (process-list))
+         (proc (catch 'found
+                 (dolist (p procs)
+                   (when (eq (process-buffer p) (current-buffer))
+                     (throw 'found p))))))
+    (unless proc (error "Can't find process in buffer"))
+    ;;(message "str=%s" str)
+    ;;(message "proc=%s" proc)
+    (process-send-string proc (concat str "\n"))
+  ))
 
 
 (provide 'udev)

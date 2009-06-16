@@ -54,13 +54,41 @@
 (eval-when-compile (add-to-list 'load-path default-directory))
 (require 'mumamo)
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;; File wide key bindings
+
+(defun mumamo-multi-mode-map ()
+  "Return mumamo multi mode keymap."
+  (symbol-value
+   (intern-soft (concat (symbol-name mumamo-multi-major-mode) "-map"))))
+
+;; (defun mumamo-multi-mode-hook-symbol ()
+;;   "Return mumamo multi mode hook symbol."
+;;   (intern-soft (concat (symbol-name mumamo-multi-major-mode) "-hook")))
+
+(defun mumamo-define-html-file-wide-keys ()
+  (let ((map (mumamo-multi-mode-map)))
+    (define-key map [(control ?c) (control ?h) ?b] 'nxhtml-browse-file)
+    ))
+;; (defun mumamo-add-html-file-wide-keys (hook)
+;;   (add-hook hook 'mumamo-define-html-file-wide-keys)
+;;   )
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; Chunk search routines for XHTML things
 
-(defun mumamo-chunk-attr=(pos min max attr= attr=is-regex attr-regex submode)
+(defun mumamo-chunk-attr= (pos min max attr= attr=is-regex attr-regex submode)
   "This should work similar to `mumamo-find-possible-chunk'.
 See `mumamo-chunk-style=' for an example of use."
+  (if (not mumamo-find-possible-chunk-new)
+      (mumamo-chunk-attr=-old pos min max attr= attr=is-regex attr-regex submode)
+    (when t ;;(and (boundp 'mumamo-test-mode) mumamo-test-mode)
+      (mumamo-chunk-attr=-new pos max attr= attr=is-regex attr-regex submode)
+      )
+    ))
+
+(defun mumamo-chunk-attr=-old (pos min max attr= attr=is-regex attr-regex submode)
+  ;; Fix-me: make version for new chunks!
   (mumamo-condition-case err
       (save-match-data
         (if (not attr=is-regex)
@@ -80,9 +108,11 @@ See `mumamo-chunk-style=' for an example of use."
               exc-end-prev
               exc-start-next
               exc-end-next
+              (while-n1 0)
               )
           ;; make sure if we have find prev-attr= or not
-          (while (and prev-attr=
+          (while (and (> 100 (setq while-n1 (1+ while-n1)))
+                      prev-attr=
                       (not prev-attr-sure))
             (if (not (search-backward "<" min t))
                 (setq prev-attr= nil)
@@ -132,14 +162,154 @@ See `mumamo-chunk-style=' for an example of use."
           (when start (assert (<= start pos) t))
           (when end   (assert (<= pos end) t))
           (goto-char pos)
-          (setq borders (list start-border end-border nil))
+          (when (or start-border end-border)
+            (setq borders (list start-border end-border nil)))
           ;;(message "ret=%s" (list start end exc-mode borders))
-          (list start end exc-mode borders)
+          (when (or start end exc-mode borders)
+            (list start end exc-mode borders))
           ;;nil
           ))
     (error
-     (mumamo-display-error 'mumamo-chunk-attr= "%s"
+     (mumamo-display-error 'mumamo-chunk-attr=-old "%s"
                            (error-message-string err)))))
+
+(defun mumamo-chunk-attr=-new-fw-exc-fun (pos max)
+  ;;(msgtrc "(mumamo-chunk-attr=-new-fw-exc-fun %s %s)" pos max)
+  ;;(message "backtrace=\n%s" (with-output-to-string (backtrace)))
+  (save-match-data
+    (let ((here (point))
+          first-dq
+          next-dq
+          (this-chunk (mumamo-get-existing-new-chunk-at pos)))
+      (if this-chunk
+          (goto-char (overlay-end this-chunk))
+        (goto-char (overlay-end mumamo-last-new-chunk)))
+      (setq first-dq (search-forward "\"" max t))
+      (unless (bobp)
+        (backward-char)
+        (condition-case err
+            (setq next-dq (scan-sexps (point) 1))
+          (error nil)))
+      (prog1
+          next-dq
+        (goto-char here)))))
+
+(defun mumamo-chunk-attr=-new-find-borders-fun (start-border end-border dummy)
+  ;;(setq borders (funcall find-borders-fun start-border end-border exc-mode))
+  (save-match-data
+    (let ((here (point))
+          (end2 (when end-border (1- end-border)))
+          start2)
+      (goto-char start-border)
+      (save-match-data
+        (setq start2 (search-forward "\"" (+ start-border 200) t)))
+      (goto-char here)
+      (list start2 end2))))
+
+(defun mumamo-chunk-attr=-new (pos
+                               ;;min
+                               max
+                               attr=
+                               attr=is-regex
+                               attr-regex
+                               submode)
+  ;;(message "\n(mumamo-chunk-attr=-new %s %s %s %s %s %s)" pos max attr= attr=is-regex attr-regex submode)
+  ;;(mumamo-condition-case err
+  (condition-case err
+      (save-match-data
+        (let ((here (point))
+              (next-attr= (progn
+                            ;; fix-me:
+                            (if (not attr=is-regex)
+                                (goto-char (+ pos (length attr=)))
+                              (goto-char pos)
+                              (skip-chars-forward "a-zA-Z="))
+                            (goto-char pos)
+                            (if attr=is-regex
+                                (re-search-forward attr= max t)
+                              (search-forward attr= max t))))
+              next-attr-sure
+              ;;next-attr=
+              start start-border
+              end   end-border
+              exc-mode
+              borders
+              exc-start-next
+              exc-end-next
+              exc-start-next
+              exc-end-next
+              (tries 0)
+              (min (1- pos))
+              )
+          ;; make sure if we have find prev-attr= or not
+          (while (and next-attr=
+                      (not next-attr-sure)
+                      (< tries 5))
+            (setq tries (1+ tries))
+            (if (not (search-backward "<" min t))
+                (setq next-attr= nil)
+              (if (looking-at attr-regex)
+                  (setq next-attr-sure 'found)
+                (unless (bobp)
+                  (backward-char)
+                  (setq next-attr= (if attr=is-regex
+                                       (re-search-backward attr= min t)
+                                     (search-backward attr= min t)))))))
+          ;; find prev change and if inside style= the next change
+          (when next-attr=
+              (setq exc-start-next (match-beginning 1))
+              (setq exc-end-next   (match-end 2))
+              (when (>= exc-start-next pos)
+                (if (> pos exc-end-next)
+                    (progn
+                      (setq start (+ (match-end 2) 1))
+                      ;;(setq start-border (+ (match-end 2) 2))
+                      )
+                  (setq exc-mode submode)
+                  (setq start (match-beginning 1))
+                  (setq start-border (match-beginning 2))
+                  (setq end (1+ (match-end 2)))
+                  (setq end-border (1- end)))
+                ))
+          ;; find next change
+          (unless end
+            (if start
+                (goto-char start)
+              (goto-char pos)
+              (search-backward "<" min t))
+            (setq next-attr= (if attr=is-regex
+                                 (re-search-forward attr= max t)
+                               (search-forward attr= max t)))
+            (when (and next-attr=
+                       (search-backward "<" min t))
+              (when (looking-at attr-regex)
+                (setq end (match-beginning 1)))))
+          (when start (assert (>= start pos) t))
+          (when end   (assert (<= pos end) t))
+          ;;(message "start-border=%s end-border=%s" start-border end-border)
+          (when (or start-border end-border)
+            (setq borders (list start-border end-border nil)))
+          ;; (message "mumamo-chunk-attr=-new: %s"
+          ;;          (list start
+          ;;                end
+          ;;                exc-mode
+          ;;                borders
+          ;;                nil ;; parseable-by
+          ;;                'mumamo-chunk-attr=-new-fw-exc-fun ;; fw-exc-fun
+          ;;                'mumamo-chunk-attr=-new-find-borders-fun ;; find-borders-fun
+          ;;                ))
+          (goto-char here)
+          (when (or start end)
+            (list start
+                  end
+                  exc-mode
+                  borders
+                  nil ;; parseable-by
+                  'mumamo-chunk-attr=-new-fw-exc-fun ;; fw-exc-fun
+                  'mumamo-chunk-attr=-new-find-borders-fun ;; find-borders-fun
+                  ))))
+    (error (mumamo-display-error 'mumamo-chunk-attr=-new "%s" (error-message-string err)))
+    ))
 
 ;;;; xml pi
 
@@ -212,18 +382,6 @@ POS is where to start search and MIN is where to stop."
     (mumamo-msgfntfy "  end-pos=%s" end-pos)
     (when end-pos
       (unless (or (mumamo-xml-pi-end-is-xml-end end-pos)
-;;;                   (progn
-;;;                     (save-restriction
-;;;                       (widen)
-;;;                       (message "not xml-end, end-pos=%s, cb=%s, char-after end-pos - 1=%s, point=%s, point-max=%s, sub=%s"
-;;;                                end-pos
-;;;                                (current-buffer)
-;;;                                (char-after (- end-pos 1))
-;;;                                (point)
-;;;                                (point-max)
-;;;                                (buffer-substring-no-properties (1- end-pos) end-pos)
-;;;                                ))
-;;;                     nil)
                   (= (save-restriction
                        (widen)
                        (char-after (- end-pos 1)))
@@ -236,10 +394,11 @@ POS is where to start search and MIN is where to stop."
 POS is where to start search and MAX is where to stop."
   ;; Fix me: merge xml header
   ;;(let ((end-pos (mumamo-chunk-end-fw-str pos max "?>")))
-  (let ((end-pos (mumamo-chunk-end-fw-str-inc pos max "?>")))
-    (when end-pos
-      (unless (mumamo-xml-pi-end-is-xml-end end-pos)
-        end-pos))))
+  (save-match-data
+    (let ((end-pos (mumamo-chunk-end-fw-str-inc pos max "?>")))
+      (when end-pos
+        (unless (mumamo-xml-pi-end-is-xml-end end-pos)
+          end-pos)))))
 
 (defun mumamo-search-fw-exc-start-xml-pi-1 (pos max lt-chars)
   "Helper for `mumamo-chunk-xml-pi'.
@@ -250,7 +409,10 @@ of LT-CHARS see `mumamo-search-bw-exc-start-xml-pi-1'."
   (goto-char pos)
   (skip-chars-backward "a-zA-Z")
   ;;(let ((end-out (mumamo-chunk-start-fw-str (point) max lt-chars)))
-  (let ((end-out (mumamo-chunk-start-fw-str-inc (point) max lt-chars)))
+  (let ((end-out (mumamo-chunk-start-fw-str-inc (point) max lt-chars))
+        spec
+        exc-mode
+        hit)
     (when (looking-at "xml")
       (if t ;(= 1 pos)
           (setq end-out (mumamo-chunk-start-fw-str-inc (1+ (point)) max lt-chars))
@@ -258,10 +420,18 @@ of LT-CHARS see `mumamo-search-bw-exc-start-xml-pi-1'."
     (when end-out
       ;; Get end-out:
       (if (looking-at (rx (0+ (any "a-z"))))
-          ;;(setq end-out (match-end 0))
-          (setq end-out (- (match-beginning 0) 2))
-        (setq end-out nil)))
-    end-out))
+          (progn
+            ;;(setq end-out (match-end 0))
+            (setq end-out (- (match-beginning 0) 2))
+            (setq spec (match-string-no-properties 0))
+            (setq exc-mode (assoc spec mumamo-xml-pi-mode-alist))
+            (if exc-mode
+                (setq exc-mode (cdr exc-mode))
+              (setq exc-mode 'php-mode))
+            (setq end-out (list end-out exc-mode nil))
+            )
+        (setq end-out nil))
+      end-out)))
 
 (defun mumamo-search-fw-exc-start-xml-pi (pos max)
   "Helper for `mumamo-chunk-xml-pi'.
@@ -351,7 +521,9 @@ POS is where to start search and MIN is where to stop."
         (goto-char exc-start)
         (when (<= exc-start pos)
           ;;(cons (point) 'css-mode)
-          (list (point) 'css-mode '(nxml-mode))
+          ;;(list (point) 'css-mode '(nxml-mode))
+          ;; Fix-me: Kubica looping problem
+          (list (point) 'css-mode)
           )
         ))))
 
@@ -386,7 +558,8 @@ POS is where to start search and MAX is where to stop."
 (defun mumamo-search-fw-exc-end-inlined-style (pos max)
   "Helper for `mumamo-chunk-inlined-style'.
 POS is where to start search and MAX is where to stop."
-  (mumamo-chunk-end-fw-str pos max "</style>"))
+  (save-match-data
+    (mumamo-chunk-end-fw-str pos max "</style>")))
 
 (defun mumamo-chunk-inlined-style (pos min max)
   "Find <style>...</style>.  Return range and 'css-mode.
@@ -468,7 +641,8 @@ POS is where to start search and MAX is where to stop."
 (defun mumamo-search-fw-exc-end-inlined-script (pos max)
   "Helper for `mumamo-chunk-inlined-script'.
 POS is where to start search and MAX is where to stop."
-  (mumamo-chunk-end-fw-str pos max "</script>"))
+  (save-match-data
+    (mumamo-chunk-end-fw-str pos max "</script>")))
 
 (defun mumamo-chunk-inlined-script (pos min max)
   "Find <script>...</script>.  Return range and 'javascript-mode.
@@ -536,6 +710,7 @@ This covers inlined style and javascript and PHP."
     mumamo-chunk-style=
     mumamo-chunk-onjs=
     )))
+(add-hook 'html-mumamo-mode-hook 'mumamo-define-html-file-wide-keys)
 ;; (define-mumamo-multi-major-mode xml-pi-only-mumamo-mode
 ;;   "Test"
 ;;   ("HTML Family" html-mode
@@ -546,17 +721,103 @@ This covers inlined style and javascript and PHP."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; XHTML w nxml-mode
 
+(defun mumamo-alt-php-write-contents ()
+  "For `write-contents-functions' when `mumamo-chunk-alt-php' is used."
+  (save-restriction
+    (let ((here (point)))
+      (widen)
+      (goto-char (point-min))
+      (condition-case nil
+          (atomic-change-group
+            (progn
+              (while (search-forward "(?php" nil t)
+                (replace-match "<?php"))
+              (setq setmodes (basic-save-buffer-1))
+              (signal 'mumamo-error-ind-0 nil)))
+        (mumamo-error-ind-0))
+      (set-buffer-modified-p nil)
+      (goto-char here)))
+  ;; saved, return t
+  t)
+
+(define-minor-mode mumamo-alt-php-tags-mode
+  "Minor mode for using '(?php' instead of '<?php' in buffer.
+When turning on this mode <?php is replace with (?php in the buffer.
+If you write the buffer to file (?php is however written as <?php.
+
+When turning off this mode (?php is replace with <?php in the buffer.
+
+The purpose of this minor mode is to work around problems with
+using the `nxml-mode' parser in php files.  `nxml-mode' knows
+damned well that you can not have the character < in strings and
+I can't make it forget that.  For PHP programmers it is however
+very convient to use <?php ... ?> in strings.
+
+There is no reason to use this minor mode unless you want XML
+validation and/or completion in your php file.  If you do not
+want that then you can simply use a multi major mode based on
+`html-mode' instead of `nxml-mode'/`nxhtml-mode'.  Or, of course,
+just `php-mode' if there is no html code in the file."
+  :lighter "<?php "
+  (if mumamo-alt-php-tags-mode
+      (progn
+        (unless mumamo-multi-major-mode (error "Only for mumamo multi major modes"))
+        (unless (let ((major-mode (mumamo-main-major-mode)))
+                  (derived-mode-p 'nxml-mode))
+          (error "Mumamo multi major mode must be based on nxml-mode"))
+        (unless (memq 'mumamo-chunk-alt-php (caddr mumamo-current-chunk-family))
+          (error "Mumamo multi major must have chunk function mumamo-chunk-alt-php"))
+
+        ;; Be paranoid about the file/content write hooks
+        (when local-write-file-hooks
+          (error "Will not do this because local-write-file-hooks is non-nil"))
+        (remove-hook 'write-contents-functions 'mumamo-alt-php-write-contents t)
+        (when write-contents-functions
+          (error "Will not do this because write-contents-functions is non-nil"))
+        (when (delq 'recentf-track-opened-file (copy-list write-file-functions))
+          (error "Will not do this because write-file-functions is non-nil"))
+
+        (add-hook 'write-contents-functions 'mumamo-alt-php-write-contents t t)
+        (put 'write-contents-functions 'permanent-local t)
+        (save-restriction
+          (let ((here (point)))
+            (widen)
+            (goto-char (point-min))
+            (while (search-forward "<?php" nil t)
+              (replace-match "(?php"))
+            (goto-char here))))
+    (save-restriction
+      (let ((here (point)))
+        (widen)
+        (goto-char (point-min))
+        (while (search-forward "(?php" nil t)
+          (replace-match "<?php"))
+        (goto-char here)))
+    (remove-hook 'write-contents-functions 'mumamo-alt-php-write-contents t)))
+
+(defun mumamo-chunk-alt-php (pos min max)
+  "Find (?php ... ?>, return range and `php-mode'.
+Workaround for the problem that I can not tame `nxml-mode' to recognize <?php.
+
+See `mumamo-find-possible-chunk' for POS, MIN and MAX."
+  (when mumamo-alt-php-tags-mode
+    (mumamo-quick-static-chunk pos min max "(?php" "?>" t 'php-mode t)))
+
 ;;;###autoload
 (define-mumamo-multi-major-mode nxml-mumamo-mode
   "Turn on multiple major modes for (X)HTML with main mode `nxml-mode'.
-This covers inlined style and javascript and PHP."
-    ("nXml Family" nxml-mode
-     (mumamo-chunk-xml-pi
-      mumamo-chunk-inlined-style
-      mumamo-chunk-inlined-script
-      mumamo-chunk-style=
-      mumamo-chunk-onjs=
-      )))
+This covers inlined style and javascript and PHP.
+
+See also `mumamo-alt-php-tags-mode'."
+  ("nXml Family" nxml-mode
+   (mumamo-chunk-xml-pi
+    mumamo-chunk-alt-php
+    mumamo-chunk-inlined-style
+    mumamo-chunk-inlined-script
+    mumamo-chunk-style=
+    mumamo-chunk-onjs=
+    )))
+(add-hook 'nxml-mumamo-mode-hook 'mumamo-define-html-file-wide-keys)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -622,7 +883,8 @@ See `mumamo-find-possible-chunk' for POS, MIN and MAX."
                                                             max t))))
                                   exc-start)))
          (search-fw-exc-end (lambda (pos max)
-                              (mumamo-chunk-end-fw-str pos max end-mark)))
+                              (save-match-data
+                                (mumamo-chunk-end-fw-str pos max end-mark))))
          )
     (mumamo-find-possible-chunk pos min max
                                 search-bw-exc-start
@@ -917,7 +1179,8 @@ POS is where to start search and MAX is where to stop."
 (defun mumamo-search-fw-exc-end-smarty (pos max)
   "Helper for `mumamo-chunk-smarty'.
 POS is where to start search and MAX is where to stop."
-  (mumamo-chunk-end-fw-str-inc pos max "}"))
+  (save-match-data
+    (mumamo-chunk-end-fw-str-inc pos max "}")))
 
 ;;;###autoload
 (define-mumamo-multi-major-mode smarty-html-mumamo-mode
@@ -1175,8 +1438,9 @@ POS is where to start search and MAX is where to stop."
 (defun mumamo-search-fw-textext-end (pos max)
   "Helper for `mumamo-chunk-textext'.
 POS is where to start search and MAX is where to stop."
-  (let ((end (mumamo-chunk-end-fw-str pos max "\")")))
-    (mumamo-textext-test-is-end end)))
+  (save-match-data
+    (let ((end (mumamo-chunk-end-fw-str pos max "\")")))
+      (mumamo-textext-test-is-end end))))
 
 (defun mumamo-chunk-textext (pos min max)
   "Find textext or TEX chunks.  Return range and 'plain-tex-mode.
@@ -1209,7 +1473,8 @@ POS is where to start search and MAX is where to stop."
 (defun mumamo-search-fw-verbatimtex-end (pos max)
   "Helper for `mumamo-chunk-verbatimtextext'.
 POS is where to start search and MAX is where to stop."
-  (mumamo-chunk-end-fw-str pos max "\netex"))
+  (save-match-data
+    (mumamo-chunk-end-fw-str pos max "\netex")))
 
 (defun mumamo-chunk-verbatimtex (pos min max)
   "Find verbatimtex - etex chunks.  Return range and 'plain-tex-mode.
@@ -1242,7 +1507,8 @@ POS is where to start search and MAX is where to stop."
 (defun mumamo-search-fw-btex-end (pos max)
   "Helper for `mumamo-chunk-btex'.
 POS is where to start search and MAX is where to stop."
-  (mumamo-chunk-end-fw-str pos max "\netex"))
+  (save-match-data
+    (mumamo-chunk-end-fw-str pos max "\netex")))
 
 (defun mumamo-chunk-btex (pos min max)
   "Find btex - etex chunks.
@@ -1322,7 +1588,8 @@ POS is where to start search and MAX is where to stop."
 (defun mumamo-search-fw-exc-end-inlined-lzx-method (pos max)
   "Helper for `mumamo-chunk-inlined-lzx-method'.
 POS is where to start search and MAX is where to stop."
-  (mumamo-chunk-end-fw-str pos max "</method>"))
+  (save-match-data
+    (mumamo-chunk-end-fw-str pos max "</method>")))
 
 (defun mumamo-chunk-inlined-lzx-method (pos min max)
   "Find <method>...</method>.  Return range and 'javascript-mode.
@@ -1390,7 +1657,8 @@ POS is where to start search and MAX is where to stop."
 (defun mumamo-search-fw-exc-end-inlined-lzx-handler (pos max)
   "Helper for `mumamo-chunk-inlined-lzx-handler'.
 POS is where to start search and MAX is where to stop."
-  (mumamo-chunk-end-fw-str pos max "</handler>"))
+  (save-match-data
+    (mumamo-chunk-end-fw-str pos max "</handler>")))
 
 (defun mumamo-chunk-inlined-lzx-handler (pos min max)
   "Find <handler>...</handler>.  Return range and 'javascript-mode.
@@ -1436,7 +1704,8 @@ POS is where to start search and MAX is where to stop."
 (defun mumamo-search-fw-exc-end-csound-orc (pos max)
   "Helper for `mumamo-chunk-csound-orc'.
 POS is where to start search and MAX is where to stop."
-  (mumamo-chunk-end-fw-str pos max "</csinstruments>"))
+  (save-match-data
+    (mumamo-chunk-end-fw-str pos max "</csinstruments>")))
 
 (defun mumamo-chunk-csound-orc (pos min max)
   "Find <csinstruments>...</...>.  Return range and 'csound-orc-mode.
@@ -1468,7 +1737,8 @@ POS is where to start search and MAX is where to stop."
 (defun mumamo-search-fw-exc-end-csound-sco (pos max)
   "Helper for `mumamo-chunk-csound-sco'.
 POS is where to start search and MAX is where to stop."
-  (mumamo-chunk-end-fw-str pos max "</csscore>"))
+  (save-match-data
+    (mumamo-chunk-end-fw-str pos max "</csscore>")))
 
 (defun mumamo-chunk-csound-sco (pos min max)
   "Found <csscore>...</csscore>.  Return range and 'csound-sco-mode.
@@ -1544,7 +1814,8 @@ POS is where to start search and MIN is where to stop."
 (defun mumamo-noweb2-chunk-end-fw (pos max)
   "Helper for `mumamo-noweb2-chunk'.
 POS is where to start search and MAX is where to stop."
-  (mumamo-chunk-end-fw-re pos max "^@"))
+  (save-match-data
+    (mumamo-chunk-end-fw-re pos max "^@")))
 
 (defun mumamo-noweb2-chunk-end-bw (pos min)
   "Helper for `mumamo-noweb2-chunk'.
@@ -1606,6 +1877,7 @@ This also covers inlined style and javascript."
 (defun mumamo-chunk-asp (pos min max)
   "Find <% ... %>.  Return range and 'asp-js-mode.
 See `mumamo-find-possible-chunk' for POS, MIN and MAX."
+  ;; Fix-me: this is broken!
   (mumamo-find-possible-chunk pos min max
                               'mumamo-search-bw-exc-start-asp
                               'mumamo-search-bw-exc-end-jsp
@@ -1799,7 +2071,8 @@ See `mumamo-find-possible-chunk' for POS, MIN and MAX."
     (goto-char here)
     ret))
 (defun mumamo-mako-<%-fw-end (pos max)
-  (mumamo-chunk-end-fw-str-inc pos max "%>")) ;; ok
+  (save-match-data
+    (mumamo-chunk-end-fw-str-inc pos max "%>"))) ;; ok
 
 
 
@@ -1814,53 +2087,106 @@ See `mumamo-find-possible-chunk' for POS, MIN and MAX."
   (mumamo-whole-line-chunk pos min max "##" 'mumamo-comment-mode))
 
 ;; Fix-me: Move this to mumamo.el
-(defun mumamo-whole-line-chunk (pos min max marker mode)
-  (let ((here (point))
-        (len-marker (length marker))
-        beg
-        end
-        ret)
+;; Fix-me: does not work with new chunk div
+(defun mumamo-whole-line-chunk-fw-exc-end-fun (pos max)
+  (let ((here (point)))
     (goto-char pos)
-    (setq beg (line-beginning-position))
-    (setq end (line-end-position))
-    (unless (or (when min (< beg min))
-                (when max (> end max))
-                (= pos end))
-      (goto-char beg)
-      (skip-chars-forward " \t")
-      (when (and
-             (string= marker (buffer-substring-no-properties (point) (+ (point) len-marker)))
-             (memq (char-after (+ (point) len-marker))
-                   '(?\  ?\t ?\n))
-             (>= pos (point)))
-        (setq ret
-              (list (point)
-                    end
-                    mode
-                    (let ((start-border (+ (point) len-marker)))
-                      (list start-border nil))))))
-    (unless ret
-      (let ((range-regexp
-             (concat "^[ \t]*"
-                     "\\("
-                     (regexp-quote marker)
-                     "[ \t\n].*\\)$")))
-        ;; Backward
+    (prog1
+        (line-end-position)
+      (goto-char here))))
+
+(defun mumamo-whole-line-chunk (pos min max marker mode)
+  (if (not mumamo-use-new-chunks)
+      (let* ((here (point))
+             (len-marker (length marker))
+             (whole-line-chunk-borders-fun
+              `(lambda (start-border end-border dummy)
+                 (let ((start-border (+ (point) ,len-marker)))
+                   (list start-border nil))))
+             beg
+             end
+             ret)
         (goto-char pos)
-        (unless (= pos (line-end-position))
-          (goto-char (line-beginning-position)))
-        (setq beg (re-search-backward range-regexp min t))
-        (when beg (setq beg (match-end 1)))
-        ;; Forward, take care of indentation part
-        (goto-char pos)
-        (unless (= pos (line-end-position))
-          (goto-char (line-beginning-position)))
-        (setq end (re-search-forward range-regexp max t))
-        (when end (setq end (match-beginning 1))))
-      (setq ret (list beg end)))
-    (goto-char here)
-    ;;(setq ret nil)
-    ret))
+        (setq beg (line-beginning-position))
+        (setq end (line-end-position))
+        (unless (or (when min (< beg min))
+                    (when max (> end max))
+                    (= pos end))
+          (goto-char beg)
+          (skip-chars-forward " \t")
+          (when (and
+                 (string= marker (buffer-substring-no-properties (point) (+ (point) len-marker)))
+                 (memq (char-after (+ (point) len-marker))
+                       '(?\  ?\t ?\n))
+                 (>= pos (point)))
+            (setq ret
+                  (list (point)
+                        end
+                        mode
+                        (let ((start-border (+ (point) len-marker)))
+                          (list start-border nil))
+                        nil
+                        'mumamo-whole-line-chunk-fw-exc-end-fun
+                        whole-line-chunk-borders-fun
+                        ))))
+        (unless ret
+          (let ((range-regexp
+                 (concat "^[ \t]*"
+                         "\\("
+                         (regexp-quote marker)
+                         "[ \t\n].*\\)$")))
+            ;; Backward
+            (goto-char pos)
+            (unless (= pos (line-end-position))
+              (goto-char (line-beginning-position)))
+            (setq beg (re-search-backward range-regexp min t))
+            (when beg (setq beg (match-end 1)))
+            ;; Forward, take care of indentation part
+            (goto-char pos)
+            (unless (= pos (line-end-position))
+              (goto-char (line-beginning-position)))
+            (setq end (re-search-forward range-regexp max t))
+            (when end (setq end (match-beginning 1))))
+          (setq ret (list beg
+                          end
+                          mode
+                          nil ;(let ((start-border (+ (point) len-marker))) (list start-border nil))
+                          nil
+                          'mumamo-whole-line-chunk-fw-exc-end-fun
+                          whole-line-chunk-borders-fun
+                          )))
+        (goto-char here)
+        ;;(setq ret nil)
+        ret)
+    (let* ((here (point))
+           (len-marker (length marker))
+           ;;(pattern (rx bol (0+ blank) (eval marker) blank))
+           ;;(pattern (rx-to-string (list 'and 'bol (list '0+ 'blank) marker 'blank) t))
+           (pattern (rx-to-string `(and bol (0+ blank) ,marker blank) t))
+           (whole-line-chunk-borders-fun
+            `(lambda (start-border end-border dummy)
+               (let ((start-border (+ (point) ,len-marker)))
+                 (list start-border nil))))
+           beg
+           end
+           ret)
+      (goto-char pos)
+      (setq beg (re-search-forward pattern max t))
+      (when beg
+        (setq end (line-end-position))
+        (setq ret (list beg
+                        end
+                        mode
+                        (let ((start-border (+ beg len-marker)))
+                          (list start-border nil))
+                        nil
+                        'mumamo-whole-line-chunk-fw-exc-end-fun
+                        whole-line-chunk-borders-fun
+                        )))
+      (goto-char here)
+      ;;(setq ret nil)
+      ret)
+    ))
 
 ;; (defun mumamo-single-regexp-chunk (pos min max begin-mark end-mark mode)
 ;;   "Not ready yet. `mumamo-quick-static-chunk'"

@@ -2,16 +2,18 @@
 ;;
 ;; Author: Lennart Borgman (lennart O borgman A gmail O com)
 ;; Created: 2008-10-03T01:29:44+0200 Thu
-(defconst html-write:version "0.5") ;; Version:
-;; Last-Updated: 2008-10-04 Sat
+(defconst html-write:version "0.6") ;; Version:
+;; Last-Updated: 2008-12-26 Fri
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `backquote', `bytecomp', `cl', `flyspell', `ispell', `mumamo',
-;;   `sgml-mode'.
+  ;; `appmenu', `backquote', `bytecomp', `cl', `flyspell', `ispell',
+  ;; `mail-prsvr', `mlinks', `mm-util', `mumamo', `ourcomments-util',
+  ;; `rx', `sgml-mode', `timer', `url-expand', `url-methods',
+  ;; `url-parse', `url-util', `url-vars'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -45,8 +47,8 @@
 ;;
 ;;; Code:
 
-(require 'mumamo) ;; Just for the defmacro ...
-(require 'mlinks nil t)
+;;(require 'mumamo) ;; Just for the defmacro ...
+;;(require 'mlinks nil t)
 
 (defgroup html-write nil
   "Customization group for html-write."
@@ -148,7 +150,7 @@ OVERLAY is the overlay added by `html-write-hide-tags' for this tag."
         (overlay-put overlay 'help-echo href)
         (overlay-put overlay 'mouse-face 'highlight)
         (if (eq ?# (string-to-char href))
-            (setq href (concat "file:///" buffer-name href))
+            (setq href (concat "file:///" buffer-file-name href))
           (when (file-exists-p href)
             (setq href (expand-file-name href))))
         (overlay-put overlay 'html-write-url href))
@@ -265,7 +267,9 @@ See that variable for START, END and PRE-LEN."
   (add-to-list 'html-write-pending-changes
                ;; Add +1 for deletions (and don't worry about other
                ;; cases ...
-               (cons (copy-marker start) (copy-marker (1+ end)))))
+               (cons (copy-marker start) ;; Stay before
+                     (copy-marker end t) ;; Follow inserted text
+                     )))
 (put 'html-write-after-change 'permanent-hook t)
 
 (defun html-write-post-command ()
@@ -279,20 +283,28 @@ See that variable for START, END and PRE-LEN."
   "Inner function for `html-write-post-command'."
   (save-restriction
     (widen)
+    ;;(message "html-write-pending-changes=%s" html-write-pending-changes)
+    (dolist (pend html-write-pending-changes)
+      (assert (markerp (car pend)))
+      (assert (markerp (cdr pend))))
     (let ((pending html-write-pending-changes)
-          pending2
+          pending2 pend2
           pend pend-next
           (here (point-marker))
           (min-ovl (point-max))
           (max-ovl (point-min))
           our-overlays
-          our-visible-overlays)
+          our-visible-overlays
+          (dbg nil))
+      (setq html-write-pending-changes nil)
       (dolist (pend pending)
         (when (< (car pend) min-ovl)
           (setq min-ovl (car pend)))
         (when (> (cdr pend) max-ovl)
           (setq max-ovl (cdr pend))))
       ;; Get our overlays
+      (when dbg (message "========================================"))
+      (when dbg (message "Get our overlays"))
       (dolist (ovl (append (overlays-in min-ovl max-ovl)
                            (overlays-at min-ovl)
                            nil))
@@ -301,6 +313,7 @@ See that variable for START, END and PRE-LEN."
               (add-to-list 'our-overlays ovl)
             (add-to-list 'our-visible-overlays ovl))))
       ;; Skip changes inside visible overlays
+      (when dbg (message "Skip changes inside visible overlays"))
       (while pending
         (setq pend (car pending))
         (setq pending (cdr pending))
@@ -311,6 +324,7 @@ See that variable for START, END and PRE-LEN."
                          (throw 'vis t))))
           (setq pending2 (cons pend pending2))))
       ;; Extend to normal overlays
+      (when dbg (message "Extend to normal overlays"))
       (dolist (pend pending2)
         (let ((pend-min (car pend))
               (pend-max (cdr pend)))
@@ -319,22 +333,24 @@ See that variable for START, END and PRE-LEN."
                   (ovl-max (overlay-end ovl)))
               (when (and (> pend-min ovl-min)
                          (<= pend-min ovl-max))
-                (setcar pend ovl-min))
+                (setcar pend (copy-marker ovl-min)))
               (when (and (< pend-max ovl-max)
                          (>= pend-max ovl-min))
-                (setcdr pend ovl-max))
+                (setcdr pend (copy-marker ovl-max)))
               ))))
       ;; Sort
+      (when dbg (message "Sort pending2"))
       (setq pending (sort pending2
-                           (lambda (rec-a rec-b)
-                             (if (= (car rec-a) (car rec-b))
-                                 (< (cdr rec-a) (cdr rec-b))
-                               (< (car rec-a) (car rec-b))))))
+                          (lambda (rec-a rec-b)
+                            (if (= (car rec-a) (car rec-b))
+                                (< (cdr rec-a) (cdr rec-b))
+                              (< (car rec-a) (car rec-b))))))
       ;; Extend end
+      (when dbg (message "== Extend end"))
       (let ((high-end (point-min))
             end
             next-<c-pos
-            this->-pos
+            this->-pos+1
             )
         (dolist (pend pending)
           (setq end (cdr pend))
@@ -342,6 +358,7 @@ See that variable for START, END and PRE-LEN."
               ;; Look further
               (progn
                 ;; Is last tested <C..> useful?
+                (when dbg (message "Is last tested <C..> useful?"))
                 (and next-<c-pos
                      (< next-<c-pos end)
                      (setq next-<c-pos nil))
@@ -353,31 +370,43 @@ See that variable for START, END and PRE-LEN."
                         (forward-char)
                         (if (not (eq ?/ (char-after)))
                             ;; Start tag, we need not search after it.
-                            (setq next-<c-pos (point))
+                            (progn
+                              (when dbg (message "Start tag, we need not search after it."))
+                              (setq next-<c-pos (point)))
                           ;; End tag, must include it.
-                          (forward-char)
+                          (when dbg (message "End tag, must include it."))
+                          ;;(forward-char)
                           (skip-chars-forward "^>")
-                          (setq end (1+ (point)))))
+                          (when dbg (message "after skip ^>"))
+                          (setq end (min (point-max) (1+ (point))))))
                     ;; Inside tag or unfinished tag
-                    (setq this->-pos (1+ (point)))
+                    (when dbg (message "Inside tag or unfinished tag"))
+                    (setq this->-pos+1 (min (point-max) (1+ (point))))
                     (skip-chars-backward "^<>")
                     (if (eq ?< (char-after (1- (point))))
                         ;; Inside finished tag
-                        (if (eq ?/ (char-after))
-                            ;; End tag
-                            (setq end this->-pos)
-                          ;; Start tag
-                          (forward-char)
-                          (skip-chars-forward "^>")
-                          (setq end (point)))
+                        (when dbg (message "Inside finished tag"))
+                      (if (eq ?/ (char-after))
+                          ;; End tag
+                          (progn
+                            (when dbg (message "End tag"))
+                            (setq end this->-pos+1))
+                        ;; Start tag
+                        (when dbg (message "Start tag 2"))
+                        (unless (eobp) (forward-char))
+                        (skip-chars-forward "^>")
+                        (setq end (point)))
                       ;; Between > and >
-                      (setq end this->-pos)
+                      (when dbg (message "Between > and >"))
+                      (setq end this->-pos+1)
                       )))
                 (setq high-end end)
                 (setcdr pend high-end))
             ;; This ends after so we can extend it to high-end
+            (when dbg (message "This ends after so we can extend it to high-end"))
             (setcdr pend high-end))))
       ;; Extend start
+      (when dbg (message "== Extend start"))
       (setq pending (nreverse pending))
       (let ((low-start (point-max))
             start
@@ -389,6 +418,7 @@ See that variable for START, END and PRE-LEN."
               ;; Look further
               (progn
                 ;; Is last tested </...> useful?
+                (when dbg (message "Is last tested </...> useful?"))
                 (and last-/>-pos
                      (> last-/>-pos start)
                      (setq last-/>-pos nil))
@@ -400,66 +430,91 @@ See that variable for START, END and PRE-LEN."
                       (if (eq ?/ (char-after))
                           ;; Inside end tag, need to goto start tag
                           (progn
+                            (when dbg (message "Inside end tag, need to goto start tag"))
                             (backward-char)
                             (skip-chars-backward "^<")
                             (unless (eq ?/ (char-after))
-                              (setq start (1- (point)))))
+                              (setq start (max (point-min) (1- (point))))))
                         ;; Inside start tag
-                        (setq start (1- (point))))
+                        (when dbg (message "Inside start tag"))
+                        (setq start (max (point-min) (1- (point)))))
                     ;; Outside tag, check tag before
-                    (setq this->-pos-1 (point))
-                    (backward-char)
-                    (skip-chars-backward "^<")
-                    (if (eq ?/ (char-after))
-                        ;; Tag before is end tag, don't include
-                        nil
-                      ;; Tag before is start tag, include
-                      (setq start (1- (point))))))
+                    (unless (bobp)
+                      (when dbg (message "Outside tag, check tag before"))
+                      (setq this->-pos-1 (point))
+                      (backward-char)
+                      (skip-chars-backward "^<")
+                      (if (eq ?/ (char-after))
+                          ;; Tag before is end tag, don't include
+                          (progn
+                            (when dbg (message "Tag before is end tag, don't include"))
+                            nil)
+                        ;; Tag before is start tag, include
+                        (when dbg (message "Tag before is start tag, include"))
+                        (setq start (max (point-min) (1- (point))))))))
                 (setq low-start start)
                 (setcar pend low-start)
                 )
             ;; This starts before so we can extend it to low-start
+            (when dbg (message "This starts before so we can extend it to low-start"))
             (setcar pend low-start))))
 
       ;; delete dublicates, merge
+      (when dbg (message "== delete dublicates, merge, pending=%s" pending))
       (setq pending2 pending)
       (setq pending nil)
       (while pending2
         (setq pend2 (car pending2))
         (setq pending2 (cdr pending2))
-          ;; The list is sorted
-          (setq pend (car pending))
-          (if (not pend)
-              (setq pending (cons pend2 pending))
-            (cond
-             ((= (car pend2) (car pend))
-              (when (> (cdr pend2) (cdr pend))
-                (setcdr pend (cdr pend2))))
-             ((<= (car pend2) (1+ (cdr pend)))
-              (setcdr pend (cdr pend2)))
-             ;; Probably never happens?
-             ((equal pend2 pend) nil)
-             (t
-              (setq pending (cons pend2 pending)))
-             )))
+        (setq pend (car pending))
+        ;; The list is sorted
+        (when dbg (message "The list is sorted, pend=%s, pend2=%s" pend pend2))
+        (if (not pend)
+            (setq pending (cons pend2 pending))
+          (assert (>= (car pend) (car pend2)) t)
+          (cond
+           ((= (car pend2) (car pend))
+            (when (> (cdr pend2) (cdr pend))
+              (when dbg (message "here"))
+              (setcdr pend (cdr pend2))))
+           ((<= (car pend2) (1+ (cdr pend)))
+            (when dbg (message "here 2"))
+            (setcar pend (car pend2)))
+           ;; Probably never happens?
+           ((equal pend2 pend)
+            (when dbg (message "here nil"))
+            nil)
+           (t
+            (when dbg (message "here t"))
+            (setq pending (cons pend2 pending)))
+           ))
+        (when dbg (message "at while end, pending=%s" pending))
+        )
       (setq pending (reverse pending))
       (setq pending (assq-delete-all nil pending))
+      (when dbg (message "Before dolist (pend pending)=%s" pending))
       (dolist (pend pending)
         (goto-char (car pend)) (goto-char (cdr pend))
+        (when dbg (message "After goto-char (pend pending)"))
         (html-write-reveal-tags (car pend) (cdr pend))
-        (html-write-hide-tags (car pend) (cdr pend)))
+        (when dbg (message "After html-write-reveal-tags (pend pending)"))
+        (html-write-hide-tags (car pend) (cdr pend))
+        (when dbg (message "After html-write-hide-tags (pend pending)"))
+        )
       (setq html-write-pending-changes nil)
       (goto-char here))))
 
 (defun html-write-hide-tags (start end)
   "Hide tags matching `html-write-tag-list' between START and END."
   (let ((here (point-marker))
-        (buffer-name (buffer-file-name)))
+        (buffer-name (buffer-file-name))
+        (dbg nil))
     (save-restriction
       (widen)
       (goto-char start)
       (save-match-data
         (let ((hide-tags-regexp (html-write-make-hide-tags-regexp)))
+          (when dbg (message "before search start=%s end=%s, point=%s" start end (point)))
           (while (re-search-forward hide-tags-regexp end t)
             (let* ((ovl (make-overlay (match-beginning 0) (match-end 0)
                                       nil t nil))
@@ -518,6 +573,11 @@ rendered text.
 
 See the customization group `html-write' for more information about
 faces.
+
+The following keys are defined when you are on a tag handled by
+this minor mode:
+
+\\{html-write-keymap}
 
 IMPORTANT: Most commands you use works also on the text that is
 hidden.  The movement commands is an exception, but as soon as

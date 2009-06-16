@@ -53,9 +53,31 @@
 ;;
 ;;; Code:
 
+(defconst ocr-keywords
+  `((
+     ,(concat
+      ;;"\\<\\(?:"
+      "\\(?1:[0-9]\\{3\\}\\)"
+      "\\(?2:[0-9]\\{3\\}\\)?"
+      ;;"\\)+"
+      )
+     (0 (progn
+          (put-text-property (match-beginning 1) (match-end 1)
+                             'face '(:background "LightBlue1"))
+          (when (match-beginning 2)
+            (put-text-property (match-beginning 2) (match-end 2)
+                               'face '(:background "PaleGreen1"))))))))
+
+;; 23456
+;; 1234567890
+;; 346789238
 (define-minor-mode ocr-user-mode
   "Color up digits three by three."
-  :group 'convenience)
+  :group 'convenience
+  (if ocr-user-mode
+      (font-lock-add-keywords nil ocr-keywords)
+    (font-lock-remove-keywords nil ocr-keywords))
+  (font-lock-fontify-buffer))
 
 
 (provide 'ocr-user)

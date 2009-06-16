@@ -1,6 +1,7 @@
 ;;(add-module-path "nxhtml")
 (add-module-path "nxml-mode-20041004")
 (load "rng-auto.el")
+
 (add-to-list 'auto-mode-alist
              (cons (concat "\\." (regexp-opt '("xml" "xsd" "sch" "rng" "xslt" "svg" "rss") t) "\\'")
                    'nxml-mode))
@@ -11,17 +12,5 @@
 (fset 'sgml-mode 'nxml-mode)
 (fset 'html-mode 'nxml-mode)
 
-
-;;(add-module-path "nxhtml")
-;;(load "autostart.el")
-;;(load "autostart.el")
-;;(require "rng-auto")
-
-
-
-;; (defun nxml-mode-additional-keys ()
-;;   "Key bindings to add to `nxml-mode'."
-;;   (define-key nxml-mode-map [(control return)] 'set-mark-command)
-;;   )
-;; (add-hook 'nxml-mode-hook 'nxml-mode-additional-keys)
-
+(add-module-path "nxhtml")
+(load "autostart.el")

@@ -1,5 +1,7 @@
 ;;; moz.el --- Lets current buffer interact with inferior mozilla.
 
+;; URL: http://github.com/bard/mozrepl/raw/master/chrome/content/moz.el
+
 ;; Copyright (C) 2006 by Massimiliano Mirra
 ;;
 ;; This program is free software; you can redistribute it and/or modify
@@ -17,13 +19,15 @@
 ;; Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301 USA
 ;;
 ;; Author: Massimiliano Mirra, <bard [at] hyperstruct [dot] net>
+;; Contributors:
+;;   - Lennart Borgman
 
 ;;; Commentary:
 ;;
 ;; This file implements communication with Firefox via MozRepl
-;; (http://hyperstruct.net/projects/mozlab).  It is a slightly
+;; (http://hyperstruct.net/projects/mozrepl).  It is a slightly
 ;; modified version of the file moz.el that comes with MozLab.  To use
-;; it you have to install the MozLab addon in Firefox.
+;; it you have to install the MozRepl addon in Firefox.
 ;;
 ;; This file contains
 ;;
@@ -71,6 +75,7 @@
 ;;; Code:
 
 (require 'comint)
+(require 'cc-cmds)
 
 ;; Maybe fix-me: C-c control-char are reserved for major modes. But
 ;; this minor mode is used in only one major mode (or one family of
@@ -115,6 +120,8 @@ The following keys are bound in this minor mode:
 
 (defvar moz-repl-port 4242)
 
+(defvar moz-temporary-file nil)
+
 (defun moz-temporary-file ()
   (if (and moz-temporary-file
            (file-readable-p moz-temporary-file))
@@ -156,7 +163,7 @@ Curent function is the one recognized by c-mark-function."
 Also switch to the interaction buffer."
   (interactive)
   (moz-send-defun)
-  (inferior-moz-switch-to-mozilla))
+  (inferior-moz-switch-to-mozilla nil))
 
 (defun moz-save-buffer-and-send ()
   "Save the current buffer and load it in Firefox via MozRepl."
@@ -183,14 +190,13 @@ Also switch to the interaction buffer."
 (defvar inferior-moz-mode-map
   (let ((map (make-sparse-keymap)))
     ;; Note: changed from C-c c which is reserved for users.
-    (define-key map "\C-c." 'inferior-moz-insert-moz-repl)
+    (define-key map "\C-c\C-c" 'inferior-moz-insert-moz-repl)
     map))
 
 ;;;###autoload
 (define-derived-mode inferior-moz-mode comint-mode "Inf-MozRepl"
   "Major mode for interacting with Firefox via MozRepl."
   (setq comint-input-sender 'inferior-moz-input-sender)
-  ;;(define-key inferior-moz-mode-map "\C-cc" (lambda () (interactive) (insert moz-repl-name ".")))
   (add-hook 'comint-output-filter-functions 'inferior-moz-track-repl-name nil t))
 
 (defun inferior-moz-track-repl-name (comint-output)
@@ -251,27 +257,27 @@ Note that you have to start the MozRepl server from Firefox."
     (file-error
      (with-output-to-temp-buffer "*MozRepl Error*"
        (with-current-buffer (get-buffer "*MozRepl Error*")
-         (insert "Can't start MozRepl, the error message was:\n"
+         (insert "Can't start MozRepl, the error message was:\n\n     "
                  (error-message-string err)
                  "\n"
-                 "\n  A possible reason is that you have not installed"
-                 "\n  the MozLab add-on to Firefox or that you have not"
-                 "\n  started it.  You start it from the menus in Firefox:"
+                 "\nA possible reason is that you have not installed"
+                 "\nthe MozRepl add-on to Firefox or that you have not"
+                 "\nstarted it.  You start it from the menus in Firefox:"
                  "\n\n    Tools / MozRepl / Start"
                  "\n"
-                 "\n  See ")
+                 "\nSee ")
          (insert-text-button
-          "MozLab home page"
+          "MozRepl home page"
           'action (lambda (button)
                     (browse-url
-                     "http://hyperstruct.net/projects/mozlab")
+                     "http://hyperstruct.net/projects/mozrepl")
                     )
           'face 'button)
          (insert
           " for more information."
           "\n"
-          "\n  MozLab is also available directly from Firefox add-on"
-          "\n  pages, but is updated less frequently there.")
+          "\nMozRepl is also available directly from Firefox add-on"
+          "\npages, but is updated less frequently there.")
          ))
      (error "Can't start MozRepl"))))
 

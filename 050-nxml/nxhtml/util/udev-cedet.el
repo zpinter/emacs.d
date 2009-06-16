@@ -20,10 +20,13 @@
 ;;
 ;; See `udev-cedet-update' for more information.
 ;;
+;; TODO: http://cedet.sourceforge.net/setup.shtml
+;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change log:
 ;;
+;; Fix-me: http://www.emacswiki.org/emacs/JavaDevelopmentEnvironment
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -46,7 +49,7 @@
 ;;
 ;;; Code:
 
-(require 'udev)
+(eval-when-compile (require 'udev))
 
 (defgroup udev-cedet nil
   "Customization group for udev-cedet."
@@ -67,7 +70,7 @@
             (load-file cedet-el)
           (error (message "%s" err))))
       (unless (featurep 'cedet)
-        (when must-be-fetche
+        (when must-be-fetched
           (error "Could not load ecb???"))
         (when (y-or-n-p "Could not load CEDET, update from dev sources? ")
           (udev-cedet-update)
@@ -137,7 +140,7 @@
 
 (defun udev-cedet-buffer-name (mode)
   "Return a name for current compilation buffer ignoring MODE."
-  (udev-buffer-name " *Updating CEDET %s*" udev-cedet-update-buffer mode))
+  (udev-buffer-name "*Updating CEDET %s*" udev-cedet-update-buffer mode))
 
 (defvar udev-cedet-update-buffer nil)
 
@@ -201,9 +204,17 @@ For how to start CEDET see `udev-cedet-load-cedet'."
                                           (udev-cedet-cvs-dir))
                         udev-cedet-update-buffer))
 
+(defun udev-cedet-install-add-debug ()
+  (with-current-buffer (find-file-noselect "cedet-build.el")
+    (widen)
+    (goto-char (point-min))
+    (insert "(setq debug-on-error t)\n")
+    (basic-save-buffer)))
+
 (defun udev-cedet-install (log-buffer)
   "Install the CEDET sources just fetched.
 Note that they will not be installed in current Emacs session."
+  (udev-cedet-install-add-debug)
   (udev-batch-compile "-l cedet-build.el -f cedet-build"
                       (udev-cedet-cvs-dir)
                       'udev-cedet-buffer-name))

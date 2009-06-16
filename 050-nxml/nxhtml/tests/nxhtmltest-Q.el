@@ -44,9 +44,17 @@
 ;;
 ;;; Code:
 
+(require 'cl)
+(require 'ourcomments-util)
 
-(defvar nxhtmltest-bin-Q
-  (file-name-directory (if load-file-name load-file-name buffer-file-name)))
+(eval-and-compile
+  (defvar nxhtmltest-bin-Q
+    (file-name-directory (or load-file-name
+                             (when 'bytecomp-filename bytecomp-filename)
+                             buffer-file-name)))
+
+  (add-to-list 'load-path nxhtmltest-bin-Q)
+  (require 'nxhtmltest-helpers))
 
 ;;;###autoload
 (defun nxhtmltest-run-Q ()
@@ -87,7 +95,8 @@ See `nxhtmltest-run' for more information about the tests."
     (message "nxhtmltest-bin-Q=%s" nxhtmltest-bin-Q)
     (message "nxhtml-auto-start=%s" nxhtml-auto-start)
     (setenv "nxhtmltest-run-Q" "run")
-    (message "After set nxhtmltest-run-Q=%s" (getenv "nxhtmltest-run-Q"))
+    (message "After setenv nxhtmltest-run-Q=%s" (getenv "nxhtmltest-run-Q"))
+    (message "(ourcomments-find-emacs) => %s" (ourcomments-find-emacs))
     (call-process (ourcomments-find-emacs) nil 0 nil "-Q"
                   "-l" temp-eval-file
                   "-l" nxhtml-auto-start

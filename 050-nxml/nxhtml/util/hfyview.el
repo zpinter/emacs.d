@@ -73,9 +73,57 @@
 ;;
 ;;; Code:
 
-
-(require 'htmlfontify)
+(eval-when-compile (require 'cl))
+(eval-when-compile (require 'htmlfontify))
 (require 'easymenu)
+
+(defvar hfyview-selected-window)
+
+(defvar hfyview-mode-emulation-map
+  (let ((m (make-sparse-keymap)))
+    ;;(define-key m [apps] 'hfyview-frame)
+    m))
+
+;;(define-key hfyview-mode-emulation-map [apps] 'hfy-show-grabbed)
+
+(defvar hfyview-mode-emulation-maps
+  (list (cons 'hfyview-mode hfyview-mode-emulation-map)))
+
+;; Fix-me: which are needed?
+(defconst hfyview-mode-other-maps
+  '(
+    hfyview-mode-emulation-map
+    minibuffer-local-completion-map
+    minibuffer-local-filename-completion-map
+    minibuffer-local-isearch-map
+    minibuffer-local-map
+    minibuffer-local-must-match-filename-map
+    minibuffer-local-must-match-map
+    minibuffer-local-ns-map
+    viper-minibuffer-map
+    isearch-mode-map))
+
+(define-minor-mode hfyview-mode
+  "Define some useful keys for `hfyview-frame' etc.
+Put this mode in `emulation-mode-map-alists' so they can be used
+at any time."
+  :global t
+  :group 'htmlfontify
+  (if hfyview-mode
+      (progn
+        (add-hook 'pre-command-hook 'hfy-grab-minibuffer-content)
+        (add-hook 'post-command-hook 'hfy-grab-echo-content)
+        (add-to-list 'emulation-mode-map-alists 'hfyview-mode-emulation-maps)
+        (dolist (map hfyview-mode-other-maps)
+          (define-key (symbol-value map) [(apps)] 'hfyview-frame)
+          ;;(define-key (symbol-value map) [(apps)] 'hfy-show-grabbed)
+          )
+        )
+    (remove-hook 'pre-command-hook 'hfy-grab-minibuffer-content)
+    (remove-hook 'post-command-hook 'hfy-grab-echo-content)
+    (setq emulation-mode-map-alists (delq 'hfyview-mode-emulation-maps emulation-mode-map-alists))
+    (dolist (map hfyview-mode-other-maps)
+      (define-key (symbol-value map) [(apps)] nil))))
 
 (defun hfyview-fontify-region (start end)
   ;; If the last command in mumamo resulted in a change of major-mode
@@ -177,7 +225,7 @@ the Quick Print entry."
   ;; There seems to be a bug in Firefox that prevents this from
   ;; displaying correctly.  Anyway this is just a quick and reasonable
   ;; approximation.
-  (concat "<div style=\"color:%s; background:%s; white-space:pre; overflow:hidden; font-family:monospace;\">"
+  (concat "<div style=\"width:%sem; color:%s; background:%s; white-space:pre; overflow:hidden; font-family:monospace;\">"
           ;; Using <pre> gives empty line above and below
           ;;"<pre>"
           "-- (Unix)%s   <b>%s</b>    (%s%s) "
@@ -280,6 +328,7 @@ the Quick Print entry."
       (insert "</" tag ">\n")
       ;;(lwarn t :warning "%s" mark-viper)
       (insert (format hfyview-modline-format
+                      width
                       mod-fgcolor mod-bgcolor mod
                       (hfyview-dekludge-string bu-name)
                       (hfyview-dekludge-string ma-name)
@@ -385,6 +434,10 @@ body { font-family: outline-courier new;  font-stretch: normal;  font-weight: 50
   (or (hfy-triplet "SystemActiveTitle")
       (hfy-triplet "blue")))
 
+(defvar hfy-grabbed-echo-content nil)
+(defvar hfy-grabbed-minibuffer-content nil)
+(defvar hfyview-prompt-face nil)
+
 (defun hfyview-frame-minibuff (use-grabbed)
   (if (and use-grabbed
            (or hfy-grabbed-echo-content
@@ -419,8 +472,8 @@ body { font-family: outline-courier new;  font-stretch: normal;  font-weight: 50
           (setq bdy-end (point))
           (list (buffer-substring css-start css-end)
                 (buffer-substring bdy-start bdy-end))))
-    (let ((mini-bg (face-attribute prompt-face :background))
-          (mini-fg (face-attribute prompt-face :foreground)))
+    (let ((mini-bg (face-attribute hfyview-prompt-face :background))
+          (mini-fg (face-attribute hfyview-prompt-face :foreground)))
       (if (eq mini-fg 'unspecified)
           (setq mini-fg "")
         (setq mini-fg (concat "color:" (hfy-triplet mini-fg) "; ")))
@@ -449,13 +502,15 @@ body { font-family: outline-courier new;  font-stretch: normal;  font-weight: 50
          html
          css
          ;; (face-attribute 'minibuffer-prompt :foreground)
-         (prompt-face (plist-get minibuffer-prompt-properties 'face))
+         (hfyview-prompt-face (plist-get minibuffer-prompt-properties 'face))
          minibuf
          (frame-width (* 0.56 (frame-width)))
          table-style
          (icon-file (expand-file-name "../etc/images/icons/emacs_16.png" exec-directory))
          (img-tag (if (file-exists-p icon-file)
                       (concat "<img src=\"file://" icon-file "\" height=\"16\" width=\"16\" />")))
+	 mini-css
+	 mini-html
          )
     (setq table-style
           (format "border: solid %s; width:%sem;"
@@ -506,39 +561,12 @@ visible currently on the frame."
     (setq title (frame-parameter (selected-frame) 'name))
     (hfyview-frame-1 whole-buffers title)))
 
-(defvar hfyview-mode-emulation-map
-  (let ((m (make-sparse-keymap)))
-    ;;(define-key m [apps] 'hfyview-frame)
-    m))
-
-;;(define-key hfyview-mode-emulation-map [apps] 'hfy-show-grabbed)
-
-(defvar hfyview-mode-emulation-maps
-  (list (cons 'hfyview-mode hfyview-mode-emulation-map)))
-
-;; Fix-me: which are needed?
-(defconst hfyview-mode-other-maps
-  '(
-    hfyview-mode-emulation-map
-    minibuffer-local-completion-map
-    minibuffer-local-filename-completion-map
-    minibuffer-local-isearch-map
-    minibuffer-local-map
-    minibuffer-local-must-match-filename-map
-    minibuffer-local-must-match-map
-    minibuffer-local-ns-map
-    viper-minibuffer-map
-    isearch-mode-map))
-
-(defvar hfy-grabbed-minibuffer-content nil)
 ;; (global-set-key [f7] '(lambda () (interactive) (message "grabbed=%s" hfy-grabbed-minibuffer-content)))
 ;; (global-set-key [f7] '(lambda () (interactive) (message "grabbed cm=%s" hfy-grabbed-echo-content)))
 ;; (global-set-key [f7] '(lambda () (interactive) (message "grabbed cm=%s, mb=%s" hfy-grabbed-echo-content hfy-grabbed-minibuffer-content)))
 ;; (defun hfy-show-grabbed ()
 ;;   (interactive)
 ;;   (message "grabbed cm=%s, mb=%s" hfy-grabbed-echo-content hfy-grabbed-minibuffer-content))
-
-(defvar hfy-grabbed-echo-content nil)
 
 (defun hfy-grab-echo-content ()
   (setq hfy-grabbed-echo-content (current-message)))
@@ -552,30 +580,6 @@ visible currently on the frame."
               (buffer-substring
                (point-min) (point-max)))
             )))
-
-(define-minor-mode hfyview-mode
-  "Define some useful keys for `hfyview-frame' etc.
-Put this mode in `emulation-mode-map-alists' so they can be used
-at any time."
-  :global t
-  :group 'htmlfontify
-  (if hfyview-mode
-      (progn
-        (add-hook 'pre-command-hook 'hfy-grab-minibuffer-content)
-        (add-hook 'post-command-hook 'hfy-grab-echo-content)
-        (add-to-list 'emulation-mode-map-alists 'hfyview-mode-emulation-maps)
-        (dolist (map hfyview-mode-other-maps)
-          (define-key (symbol-value map) [(apps)] 'hfyview-frame)
-          ;;(define-key (symbol-value map) [(apps)] 'hfy-show-grabbed)
-          )
-        )
-    (remove-hook 'pre-command-hook 'hfy-grab-minibuffer-content)
-    (remove-hook 'post-command-hook 'hfy-grab-echo-content)
-    (setq emulation-mode-map-alists (delq 'hfyview-mode-emulation-maps emulation-mode-map-alists))
-    (dolist (map hfyview-mode-other-maps)
-      (define-key (symbol-value map) [(apps)] nil))
-    )
-  )
 
 ;;(add-hook 'pre-command-hook 'grab-minibuffer-content nil t)
 ;;(remove-hook 'pre-command-hook 'grab-minibuffer-content) t)

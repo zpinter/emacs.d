@@ -73,7 +73,7 @@
         (when (looking-at "[a-z-]+")
           (match-string-no-properties 0))))))
 
-
+;;;###autoload
 (defun xhtml-help-show-css-ref ()
   "Show css reference for css property name at point."
   (interactive)
@@ -91,6 +91,7 @@
                (looking-at "</?\\([[:alnum:]]+\\)"))
       (match-string-no-properties 1))))
 
+;;;###autoload
 (defun xhtml-help-show-tag-ref ()
   "Show xhtml reference for tag name at or before point."
   (interactive)

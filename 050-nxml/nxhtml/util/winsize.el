@@ -3,7 +3,7 @@
 ;; Author: Lennart Borgman <lennart dot borgman at gmail dot com >
 ;; Maintainer:
 ;; Created: Wed Dec 07 15:35:09 2005
-;; Version: 0.96
+;; Version: 0.97
 ;; Lxast-Updated: Sun Nov 18 02:14:52 2007 (3600 +0100)
 ;; Keywords:
 ;; Compatibility:
@@ -64,10 +64,69 @@
 ;;
 ;;; Code:
 
+(eval-when-compile (require 'windmove))
+(eval-when-compile (require 'winsav nil t))
 
-;;; Keymap, interactive functions etc
+;;; Custom variables
 
-(require 'winsav nil t)
+(defcustom winsize-juris-way t
+  ""
+  :type 'boolean
+  :group 'winsize)
+
+(defcustom winsize-autoselect-borders t
+  "Determines how borders are selected by default.
+If nil hever select borders automatically (but keep them on the
+same side while changing window).  If 'when-single select border
+automatically if there is only one possible choice.  If t alwasy
+select borders automatically if they are not selected."
+  :type '(choice (const :tag "Always" t)
+                 (const :tag "When only one possbility" when-single)
+                 (const :tag "Never" nil))
+  :group 'winsize)
+
+(defcustom winsize-mode-line-colors (list t (list "green" "green4"))
+  "Mode line colors used during resizing."
+  :type '(list (boolean :tag "Enable mode line color changes during resizing")
+               (list
+                (color :tag "- Active window mode line color")
+                (color :tag "- Inactive window mode line color")))
+  :group 'winsize)
+
+(defcustom winsize-mark-selected-window t
+  "Mark selected window if non-nil."
+  :type 'boolean
+  :group 'winsize)
+
+(defcustom winsize-make-mouse-prominent t
+  "Try to make mouse more visible during resizing.
+The mouse is positioned next to the borders that you can move.
+It can however be hard to see if where it is.  Setting this to on
+makes the mouse jump a few times."
+  :type 'boolean
+  :group 'winsize)
+
+(defvar widget-command-prompt-value-history nil
+  "History of input to `widget-function-prompt-value'.")
+
+(define-widget 'command 'restricted-sexp
+  "A Lisp function."
+  :complete-function (lambda ()
+                       (interactive)
+                       (lisp-complete-symbol 'commandp))
+  :prompt-value 'widget-field-prompt-value
+  :prompt-internal 'widget-symbol-prompt-internal
+  :prompt-match 'commandp
+  :prompt-history 'widget-command-prompt-value-history
+  :action 'widget-field-action
+  :match-alternatives '(commandp)
+  :validate (lambda (widget)
+              (unless (commandp (widget-value widget))
+                (widget-put widget :error (format "Invalid command: %S"
+                                                  (widget-value widget)))
+                widget))
+  :value 'ignore
+  :tag "Command")
 
 (defvar winsize-keymap nil
   "Keymap used by `resize-windows'.")
@@ -156,6 +215,97 @@
 
     (setq winsize-keymap map)))
 
+(defcustom winsize-let-me-use '(next-line ;;[(control ?n)]
+                                previous-line ;;[(control ?p)]
+                                forward-char ;;[(control ?f)]
+                                backward-char ;;[(control ?b)]
+                                [(home)]
+                                [(end)]
+                                ;; Fix-me: replace this with something
+                                ;; pulling in help-event-list:
+                                [(f1)]
+                                execute-extended-command
+                                eval-expression)
+  "Key sequences or commands that should not be overriden during resize.
+The purpose is to make it easier to switch windows.  The functions
+`windmove-left' etc depends on the position when chosing the
+window to move to."
+  :type '(repeat
+          (choice
+           ;; Note: key-sequence must be before command here, since
+           ;; the key sequences seems to match command too.
+           key-sequence command))
+  :set (lambda (sym val)
+         (set-default sym val)
+         (winsize-make-keymap val))
+  :group 'winsize)
+
+(defcustom winsize-selected-window-face 'winsize-selected-window-face
+  "Variable holding face for marking selected window.
+This variable may be nil or a face symbol."
+  :type '(choice (const :tag "Do not mark selected window" nil)
+                 face)
+  :group 'winsize)
+
+(defface winsize-selected-window-face
+  '((t (:inherit secondary-selection)))
+  "Face for marking selected window."
+  :group 'winsize)
+
+
+;;; These variables all holds values to be reset when exiting resizing:
+
+(defvar winsize-old-mode-line-bg nil)
+(defvar winsize-old-mode-line-inactive-bg nil)
+(defvar winsize-old-overriding-terminal-local-map nil)
+(defvar winsize-old-overriding-local-map-menu-flag nil)
+(defvar winsize-old-temp-buffer-show-function nil)
+(defvar winsize-old-mouse-avoidance-mode nil
+  "Hold the value of `mouse-avoidance-mode' at resizing start.")
+(defvar winsize-old-view-exit-action nil)
+(make-variable-buffer-local 'winsize-old-view-exit-action)
+
+(defvar winsize-message-end nil
+  "Marker, maybe at end of message buffer.")
+
+(defvar winsize-resizing nil
+  "t during resizing, nil otherwise.")
+
+(defvar winsize-window-config-init nil
+  "Hold window configuration from resizing start.")
+
+(defvar winsize-frame nil
+  "Frame that `resize-windows' is operating on.")
+
+
+;;; Borders
+
+(defvar winsize-window-for-side-hor nil
+  "Window used internally for resizing in vertical direction.")
+
+(defvar winsize-window-for-side-ver nil
+  "Window used internally for resizing in horizontal direction.")
+
+(defvar winsize-border-hor nil
+  "Use internally to remember border choice.
+This is set by `winsize-pre-command' and checked by
+`winsize-post-command', see the latter for more information.
+
+The value should be either nil, 'left or 'right.")
+
+(defvar winsize-border-ver nil
+  "Use internally to remember border choice.
+This is set by `winsize-pre-command' and checked by
+`winsize-post-command', see the latter for more information.
+
+The value should be either nil, 'up or 'down.")
+
+(defvar winsize-window-at-entry nil
+  "Window that was selected when `resize-windows' started.")
+
+
+;;; Keymap, interactive functions etc
+
 (defun winsize-pre-command ()
   "Do this before every command.
 Runs this in `pre-command-hook'.
@@ -187,7 +337,7 @@ can therefore not select the border sides.)
 
 Give the user feedback about selected window and borders.  Also
 give a short help message unless last command gave some message."
-  (unless juris-way
+  (unless winsize-juris-way
     (unless winsize-border-hor
       (winsize-select-initial-border-hor))
     (when winsize-border-hor
@@ -214,6 +364,8 @@ bindings during resizing:\\<winsize-keymap>
   `winsize-balance-siblings'             \\[winsize-balance-siblings]
   `fit-window-to-buffer'                 \\[fit-window-to-buffer]
   `shrink-window-if-larger-than-buffer'  \\[shrink-window-if-larger-than-buffer]
+
+  `winsav-rotate'                        \\[winsav-rotate]
 
   `winsize-move-border-up'      \\[winsize-move-border-up]
   `winsize-move-border-down'    \\[winsize-move-border-down]
@@ -266,12 +418,12 @@ windows.  To make this indication more prominent the text in the
 selected window is marked with the face hold in the variable
 `winsize-selected-window-face'.
 
-The option `juris-way' decides how the borders to move are
-selected. If this option is non-nil then the right or bottom
+The option `winsize-juris-way' decides how the borders to move
+are selected. If this option is non-nil then the right or bottom
 border are the ones that are moved with the arrow keys and the
 opposite border with shift arrow keys.
 
-If `juris-way' is nil then the following apply:
+If `winsize-juris-way' is nil then the following apply:
 
 As you select other borders or move to new a window the mouse
 pointer is moved inside the selected window to show which borders
@@ -418,14 +570,14 @@ Save current keymaps."
   (setq winsize-old-overriding-local-map-menu-flag nil))
 
 
-(defvar winsize-window-config-init nil
-  "Hold window configuration from resizing start.")
-
 (defvar winsize-window-config-help nil
   "Hold window configuration when help is shown.")
 
 (defvar winsize-window-config-init-help nil
   "Hold window configuration from resizing start during help.")
+
+(defvar winsize-help-frame nil
+  "The frame from which help was called.")
 
 (defun winsize-restore-after-help (buffer)
   "Restore window configuration after help.
@@ -452,9 +604,6 @@ Raise frame and reactivate resizing."
     (set-window-configuration winsize-window-config-help)
     (resize-windows)
     (setq winsize-window-config-init winsize-window-config-init-help)))
-
-(defvar winsize-help-frame nil
-  "The frame from which help was called.")
 
 (defun winsize-help-mode-hook-function ()
   "Setup temp buffer show function to only run second step.
@@ -614,121 +763,9 @@ For more information see `winsize-to-border-or-window-left'."
   (interactive) (winsize-resize 'down t))
 
 
-;;; Custom variables
-
-(defcustom winsize-autoselect-borders t
-  "Determines how borders are selected by default.
-If nil hever select borders automatically (but keep them on the
-same side while changing window).  If 'when-single select border
-automatically if there is only one possible choice.  If t alwasy
-select borders automatically if they are not selected."
-  :type '(choice (const :tag "Always" t)
-                 (const :tag "When only one possbility" when-single)
-                 (const :tag "Never" nil))
-  :group 'winsize)
-
-(defcustom winsize-mode-line-colors (list t (list "green" "green4"))
-  "Mode line colors used during resizing."
-  :type '(list (boolean :tag "Enable mode line color changes during resizing")
-               (list
-                (color :tag "- Active window mode line color")
-                (color :tag "- Inactive window mode line color")))
-  :group 'winsize)
-
-(defcustom winsize-mark-selected-window t
-  "Mark selected window if non-nil."
-  :type 'boolean
-  :group 'winsize)
-
-(defcustom winsize-make-mouse-prominent t
-  "Try to make mouse more visible during resizing.
-The mouse is positioned next to the borders that you can move.
-It can however be hard to see if where it is.  Setting this to on
-makes the mouse jump a few times."
-  :type 'boolean
-  :group 'winsize)
-
-(defvar widget-command-prompt-value-history nil
-  "History of input to `widget-function-prompt-value'.")
-
-(define-widget 'command 'restricted-sexp
-  "A Lisp function."
-  :complete-function (lambda ()
-                       (interactive)
-                       (lisp-complete-symbol 'commandp))
-  :prompt-value 'widget-field-prompt-value
-  :prompt-internal 'widget-symbol-prompt-internal
-  :prompt-match 'commandp
-  :prompt-history 'widget-command-prompt-value-history
-  :action 'widget-field-action
-  :match-alternatives '(commandp)
-  :validate (lambda (widget)
-              (unless (commandp (widget-value widget))
-                (widget-put widget :error (format "Invalid command: %S"
-                                                  (widget-value widget)))
-                widget))
-  :value 'ignore
-  :tag "Command")
-
-(defcustom winsize-let-me-use '(next-line ;;[(control ?n)]
-                                previous-line ;;[(control ?p)]
-                                forward-char ;;[(control ?f)]
-                                backward-char ;;[(control ?b)]
-                                [(home)]
-                                [(end)]
-                                ;; Fix-me: replace this with something
-                                ;; pulling in help-event-list:
-                                [(f1)]
-                                execute-extended-command
-                                eval-expression)
-  "Key sequences or commands that should not be overriden during resize.
-The purpose is to make it easier to switch windows.  The functions
-`windmove-left' etc depends on the position when chosing the
-window to move to."
-  :type '(repeat
-          (choice
-           ;; Note: key-sequence must be before command here, since
-           ;; the key sequences seems to match command too.
-           key-sequence command))
-  :set (lambda (sym val)
-         (set-default sym val)
-         (winsize-make-keymap val))
-  :group 'winsize)
-
-(defcustom winsize-selected-window-face 'winsize-selected-window-face
-  "Variable holding face for marking selected window.
-This variable may be nil or a face symbol."
-  :type '(choice (const :tag "Do not mark selected window" nil)
-                 face)
-  :group 'winsize)
-
-(defface winsize-selected-window-face
-  '((t (:inherit secondary-selection)))
-  "Face for marking selected window."
-  :group 'winsize)
-
 ;;; Internals
 
-;; These variables all holds values to be reset when exiting resizing:
-(defvar winsize-old-mode-line-bg nil)
-(defvar winsize-old-mode-line-inactive-bg nil)
-(defvar winsize-old-overriding-terminal-local-map nil)
-(defvar winsize-old-overriding-local-map-menu-flag nil)
-(defvar winsize-old-temp-buffer-show-function nil)
-(defvar winsize-old-mouse-avoidance-mode nil
-  "Hold the value of `mouse-avoidance-mode' at resizing start.")
-(defvar winsize-old-view-exit-action nil)
-(make-variable-buffer-local 'winsize-old-view-exit-action)
 
-
-(defvar winsize-resizing nil
-  "t during resizing, nil otherwise.")
-
-(defvar winsize-window-at-entry nil
-  "Window that was selected when `resize-windows' started.")
-
-(defvar winsize-frame nil
-  "Frame that `resize-windows' is operating on.")
 
 (defun winsize-exit-resizing (put-back-last-event &optional stay)
   "Stop window resizing.
@@ -774,26 +811,6 @@ event on the input queue."
 
 ;;; Borders
 
-(defvar winsize-window-for-side-hor nil
-  "Window used internally for resizing in vertical direction.")
-
-(defvar winsize-window-for-side-ver nil
-  "Window used internally for resizing in horizontal direction.")
-
-(defvar winsize-border-hor nil
-  "Use internally to remember border choice.
-This is set by `winsize-pre-command' and checked by
-`winsize-post-command', see the latter for more information.
-
-The value should be either nil, 'left or 'right.")
-
-(defvar winsize-border-ver nil
-  "Use internally to remember border choice.
-This is set by `winsize-pre-command' and checked by
-`winsize-post-command', see the latter for more information.
-
-The value should be either nil, 'up or 'down.")
-
 (defun winsize-border-used-hor ()
   "Return the border side used for horizontal resizing."
   (let ((hor (when winsize-window-for-side-hor
@@ -819,7 +836,7 @@ border."
                               dir nil (selected-window))))
     (when (window-minibuffer-p window-in-that-dir)
       (setq window-in-that-dir nil))
-    (if juris-way
+    (if winsize-juris-way
         (if (not window-in-that-dir)
             (message "No window in that direction")
           (windmove-do-window-select dir nil))
@@ -842,7 +859,7 @@ border."
 
 (defun winsize-select-initial-border-hor ()
   "Select a default border horizontally."
-  (if juris-way
+  (if winsize-juris-way
       (winsize-set-border 'right t)
     (let ((has-left  (winsize-window-beside (selected-window) 'left))
           (has-right (winsize-window-beside (selected-window) 'right)))
@@ -856,7 +873,7 @@ border."
 
 (defun winsize-select-initial-border-ver ()
   "Select a default border vertically."
-  (if juris-way
+  (if winsize-juris-way
       (winsize-set-border 'up t)
     (let ((has-up  (winsize-window-beside (selected-window) 'up))
           (has-down (winsize-window-beside (selected-window) 'down)))
@@ -901,15 +918,10 @@ The actually setting is done in `post-command-hook'."
             (setq winsize-window-for-side-hor window-for-side)
           (setq winsize-window-for-side-ver window-for-side))))))
 
-(defcustom juris-way t
-  ""
-  :type 'boolean
-  :group 'winsize)
-
 (defun winsize-resize (dir other-side)
   "Choose border to move.  Or if border is chosen move that border.
 Used by `winsize-move-border-left' etc."
-  (when juris-way
+  (when winsize-juris-way
     (let ((bside (if (memq dir '(left right))
                      (if other-side 'left 'right)
                    (if other-side 'up 'down))))
@@ -1012,9 +1024,11 @@ should be one of 'left, 'up, 'right and 'down."
           (when use-colors
             (set-face-attribute 'mode-line-inactive nil :background inactive-color)
             (set-face-attribute 'mode-line nil :background active-color))))
-    (set-face-attribute 'mode-line-inactive nil :background winsize-old-mode-line-inactive-bg)
+    (when winsize-old-mode-line-inactive-bg
+      (set-face-attribute 'mode-line-inactive nil :background winsize-old-mode-line-inactive-bg))
     (setq winsize-old-mode-line-inactive-bg nil)
-    (set-face-attribute 'mode-line nil :background winsize-old-mode-line-bg)
+    (when winsize-old-mode-line-bg
+      (set-face-attribute 'mode-line nil :background winsize-old-mode-line-bg))
     (setq winsize-old-mode-line-bg nil)))
 
 (defvar winsize-short-help-message nil
@@ -1068,7 +1082,7 @@ should be one of 'left, 'up, 'right and 'down."
     (setq winsize-selected-window-overlay nil))
   (when active
     (with-current-buffer (window-buffer (selected-window))
-      (let ((ovl (make-overlay (point-min) (point-max))))
+      (let ((ovl (make-overlay (point-min) (point-max) nil t)))
         (setq winsize-selected-window-overlay ovl)
         (overlay-put ovl 'window (selected-window))
         (overlay-put ovl 'pointer 'arrow)
@@ -1076,15 +1090,14 @@ should be one of 'left, 'up, 'right and 'down."
         (when winsize-selected-window-face
           (overlay-put ovl 'face winsize-selected-window-face))))))
 
-(defvar winsize-message-end nil
-  "Marker, maybe at end of message buffer.")
-
 (defun winsize-message-end ()
   "Return a marker at the end of the message buffer."
   (with-current-buffer (get-buffer-create "*Messages*")
     (point-max-marker)))
 
 (defvar winsize-move-mouse 1)
+
+(defvar winsize-make-mouse-prominent-timer nil)
 
 (defun winsize-move-mouse ()
   ;;(setq winsize-move-mouse (- winsize-move-mouse))
@@ -1100,8 +1113,6 @@ should be one of 'left, 'up, 'right and 'down."
       (setq winsize-make-mouse-prominent-timer
             (run-with-timer 0.2 nil 'winsize-move-mouse)))))
 
-(defvar winsize-make-mouse-prominent-timer nil)
-
 (defun winsize-make-mouse-prominent-f (doit)
   (when (and winsize-make-mouse-prominent-timer
              (timerp winsize-make-mouse-prominent-timer))
@@ -1115,7 +1126,7 @@ should be one of 'left, 'up, 'right and 'down."
   "Give the user feedback."
   (when winsize-mark-selected-window
     (winsize-mark-selected-window t))
-  (unless juris-way
+  (unless winsize-juris-way
     (let ((move-mouse (not (member this-command
                                    '(mouse-drag-mode-line
                                      mouse-drag-vertical-line

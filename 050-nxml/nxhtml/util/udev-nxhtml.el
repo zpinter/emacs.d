@@ -44,7 +44,7 @@
 ;;
 ;;; Code:
 
-(require 'udev)
+(eval-when-compile (require 'udev))
 
 (defvar udev-nxhtml-install-dir nil)
 
@@ -141,6 +141,8 @@ Your current nXhtml dir will be renamed by adding '-old' to the name."))
         (setq here (point))))
     (fill-region here (point))
     ))
+
+(defvar udev-nxhtml-update-buffer nil)
 
 (defun udev-nxhtml-buffer-name (mode)
   "Return a name for current compilation buffer ignoring MODE."

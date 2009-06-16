@@ -4,8 +4,8 @@
 
 ;; Author: Taiki SUGAWARA <buzz.taiki@gmail.com>
 ;; Keywords: faces, editing, emulating
-;; Version: 1.03
-;; Time-stamp: <2008-01-22 17:58:43 UTC taiki>
+;; Version: 1.04
+;; Time-stamp: <2008-10-22 12:49:08 UTC taiki>
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/vline.el
 
 ;; This file is free software; you can redistribute it and/or modify
@@ -36,6 +36,10 @@
 ;; `vline-style' provides a display style of vertical line. see `vline-style' docstring.
 
 ;;; Changes
+;; 2008-10-22 taiki
+;; fix coding-system problem.
+;; - Added vline-multiwidth-space-list
+;; - Use ucs code-point for japanese fullwidth space.
 ;;
 ;; 2008-01-22 taiki
 ;; applied patch from Lennart Borgman
@@ -48,6 +52,11 @@
 (defvar vline-overlay-table-size 200)
 (defvar vline-overlay-table (make-vector vline-overlay-table-size nil))
 (defvar vline-line-char ?|)
+(defvar vline-multiwidth-space-list
+  (list
+   ?\t
+   (decode-char 'ucs #x3000)		; japanese fullwidth space
+   ))
 
 (defcustom vline-style 'face
   "*This variable holds vertical line display style.
@@ -79,6 +88,7 @@ in the currently selected window."
   :type 'boolean
   :group 'vline)
 
+;;;###autoload
 (define-minor-mode vline-mode
   "Display vertical line mode."
   :global nil
@@ -89,6 +99,7 @@ in the currently selected window."
     (vline-clear)
     (remove-hook 'post-command-hook 'vline-post-command-hook t)))
 
+;;;###autoload
 (define-minor-mode vline-global-mode
   "Display vertical line mode as globally."
   :global t
@@ -159,8 +170,8 @@ in the currently selected window."
                            nil))
 
             (cond
-             ;; tab, wide-space.
-             ((memq char '(?\t ?　))
+	     ;; multiwidth space
+	     ((memq char vline-multiwidth-space-list)
               (setq str
                     (concat str
                             (make-string (- (save-excursion (forward-char)

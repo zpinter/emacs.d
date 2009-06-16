@@ -1115,7 +1115,10 @@ list of face properties instead of a face symbol"
     (when (listp face-name)
       ;;(setq text-props (cons 'face face-name))
       (dolist (f face-name)
-        (if (listp f) ;; for things like (variable-pitch (:foreground "red"))
+        ;; Fix-me: chaged the test to "t" 2008-10-16 because in
+        ;; list-colors-display you now have text properties like
+        ;; (:background "snow").
+        (if t ;(listp f) ;; for things like (variable-pitch (:foreground "red"))
             (setq extra-props (cons f extra-props))
           (setq extra-props (cons :inherit (cons f extra-props)))))
       (setq face-name nil))
@@ -1784,6 +1787,7 @@ Do not record undo information during evaluation of BODY."
     )
   )
 
+;;;###autoload
 (defun htmlfontify-buffer (&optional srcdir file)
   "Create a new buffer, named for the current buffer + a .html extension,
 containing an inline css-stylesheet and formatted css-markup html

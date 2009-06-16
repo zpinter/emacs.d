@@ -3,9 +3,31 @@
 ;; This file should be updated by `nxhtmlmaint-get-file-autoloads',
 ;; `nxhtmlmaint-get-dir-autoloads' or `nxhtmlmaint-get-all-autoloads'.
 
+;;;### (autoloads (html-pagetoc-rebuild-toc html-pagetoc-insert-toc)
+;;;;;;  "../nxhtml/html-pagetoc" "nxhtml/html-pagetoc.el" (18974
+;;;;;;  59066))
+;;; Generated autoloads from nxhtml/html-pagetoc.el
+
+(autoload 'html-pagetoc-insert-toc "../nxhtml/html-pagetoc" "\
+Inserts a table of contents for the current html file.
+The html header tags h1-h6 found in the file are inserted into
+this table.  MIN-LEVEL and MAX-LEVEL specifies the minimum and
+maximum level of h1-h6 to include.  They should be integers.
+
+\(fn &optional MIN-LEVEL MAX-LEVEL)" t nil)
+
+(autoload 'html-pagetoc-rebuild-toc "../nxhtml/html-pagetoc" "\
+Update the table of contents inserted by `html-pagetoc-insert-toc'.
+
+\(fn)" t nil)
+
+(defconst html-pagetoc-menu-map (let ((map (make-sparse-keymap))) (define-key map [html-pagetoc-rebuild-toc] (list 'menu-item "Update Page TOC" 'html-pagetoc-rebuild-toc)) (define-key map [html-pagetoc-insert-style-guide] (list 'menu-item "Insert CSS Style for Page TOC" 'html-pagetoc-insert-style-guide)) (define-key map [html-pagetoc-insert-toc] (list 'menu-item "Insert Page TOC" 'html-pagetoc-insert-toc)) map))
+
+;;;***
+
 ;;;### (autoloads (html-site-query-replace html-site-rgrep html-site-find-file
 ;;;;;;  html-site-dired-current html-site-set-site html-site-buffer-or-dired-file-name)
-;;;;;;  "../nxhtml/html-site" "nxhtml/html-site.el" (18658 47798))
+;;;;;;  "../nxhtml/html-site" "nxhtml/html-site.el" (18790 45398))
 ;;; Generated autoloads from nxhtml/html-site.el
 
 (autoload 'html-site-buffer-or-dired-file-name "../nxhtml/html-site" "\
@@ -41,8 +63,61 @@ Query replace in current site's files.
 
 ;;;***
 
+;;;### (autoloads nil "../nxhtml/html-toc" "nxhtml/html-toc.el" (18974
+;;;;;;  59066))
+;;; Generated autoloads from nxhtml/html-toc.el
+
+(defconst html-toc-menu-map (let ((map (make-sparse-keymap))) (define-key map [html-toc-browse-frames-file] (list 'menu-item "Browse Frames File" 'html-toc-browse-frames-file)) (define-key map [html-toc-write-frames-file] (list 'menu-item "Write Frames File" 'html-toc-write-frames-file)) (define-key map [html-toc-write-toc-file] (list 'menu-item "Write TOC File for Frames" 'html-toc-write-toc-file)) (define-key map [html-toc-sep1] (list 'menu-item "--")) (define-key map [html-toc-edit-pages-file] (list 'menu-item "Edit List of Pages for TOC" 'html-site-edit-pages-file)) (define-key map [html-toc-create-pages-file] (list 'menu-item "Write List of Pages for TOC" 'html-toc-create-pages-file)) map))
+
+;;;***
+
+;;;### (autoloads (html-upl-ediff-file html-upl-edit-remote-file-with-toc
+;;;;;;  html-upl-edit-remote-file html-upl-upload-file html-upl-remote-dired
+;;;;;;  html-upl-upload-site html-upl-upload-site-with-toc) "../nxhtml/html-upl"
+;;;;;;  "nxhtml/html-upl.el" (18969 63118))
+;;; Generated autoloads from nxhtml/html-upl.el
+
+(autoload 'html-upl-upload-site-with-toc "../nxhtml/html-upl" "\
+Not documented
+
+\(fn)" t nil)
+
+(autoload 'html-upl-upload-site "../nxhtml/html-upl" "\
+Not documented
+
+\(fn)" t nil)
+
+(autoload 'html-upl-remote-dired "../nxhtml/html-upl" "\
+Start dired for remote directory or its parent/ancestor.
+
+\(fn DIRNAME)" t nil)
+
+(autoload 'html-upl-upload-file "../nxhtml/html-upl" "\
+Upload a single file in a site.
+For the definition of a site see `html-site-current'.
+
+\(fn FILENAME)" t nil)
+
+(autoload 'html-upl-edit-remote-file "../nxhtml/html-upl" "\
+Not documented
+
+\(fn)" t nil)
+
+(autoload 'html-upl-edit-remote-file-with-toc "../nxhtml/html-upl" "\
+Not documented
+
+\(fn)" t nil)
+
+(autoload 'html-upl-ediff-file "../nxhtml/html-upl" "\
+Run ediff on local and remote file.
+FILENAME could be either the remote or the local file.
+
+\(fn FILENAME)" t nil)
+
+;;;***
+
 ;;;### (autoloads (inlimg-toggle-img-display inlimg-mode) "../nxhtml/inlimg"
-;;;;;;  "nxhtml/inlimg.el" (18658 47798))
+;;;;;;  "nxhtml/inlimg.el" (18775 60002))
 ;;; Generated autoloads from nxhtml/inlimg.el
 
 (autoload 'inlimg-mode "../nxhtml/inlimg" "\
@@ -63,11 +138,79 @@ See also the command `inlimg-mode'.
 
 ;;;***
 
-;;;### (autoloads (nxhtml-validation-header-mode nxhtml-mode) "../nxhtml/nxhtml"
-;;;;;;  "nxhtml/nxhtml.el" (18658 47798))
+;;;### (autoloads (nxhtml-customize) "../nxhtml/nxhtml" "nxhtml/nxhtml.el"
+;;;;;;  (18974 59066))
 ;;; Generated autoloads from nxhtml/nxhtml.el
 
-(autoload 'nxhtml-mode "../nxhtml/nxhtml" "\
+(autoload 'nxhtml-customize "../nxhtml/nxhtml" "\
+Customize nXhtml.
+
+\(fn)" t nil)
+
+;;;***
+
+;;;### (autoloads (nxhtml-report-bug) "../nxhtml/nxhtml-bug" "nxhtml/nxhtml-bug.el"
+;;;;;;  (18775 60002))
+;;; Generated autoloads from nxhtml/nxhtml-bug.el
+
+(autoload 'nxhtml-report-bug "../nxhtml/nxhtml-bug" "\
+Report a bug in nXhtml.
+
+\(fn)" t nil)
+
+;;;***
+
+;;;### (autoloads (nxhtml-overview nxhtml-global-minor-mode nxhtml-browse-region
+;;;;;;  nxhtml-browse-file nxhtml-edit-with-gimp) "../nxhtml/nxhtml-menu"
+;;;;;;  "nxhtml/nxhtml-menu.el" (18981 17066))
+;;; Generated autoloads from nxhtml/nxhtml-menu.el
+
+(autoload 'nxhtml-edit-with-gimp "../nxhtml/nxhtml-menu" "\
+Edit with GIMP buffer or file at point.
+
+\(fn)" t nil)
+
+(autoload 'nxhtml-browse-file "../nxhtml/nxhtml-menu" "\
+View file in web browser.
+
+\(fn FILE)" t nil)
+
+(autoload 'nxhtml-browse-region "../nxhtml/nxhtml-menu" "\
+View region in web browser.
+
+\(fn)" t nil)
+
+(defvar nxhtml-global-minor-mode nil "\
+Non-nil if Nxhtml-Global minor mode is enabled.
+See the command `nxhtml-global-minor-mode' for a description of this minor mode.
+Setting this variable directly does not take effect;
+either customize it (see the info node `Easy Customization')
+or call the function `nxhtml-global-minor-mode'.")
+
+(nxhtml-custom-autoload 'nxhtml-global-minor-mode "../nxhtml/nxhtml-menu" nil)
+
+(autoload 'nxhtml-global-minor-mode "../nxhtml/nxhtml-menu" "\
+Toggle Nxhtml minor mode in every possible buffer.
+With prefix ARG, turn Nxhtml-Global minor mode on if and only if ARG is positive.
+Nxhtml minor mode is enabled in all buffers where `nxhtml-maybe-turn-on-minor-mode' would do it.
+See `nxhtml-minor-mode' for more information on Nxhtml minor mode.
+
+\(fn &optional ARG)" t nil)
+
+(autoload 'nxhtml-overview "../nxhtml/nxhtml-menu" "\
+Show a HTML page with an overview of nXhtml.
+
+\(fn)" t nil)
+
+;;;***
+
+;;;### (autoloads (nxhtml-validation-header-mode nxhtml-short-tag-help
+;;;;;;  nxhtml-mode) "../nxhtml/nxhtml-mode" "nxhtml/nxhtml-mode.el"
+;;;;;;  (18975 5780))
+;;; Generated autoloads from nxhtml/nxhtml-mode.el
+
+(when (fboundp 'nxml-mode)
+(autoload 'nxhtml-mode "../nxhtml/nxhtml-mode" "\
 Major mode for editing XHTML documents.
 It is based on `nxml-mode' and adds some features that are useful
 when editing XHTML files.\\<nxhtml-mode-map>
@@ -169,9 +312,15 @@ point in the mumamo chunk you want to know the key bindings in.
   with this if you have followed the installation instructions
   for nXhtml.
 
-\(fn)" t nil)
+\(fn)" t nil))
 
-(autoload 'nxhtml-validation-header-mode "../nxhtml/nxhtml" "\
+(autoload 'nxhtml-short-tag-help "../nxhtml/nxhtml-mode" "\
+Display description of tag TAG.  If TAG is omitted, try tag at point.
+
+\(fn TAG)" t nil)
+
+(when (fboundp 'nxml-mode)
+(autoload 'nxhtml-validation-header-mode "../nxhtml/nxhtml-mode" "\
 If on use a Fictive XHTML Validation Header for the buffer.
 See `nxhtml-set-validation-header' for information about Fictive XHTML Validation Headers.
 
@@ -180,50 +329,10 @@ This mode may be turned on automatically in two ways:
   `nxthml-mode' may ask you if you want to turn this mode on if
   needed.
 - You can also choose to have it turned on automatically whenever
-  mumamo is used, see `nxhtml-validation-header-if-mumamo' for
-  further information.
+  a mumamo multi major mode is used, see
+  `nxhtml-validation-header-if-mumamo' for further information.
 
-\(fn &optional ARG)" t nil)
-
-;;;***
-
-;;;### (autoloads (nxhtml-report-bug) "../nxhtml/nxhtml-bug" "nxhtml/nxhtml-bug.el"
-;;;;;;  (18654 33920))
-;;; Generated autoloads from nxhtml/nxhtml-bug.el
-
-(autoload 'nxhtml-report-bug "../nxhtml/nxhtml-bug" "\
-Report a bug in nXhtml.
-
-\(fn)" t nil)
-
-;;;***
-
-;;;### (autoloads (nxhtml-global-minor-mode nxhtml-minor-mode) "../nxhtml/nxhtml-menu"
-;;;;;;  "nxhtml/nxhtml-menu.el" (18663 19504))
-;;; Generated autoloads from nxhtml/nxhtml-menu.el
-
-(autoload 'nxhtml-minor-mode "../nxhtml/nxhtml-menu" "\
-Minor mode to turn on some key and menu bindings.
-See `nxhtml-mode' for more information.
-
-\(fn &optional ARG)" t nil)
-
-(defvar nxhtml-global-minor-mode nil "\
-Non-nil if Nxhtml-Global minor mode is enabled.
-See the command `nxhtml-global-minor-mode' for a description of this minor mode.
-Setting this variable directly does not take effect;
-either customize it (see the info node `Easy Customization')
-or call the function `nxhtml-global-minor-mode'.")
-
-(custom-autoload 'nxhtml-global-minor-mode "../nxhtml/nxhtml-menu" nil)
-
-(autoload 'nxhtml-global-minor-mode "../nxhtml/nxhtml-menu" "\
-Toggle Nxhtml minor mode in every possible buffer.
-With prefix ARG, turn Nxhtml-Global minor mode on if and only if ARG is positive.
-Nxhtml minor mode is enabled in all buffers where `nxhtml-maybe-turn-on-minor-mode' would do it.
-See `nxhtml-minor-mode' for more information on Nxhtml minor mode.
-
-\(fn &optional ARG)" t nil)
+\(fn &optional ARG)" t nil))
 
 ;;;***
 
@@ -231,12 +340,14 @@ See `nxhtml-minor-mode' for more information on Nxhtml minor mode.
 ;;;;;;  eruby-nxhtml-mumamo-mode jsp-nxhtml-mumamo-mode smarty-nxhtml-mumamo-mode
 ;;;;;;  mjt-nxhtml-mumamo-mode genshi-nxhtml-mumamo-mode django-nxhtml-mumamo-mode
 ;;;;;;  embperl-nxhtml-mumamo-mode nxhtml-mumamo-mode) "../nxhtml/nxhtml-mumamo"
-;;;;;;  "nxhtml/nxhtml-mumamo.el" (18649 8278))
+;;;;;;  "nxhtml/nxhtml-mumamo.el" (18981 9199))
 ;;; Generated autoloads from nxhtml/nxhtml-mumamo.el
 
 (autoload 'nxhtml-mumamo-mode "../nxhtml/nxhtml-mumamo" "\
 Turn on multiple major modes for (X)HTML with main mode `nxhtml-mode'.
-This covers inlined style and javascript and PHP." t)
+This covers inlined style and javascript and PHP.
+
+See also `mumamo-alt-php-tags-mode'." t)
 
 (autoload 'embperl-nxhtml-mumamo-mode "../nxhtml/nxhtml-mumamo" "\
 Turn on multiple major modes for Embperl files with main mode `nxhtml-mode'.
@@ -277,7 +388,7 @@ This also covers inlined style and javascript." t)
 ;;;***
 
 ;;;### (autoloads (nxml-where-global-mode nxml-where-mode) "../nxhtml/nxml-where"
-;;;;;;  "nxhtml/nxml-where.el" (18658 47798))
+;;;;;;  "nxhtml/nxml-where.el" (18974 59066))
 ;;; Generated autoloads from nxhtml/nxml-where.el
 
 (autoload 'nxml-where-mode "../nxhtml/nxml-where" "\
@@ -292,7 +403,7 @@ Setting this variable directly does not take effect;
 either customize it (see the info node `Easy Customization')
 or call the function `nxml-where-global-mode'.")
 
-(custom-autoload 'nxml-where-global-mode "../nxhtml/nxml-where" nil)
+(nxhtml-custom-autoload 'nxml-where-global-mode "../nxhtml/nxml-where" nil)
 
 (autoload 'nxml-where-global-mode "../nxhtml/nxml-where" "\
 Toggle Nxml-Where mode in every possible buffer.
@@ -301,6 +412,45 @@ Nxml-Where mode is enabled in all buffers where `nxml-where-turn-on-in-nxml-chil
 See `nxml-where-mode' for more information on Nxml-Where mode.
 
 \(fn &optional ARG)" t nil)
+
+;;;***
+
+;;;### (autoloads (rngalt-set-validation-header) "../nxhtml/rngalt"
+;;;;;;  "nxhtml/rngalt.el" (18980 36140))
+;;; Generated autoloads from nxhtml/rngalt.el
+
+(autoload 'rngalt-set-validation-header "../nxhtml/rngalt" "\
+Not documented
+
+\(fn START-OF-DOC)" nil nil)
+
+;;;***
+
+;;;### (autoloads (tidy-build-menu) "../nxhtml/tidy-xhtml" "nxhtml/tidy-xhtml.el"
+;;;;;;  (18974 59068))
+;;; Generated autoloads from nxhtml/tidy-xhtml.el
+
+(autoload 'tidy-build-menu "../nxhtml/tidy-xhtml" "\
+Set up the tidy menu in MAP.
+Used to set up a Tidy menu in your favourite mode.
+
+\(fn &optional MAP)" t nil)
+
+;;;***
+
+;;;### (autoloads (xhtml-help-show-tag-ref xhtml-help-show-css-ref)
+;;;;;;  "../nxhtml/xhtml-help" "nxhtml/xhtml-help.el" (18790 45398))
+;;; Generated autoloads from nxhtml/xhtml-help.el
+
+(autoload 'xhtml-help-show-css-ref "../nxhtml/xhtml-help" "\
+Show css reference for css property name at point.
+
+\(fn)" t nil)
+
+(autoload 'xhtml-help-show-tag-ref "../nxhtml/xhtml-help" "\
+Show xhtml reference for tag name at or before point.
+
+\(fn)" t nil)
 
 ;;;***
 
@@ -323,18 +473,6 @@ Key bindings:
 
 ;;;***
 
-;;;### (autoloads (css-mode) "../related/css-mode" "related/css-mode.el"
-;;;;;;  (18248 47980))
-;;; Generated autoloads from related/css-mode.el
- (add-to-list 'auto-mode-alist '("\\.css\\'" . css-mode))
-
-(autoload 'css-mode "../related/css-mode" "\
-Major mode to edit Cascading Style Sheets.
-
-\(fn)" t nil)
-
-;;;***
-
 ;;;### (autoloads (django-mode) "../related/django" "related/django.el"
 ;;;;;;  (18654 33920))
 ;;; Generated autoloads from related/django.el
@@ -348,7 +486,7 @@ This mode only provides syntax highlighting.
 ;;;***
 
 ;;;### (autoloads (javascript-mode) "../related/javascript" "related/javascript.el"
-;;;;;;  (18418 45624))
+;;;;;;  (18946 55162))
 ;;; Generated autoloads from related/javascript.el
 
 (autoload 'javascript-mode "../related/javascript" "\
@@ -362,11 +500,11 @@ Key bindings:
 
 ;;;***
 
-;;;### (autoloads (javascript-mode) "../related/javascript-mozlab"
-;;;;;;  "related/javascript-mozlab.el" (18562 39536))
-;;; Generated autoloads from related/javascript-mozlab.el
+;;;### (autoloads (javascript-mode) "../related/javascript-old" "related/javascript-old.el"
+;;;;;;  (18972 23450))
+;;; Generated autoloads from related/javascript-old.el
 
-(autoload 'javascript-mode "../related/javascript-mozlab" "\
+(autoload 'javascript-mode "../related/javascript-old" "\
 Major mode for editing JavaScript source text.
 
 Key bindings:
@@ -377,44 +515,8 @@ Key bindings:
 
 ;;;***
 
-;;;### (autoloads (js2-mode) "../related/js2" "related/js2.el" (18624
-;;;;;;  30036))
-;;; Generated autoloads from related/js2.el
- (add-to-list 'auto-mode-alist '("\\.js$" . js2-mode))
-
-(autoload 'js2-mode "../related/js2" "\
-Major mode for editing JavaScript code.
-
-\(fn)" t nil)
-
-;;;***
-
-;;;### (autoloads (js2-mode) "../related/js2-mumamo" "related/js2-mumamo.el"
-;;;;;;  (18496 38616))
-;;; Generated autoloads from related/js2-mumamo.el
- (add-to-list 'auto-mode-alist '("\\.js$" . js2-mode))
-
-(autoload 'js2-mode "../related/js2-mumamo" "\
-Major mode for editing JavaScript code.
-
-\(fn)" t nil)
-
-;;;***
-
-;;;### (autoloads (js2-mode) "../related/js2-new" "related/js2-new.el"
-;;;;;;  (18455 47788))
-;;; Generated autoloads from related/js2-new.el
- (add-to-list 'auto-mode-alist '("\\.js$" . js2-mode))
-
-(autoload 'js2-mode "../related/js2-new" "\
-Major mode for editing JavaScript code.
-
-\(fn)" t nil)
-
-;;;***
-
 ;;;### (autoloads (inferior-moz-mode moz-minor-mode) "../related/moz"
-;;;;;;  "related/moz.el" (18654 33920))
+;;;;;;  "related/moz.el" (18775 60002))
 ;;; Generated autoloads from related/moz.el
 
 (autoload 'moz-minor-mode "../related/moz" "\
@@ -442,13 +544,13 @@ Major mode for interacting with Firefox via MozRepl.
 ;;;***
 
 ;;;### (autoloads (php-mode php-file-patterns) "../related/php-mode"
-;;;;;;  "related/php-mode.el" (18649 8278))
+;;;;;;  "related/php-mode.el" (18775 60002))
 ;;; Generated autoloads from related/php-mode.el
 
 (defvar php-file-patterns '("\\.php[s34]?\\'" "\\.phtml\\'" "\\.inc\\'") "\
 List of file patterns for which to automatically invoke `php-mode'.")
 
-(custom-autoload 'php-file-patterns "../related/php-mode" nil)
+(nxhtml-custom-autoload 'php-file-patterns "../related/php-mode" nil)
 
 (autoload 'php-mode "../related/php-mode" "\
 Major mode for editing PHP code.
@@ -460,406 +562,10 @@ Major mode for editing PHP code.
 ;;;***
 
 ;;;### (autoloads (smarty-mode) "../related/smarty-mode" "related/smarty-mode.el"
-;;;;;;  (18317 23898))
+;;;;;;  (18969 63118))
 ;;; Generated autoloads from related/smarty-mode.el
 
 (autoload 'smarty-mode "../related/smarty-mode" "\
-Mode for editing php smarty files.
-Smarty Mode is a GNU XEmacs major mode for editing Smarty templates.
-
-1 Introduction
-**************
-
-Smarty-Mode is a mode allowing easy edit of Smarty templates:
-highlight, templates, navigation into source files...
-
-
-
-Features (new features in bold) :
-
-   * Completion
-
-   * Customizable
-
-   * Highlight
-
-   * Menu
-
-   * Stuttering
-
-   * Templates
-        - Built-in Functions
-
-        - User Functions
-
-        - Variable Modifiers
-
-        - Plugin (Functions)
-             * Smarty Formtool
-
-             * Smarty Paginate
-
-             * Smarty Validate
-
-        - Plugin (Variable Modifiers)
-             * AlternativeDateModifierPlugin
-
-             * B2Smilies
-
-             * BBCodePlugin
-
-        - Fonctions Non-Smarty
-
-
-
-This manual describes Smarty Mode version 0.0.4.
-
-3 Customization
-***************
-
-This chapter describes the differents parameters and functions that
-you can change to customize Smarty Mode.  To do that, open a Smarty
-file, click on the Smarty menu and choose Options then Browse
-Options....
-
-3.1 Parameters
-==============
-
-3.1.1 Mode
-----------
-
-Smarty Mode has 2 modes allowing to simplify the writing of Smarty
-templates. You can enable/disable each mode individually.
-
-`smarty-electric-mode'
-     Type: boolean
-     Default value: `t'
-     Description: If `t'; enable automatic generation of template.
-     If `nil'; template generators can still be invoked through key
-     bindings and menu. Is indicated in the modeline by \"/e\" after
-     the mode name and can be toggled by `smarty-electric-mode'.
-
-`smarty-stutter-mode'
-     Type: boolean
-     Default value: `t'
-     Description: If `t'; enable the stuttering. Is indicated in the
-     modeline by \"/s\" after the mode name and can be toggled by
-     `smarty-stutter-mode'.
-
-3.1.2 Menu
-----------
-
-Smarty Mode has also 1 menu that you can enable/disable. The menu
-Sources is specific to each Smarty files opened.
-
-`smarty-source-file-menu'
-     Type: boolean
-     Default value: `t'
-     Description: If `t'; the Sources menu is enabled. This menu
-     contains the list of Smarty file located in the current
-     directory. The Sources menu scans the directory when a file is
-     opened.
-
-3.1.3 Menu
-----------
-
-`smarty-highlight-plugin-functions'
-     Type: boolean
-     Default value: `t'
-     Description: If `t'; the functions described in the smarty
-     plugins are highlighted.
-
-3.1.4 Templates
----------------
-
-3.1.4.1 Header
-..............
-
-`smarty-file-header'
-     Type: string
-     Default value: `\"\"'
-     Description: String or file to insert as file header. If the
-     string specifies an existing file name the contents of the file
-     is inserted; otherwise the string itself is inserted as file
-     header.
-     Type `C-j' for newlines.
-     The follonwing keywords are supported:
-     <filename>: replaced by the file name.
-     <author>: replaced by the user name and email address.
-     <login>: replaced by `user-login-name'.
-     <company>: replaced by `smarty-company-name' content.
-     <date>: replaced by the current date.
-     <year>: replaced by the current year.
-     <copyright>: replaced by `smarty-copyright-string' content.
-     <cursor>: final cursor position.
-
-`smarty-file-footer'
-     Type: string
-     Default value: `\"\"'
-     Description: String or file to insert as file footer.  See
-     `smarty-file-header'
-
-`smarty-company-name'
-     Type: string
-     Default value: `\"\"'
-     Description: Name of the company to insert in file header.
-
-`smarty-copyright-string'
-     Type: string
-     Default value: `\"\"'
-     Description: Coryright string to insert in file header.
-
-`smarty-date-format'
-     Type: string
-     Default value: `\"%Y-%m-%d\"'
-     Description: Date format.
-
-`smarty-modify-date-prefix-string'
-     Type: string
-     Default value: `\"\"'
-     Description: Prefix string of modification date in Smarty file
-     header.
-
-`smarty-modify-date-on-saving'
-     Type: bool
-     Default value: `nil'
-     Description: If `t'; update the modification date when the
-     buffer is saved.
-
-3.1.5 Miscellaneous
--------------------
-
-`smarty-left-delimiter'
-     Type: string
-     Default value: `\"\"'
-     Description: Left escaping delimiter for Smarty templates.
-
-`smarty-right-delimiter'
-     Type: string
-     Default value: `\"\"'
-     Description: Right escaping delimiter for Smarty templates.
-
-`smarty-intelligent-tab'
-     Type: bool
-     Default value: `t'
-     Description: If `t'; TAB does indentation; completion and insert
-     tabulations. If `nil'; TAB does only indentation.
-
-`smarty-word-completion-in-minibuffer'
-     Type: bool
-     Default value: `t'
-     Description: If `t'; enable completion in the minibuffer.
-
-`smarty-word-completion-case-sensitive'
-     Type: bool
-     Default value: `nil'
-     Description: If `t'; completion is case sensitive.
-
-3.2 Functions
-=============
-
-3.2.1 Mode
-----------
-
-`smarty-electric-mode'
-     Menu: Smarty -> Options -> Mode -> Electric Mode
-     Keybinding: `C-c C-m C-e'
-     Description: This functions is used to enable/disable the
-     electric mode.
-
-`smarty-stutter-mode'
-     Menu: Smarty -> Options -> Mode -> Stutter Mode
-     Keybinding: `C-c C-m C-s'
-     Description: This function is used to enable/disable the stutter
-     mode.
-
-4 Menus
-*******
-
-There are 2 menus: Smarty and Sources. All theses menus can be
-accessed from the menubar or from the right click. This chapter
-describes each menus.
-
-4.1 Smarty
-==========
-
-This is the main menu of Smarty Mode. It allows an easy access to the
-main features of the Smarty Mode: Templates (see *Note Templates::)
-and Options (see *Note Customization::).
-
-This menu contains also 3 functions that are discussed in the next
-part.
-
-4.1.1 Functions
----------------
-\\<smarty-mode-map>
-`smarty-show-messages'
-     Menu: Smarty -> Show Messages
-     Keybinding: `C-c M-m' \\[smarty-show-messages]
-     Description: This function opens the *Messages* buffer to
-     display previous error messages.
-
-`smarty-doc-mode'
-     Menu: Smarty -> Smarty Mode Documentation
-     Keybinding: `C-c C-h' \\[smarty-doc-mode]
-     Description: This function opens the *Help* buffer and prints in
-     it the Smarty Mode documentation.
-
-`smarty-version'
-     Menu: Smarty -> Version
-     Keybinding: `C-c C-v'
-     Description: This function displays in the minibuffer the
-     current Smarty Mode version with the timestamp.
-
-4.2 Sources
-===========
-
-The Sources menu shows the Smarty files in the current directory. If
-you add or delete a file in the current directory, you need to
-refresh the menu.
-
-4.2.1 Customization
--------------------
-
-`smarty-source-file-menu'
-     Type: boolean
-     Default value: `t'
-     Description: If `t'; the Sources menu is enabled. This menu
-     contains the list of Smarty file located in the current
-     directory. The Sources menu scans the directory when a file is
-     opened.
-
-4.2.2 Functions
----------------
-
-`smarty-add-source-files-menu'
-     Menu: Sources -> *Rescan*
-     Keybinding: `C-c C-s C-u'
-     Description: This function is used to refresh the Sources menu.
-
-5 Stuttering
-************
-
-The stutter mode is a mode that affects a function to a key. For
-example, when you use the `ENTER' key, the associated function will
-create a new line and indent it.
-
-5.1 Customization
-=================
-
-`smarty-stutter-mode'
-     Type: boolean
-     Default value: `t'
-     Description: If `t'; enable the stuttering. Is indicated in the
-     modeline by \"/s\" after the mode name and can be toggled by
-     `smarty-stutter-mode'.
-
-5.2 Functions
-=============
-
-`SPACE'
-     If in comment, indent the comment and add new line if necessary.
-     In other case, add a space.
-
-`('
-     If the previous character is a `(', the `((' will be replaced by
-     `['.
-     If the previous character is a `[', the `[(' will be replaced by
-     `{'.
-     In other case, insert a `('.
-
-`)'
-     If the previous character is a `)', the `))' will be replaced by
-     `]'.
-     If the previous character is a `]', the `])' will be replaced by
-     `}'.
-     In other case, insert a `)'.
-
-6 Templates
-***********
-
-In the Smarty Mode, the Smarty functions (like if, while, for, fopen,
-fclose) are predefined in functions called \"Templates\".
-
-Each template can be invoked by the function name or by using the
-<SPACE> key after the Smarty function name in the buffer (Note, using
-`M-<SPACE>' disable the template).
-
-A template can be aborted by using the `C-g' or by lefting empty the
-tempate prompt (in the minibuffer).
-
-6.1 Customization
-=================
-
-`smarty-electric-mode'
-     Type: boolean
-     Default value: `t'
-     Description: If `t'; enable automatic generation of template.
-     If `nil'; template generators can still be invoked through key
-     bindings and menu. Is indicated in the modeline by \"/e\" after
-     the mode name and can be toggled by `smarty-electric-mode'.
-
-For a complete description of the template customizable variables,
-see *Note Cu01-Pa01-Template::
-
-6.2 Functions
-=============
-
-6.2.1 Smarty Functions
-----------------------
-
-For Smarty functions, see PDF or HTML documentation.
-
-6.2.2 Non-Smarty Functions
---------------------------
-
-`smarty-template-header'
-     Menu: Smarty -> Templates -> Insert Header
-     Keybinding: `C-c C-t C-h'
-     Description: This function is used to insert a header in the
-     current buffer.
-
-`smarty-template-footer'
-     Menu: Smarty -> Templates -> Insert Footer
-     Keybinding: `C-c C-t C-f'
-     Description: This function is used to insert a footer in the
-     current buffer.
-
-`smarty-template-insert-date'
-     Menu: Smarty -> Templates -> Insert Date
-     Keybinding: `C-c C-t C-d i'
-     Description: This function is used to insert the date in the
-     current buffer.
-
-`smarty-template-modify'
-     Menu: Smarty -> Templates -> Modify Date
-     Keybinding: `C-c C-t C-d m'
-     Description: This function is used to modify the last
-     modification date in the current buffer.
-
-7 Bugs, Help
-************
-
-   * To report bugs: Bugtracker
-     (http://bugtracker.morinie.fr/lisp/set_project.php?project_id=2)
-
-   * To obtain help you can post on the dedicated forum: Forum
-     (http://forum.morinie.fr/lisp/)
-
-8 Key bindings
-**************
-
-\\{smarty-mode-map}
-
-\(fn)" t nil)
-
-;;;***
-
-;;;### (autoloads (smarty-mode) "../related/smarty-mode-vdebout"
-;;;;;;  "related/smarty-mode-vdebout.el" (18295 31440))
-;;; Generated autoloads from related/smarty-mode-vdebout.el
-
-(autoload 'smarty-mode "../related/smarty-mode-vdebout" "\
 Smarty Mode
 ***********
 
@@ -893,6 +599,10 @@ Features (new features in bold) :
         - Variable Modifiers
 
         - Plugin (Functions)
+             * BlockRepeatPlugin
+
+             * ClipCache
+
              * Smarty Formtool
 
              * Smarty Paginate
@@ -910,7 +620,7 @@ Features (new features in bold) :
 
 
 
-This manual describes Smarty Mode version 0.0.4.
+This manual describes Smarty Mode version 0.0.5.
 
 2 Installation
 **************
@@ -939,12 +649,12 @@ installed.
 
 Two internet address to download Smarty Mode :
 
-   * Principal: Smarty-Mode 0.0.4
-     (http://deboutv.free.fr/lisp/smarty/download/smarty-0.0.4.tar.gz)
+   * Principal: Smarty-Mode 0.0.5
+     (http://deboutv.free.fr/lisp/smarty/download/smarty-0.0.5.tar.gz)
      (http://deboutv.free.fr/lisp/smarty/)
 
-   * Secondary: Smarty-Mode 0.0.4
-     (http://www.morinie.fr/lisp/smarty/download/smarty-0.0.4.tar.gz)
+   * Secondary: Smarty-Mode 0.0.5
+     (http://www.morinie.fr/lisp/smarty/download/smarty-0.0.5.tar.gz)
      (http://www.morinie.fr/lisp/smarty/)
 
    * Old releases: Smarty-Mode
@@ -966,7 +676,7 @@ installation directory.
 
 Example:
      cd /usr/local/share/lisp
-     tar zxvf smarty-0.0.4.tar.gz
+     tar zxvf smarty-0.0.5.tar.gz
 Now you have a `smarty' directory in the installation directory. This
 directory contains 2 files `smarty-mode.el' and `smarty-mode.elc' and
 another directory `docs' containing the documentation.
@@ -989,7 +699,7 @@ directory to remove the old release.
 Example:
      cd /usr/local/share/lisp
      rm -rf smarty
-     tar zxvf smarty-0.0.4.tar.gz
+     tar zxvf smarty-0.0.5.tar.gz
 
 2.4 Invoke Smarty-Mode
 ======================
@@ -1364,7 +1074,7 @@ Major mode for editing Template Toolkit files.
 
 ;;;### (autoloads (wikipedia-draft-buffer wikipedia-draft-page wikipedia-draft
 ;;;;;;  wikipedia-mode) "../related/wikipedia-mode" "related/wikipedia-mode.el"
-;;;;;;  (18401 44650))
+;;;;;;  (18790 45400))
 ;;; Generated autoloads from related/wikipedia-mode.el
 
 (autoload 'wikipedia-mode "../related/wikipedia-mode" "\
@@ -1470,7 +1180,7 @@ wikipedia-draft-data-file.
 ;;;***
 
 ;;;### (autoloads (ert-run-tests-interactively ert-deftest) "../tests/ert"
-;;;;;;  "tests/ert.el" (18614 1898))
+;;;;;;  "tests/ert.el" (18775 60002))
 ;;; Generated autoloads from tests/ert.el
 
 (autoload 'ert-deftest "../tests/ert" "\
@@ -1485,41 +1195,8 @@ Run the tests specified by SELECTOR and display the results in a buffer.
 
 ;;;***
 
-;;;### (autoloads (ert-run-tests-interactively ert-deftest) "../tests/ert-080729"
-;;;;;;  "tests/ert-080729.el" (18603 15792))
-;;; Generated autoloads from tests/ert-080729.el
-
-(autoload 'ert-deftest "../tests/ert-080729" "\
-Define NAME (a symbol) as a test.
-
-\(fn NAME () [:documentation DOCSTRING] [:expected-result TYPE] BODY...)" nil (quote macro))
-
-(autoload 'ert-run-tests-interactively "../tests/ert-080729" "\
-Run the tests specified by SELECTOR and display the results in a buffer.
-
-\(fn SELECTOR &optional OUTPUT-BUFFER-NAME MESSAGE-FN)" t nil)
-
-;;;***
-
-;;;### (autoloads (ruby-mode) "../tests/in/pastie-246693.txt-ruby-mode"
-;;;;;;  "tests/in/pastie-246693.txt-ruby-mode.el" (18603 15792))
-;;; Generated autoloads from tests/in/pastie-246693.txt-ruby-mode.el
-
-(autoload 'ruby-mode "../tests/in/pastie-246693.txt-ruby-mode" "\
-Major mode for editing ruby scripts.
-\\[ruby-indent-line] properly indents subexpressions of multi-line
-class, module, def, if, while, for, do, and case statements, taking
-nesting into account.
-
-The variable ruby-indent-level controls the amount of indentation.
-\\{ruby-mode-map}
-
-\(fn)" t nil)
-
-;;;***
-
 ;;;### (autoloads (nxhtmltest-run-Q) "../tests/nxhtmltest-Q" "tests/nxhtmltest-Q.el"
-;;;;;;  (18659 17016))
+;;;;;;  (18781 14068))
 ;;; Generated autoloads from tests/nxhtmltest-Q.el
 
 (autoload 'nxhtmltest-run-Q "../tests/nxhtmltest-Q" "\
@@ -1531,7 +1208,7 @@ See `nxhtmltest-run' for more information about the tests.
 ;;;***
 
 ;;;### (autoloads (nxhtmltest-run nxhtmltest-run-indent) "../tests/nxhtmltest-suites"
-;;;;;;  "tests/nxhtmltest-suites.el" (18659 17016))
+;;;;;;  "tests/nxhtmltest-suites.el" (18946 55162))
 ;;; Generated autoloads from tests/nxhtmltest-suites.el
 
 (autoload 'nxhtmltest-run-indent "../tests/nxhtmltest-suites" "\
@@ -1553,9 +1230,59 @@ fail (they corresponds to known errors in nXhtml/Emacs):
 
 ;;;***
 
-;;;### (autoloads (as-external-mode) "as-external" "util/as-external.el"
-;;;;;;  (18665 17017))
+;;;### (autoloads (appmenu-add) "appmenu" "util/appmenu.el" (18977
+;;;;;;  24993))
+;;; Generated autoloads from util/appmenu.el
+
+(autoload 'appmenu-add "appmenu" "\
+Add entry to `appmenu-alist'.
+Add an entry to this list with ID, PRIORITY, TEST, TITLE and
+DEFINITION as explained there.
+
+\(fn ID PRIORITY TEST TITLE DEFINITION)" nil nil)
+
+;;;***
+
+;;;### (autoloads (as-external-mode as-external-for-wiki as-external-for-mail
+;;;;;;  as-external-for-xhtml) "as-external" "util/as-external.el"
+;;;;;;  (18790 45400))
 ;;; Generated autoloads from util/as-external.el
+
+(autoload 'as-external-for-xhtml "as-external" "\
+Setup for Firefox addon It's All Text to edit XHTML.
+It's All Text is a Firefox add-on for editing textareas with an
+external editor.
+See URL `https://addons.mozilla.org/en-US/firefox/addon/4125'.
+
+In this case Emacs is used to edit textarea fields on a web page.
+The text will most often be part of a web page later, like on a
+blog.  Therefore turn on these:
+
+- `nxhtml-mumamo-mode' since some XHTML tags may be allowed.
+- `nxhtml-validation-header-mode' since it is not a full page.
+- `wrap-to-fill-column-mode' to see what you are writing.
+- `html-write-mode' to see it even better.
+
+Also bypass the question for line end conversion when using
+emacsw32-eol.
+
+\(fn)" t nil)
+
+(autoload 'as-external-for-mail "as-external" "\
+Setup for Firefox addon It's All Text to edit mail.
+
+- `text-mode' since some XHTML tags may be allowed.
+- `wrap-to-fill-column-mode' to see what you are writing.
+- `as-external-mail-comment-mode' for commenting/uncommenting.
+
+See also `as-external-mode'.
+
+\(fn)" t nil)
+
+(autoload 'as-external-for-wiki "as-external" "\
+Setup for Firefox addon It's All Text to edit MediaWikis.
+
+\(fn)" t nil)
 
 (defvar as-external-mode nil "\
 Non-nil if As-External mode is enabled.
@@ -1564,7 +1291,7 @@ Setting this variable directly does not take effect;
 either customize it (see the info node `Easy Customization')
 or call the function `as-external-mode'.")
 
-(custom-autoload 'as-external-mode "as-external" nil)
+(nxhtml-custom-autoload 'as-external-mode "as-external" nil)
 
 (autoload 'as-external-mode "as-external" "\
 If non-nil check for if Emacs is used as external editor.
@@ -1579,9 +1306,240 @@ See `as-external-alist' for more information.
 
 ;;;***
 
+;;;### (autoloads (chart-make-chart chart-complete) "chart" "util/chart.el"
+;;;;;;  (18792 32230))
+;;; Generated autoloads from util/chart.el
+
+(autoload 'chart-complete "chart" "\
+Not documented
+
+\(fn)" t nil)
+
+(autoload 'chart-make-chart "chart" "\
+Try to make a new chart.
+If region is active then make a new chart from data in the
+selected region.
+
+Else if current buffer is in `chart-mode' then do it from the
+chart specifications in this buffer.  Otherwise create a new
+buffer and initialize it with `chart-mode'.
+
+If the chart specifications are complete enough to make a chart
+then do it and show the resulting chart image.  If not then tell
+user what is missing.
+
+NOTE: This is beta, no alpha code. It is not ready.
+
+Below are some examples.  To test them mark an example and do
+
+  M-x chart-make-chart
+
+* Example, simple x-y chart:
+
+  Output-file: \"~/temp-chart.png\"
+  Size: 200 200
+  Data: 3 8 5 | 10 20 30
+  Type: line-chart-xy
+
+* Example, pie:
+
+  Output-file: \"~/temp-depression.png\"
+  Size: 400 200
+  Data:
+  2,160,000
+  3,110,000
+  1,510,000
+  73,600
+  775,000
+  726,000
+  8,180,000
+  419,000
+  Type: pie-3-dimensional
+  Chart-title: \"Depression hits on Google\"
+  Legends:
+  \"SSRI\"
+  | \"Psychotherapy\"
+  | \"CBT\"
+  | \"IPT\"
+  | \"Psychoanalysis\"
+  | \"Mindfulness\"
+  | \"Meditation\"
+  | \"Exercise\"
+
+
+* Example, pie:
+
+  Output-file: \"~/temp-panic.png\"
+  Size: 400 200
+  Data:
+  979,000
+  969,000
+  500,000
+  71,900
+  193,000
+  154,000
+  2,500,000
+  9,310,000
+  Type: pie-3-dimensional
+  Chart-title: \"Depression hits on Google\"
+  Legends:
+  \"SSRI\"
+  | \"Psychotherapy\"
+  | \"CBT\"
+  | \"IPT\"
+  | \"Psychoanalysis\"
+  | \"Mindfulness\"
+  | \"Meditation\"
+  | \"Exercise\"
+
+
+* Example using raw:
+
+  Output-file: \"~/temp-chart-slipsen-kostar.png\"
+  Size: 400 130
+  Data: 300 1000 30000
+  Type: bar-chart-horizontal
+  Chart-title: \"Vad killen i slips tjänar jämfört med dig och mig\"
+  Google-chart-raw: \"&chds=0,30000&chco=00cd00|ff4500|483d8b&chxt=y,x&chxl=0:|Killen+i+slips|Partiledarna|Du+och+jag&chf=bg,s,ffd700\"
+
+
+\(fn)" t nil)
+
+;;;***
+
+;;;### (autoloads (css-color-mode css-color-global-mode css-color)
+;;;;;;  "css-color" "util/css-color.el" (18969 63118))
+;;; Generated autoloads from util/css-color.el
+
+(let ((loads (get 'css-color 'custom-loads))) (if (member '"css-color" loads) nil (put 'css-color 'custom-loads (cons '"css-color" loads))))
+
+(defvar css-color-global-mode nil "\
+Non-nil if Css-Color-Global mode is enabled.
+See the command `css-color-global-mode' for a description of this minor mode.
+Setting this variable directly does not take effect;
+either customize it (see the info node `Easy Customization')
+or call the function `css-color-global-mode'.")
+
+(nxhtml-custom-autoload 'css-color-global-mode "css-color" nil)
+
+(autoload 'css-color-global-mode "css-color" "\
+Toggle Css-Color mode in every possible buffer.
+With prefix ARG, turn Css-Color-Global mode on if and only if ARG is positive.
+Css-Color mode is enabled in all buffers where `css-color-turn-on-in-buffer' would do it.
+See `css-color-mode' for more information on Css-Color mode.
+
+\(fn &optional ARG)" t nil)
+
+(autoload 'css-color-mode "css-color" "\
+Show hex color literals with the given color as background.
+In this mode hexadecimal colour specifications like #3253ff are
+displayed with the specified colour as background.
+
+Certain keys are bound to special colour editing commands when
+point is at a hexadecimal colour:
+
+\\{css-color-map}
+
+\(fn &optional ARG)" t nil)
+
+;;;***
+
+;;;### (autoloads (css-palette-global-mode css-palette css-palette-mode)
+;;;;;;  "css-palette" "util/css-palette.el" (18795 27308))
+;;; Generated autoloads from util/css-palette.el
+
+(autoload 'css-palette-mode "css-palette" "\
+Minor mode for palettes in CSS.
+
+The mode `css-palette-mode' acts on the first COLORS declaration in your
+  file of the form:
+
+COLORS:
+\(
+c0 \"#6f5d25\"	;tainted sand
+c1 \"#000000\"	;Black
+c2 \"#cca42b\"	;goldenslumber
+c3 \"#6889cb\"	;far off sky
+c4 \"#fff\"	;strange aeons
+)
+
+Such declarations should appear inside a block comment, in order
+  to be parsed properly by the LISP reader.
+
+Type \\[css-palette-update-all], and any occurence of
+
+  color: #f55; /*[c3]*/
+
+will be updated with
+
+  color: #6899cb; /*[c3]*/
+
+The following commands are available to insert key-value pairs
+  and palette declarations:
+  \\{css-palette-mode-map}
+
+You can extend or redefine the types of palettes by defining a
+  new palette specification of the form (PATTERN REGEXP
+  REF-FOLLOWS-VALUE), named according to the naming scheme
+  css-palette:my-type, where
+
+PATTERN is a pattern containing two (%s) format directives which
+  will be filled in with the variable and its value,
+
+REGEXP is a regular expression to match a value - variable
+  pattern,
+
+and REF-FOLLOWS-VALUE defined whether or not the reference comes
+  after the value. This allows for more flexibility.
+
+Note that, although the w3c spec at URL
+  `http://www.w3.org/TR/CSS2/syndata.html#comments' says that
+  comments \" may occur anywhere between tokens, and their
+  contents have no influence on the rendering\", Internet
+  Explorer does not think so. Better keep all your comments after
+  a \"statement\", as per the default. This means `css-palette'
+  is ill-suited for use within shorthands.
+
+See variable `css-palette:colors' for an example of a palette
+  type.
+
+The extension mechanism means that palette types can be used to
+  contain arbitrary key-value mappings.
+
+Besides the colors palette, css-palette defines the palette
+  definition variables `css-palette:colors-outside' and
+  `css-palette:files', for colors with the reference outside and
+  for file url()'s respectively.
+
+You can fine-control which palette types css-palette should look
+  at via the variable `css-palette-types'.
+
+\(fn &optional ARG)" t nil)
+
+(let ((loads (get 'css-palette 'custom-loads))) (if (member '"css-palette" loads) nil (put 'css-palette 'custom-loads (cons '"css-palette" loads))))
+
+(defvar css-palette-global-mode nil "\
+Non-nil if Css-Palette-Global mode is enabled.
+See the command `css-palette-global-mode' for a description of this minor mode.
+Setting this variable directly does not take effect;
+either customize it (see the info node `Easy Customization')
+or call the function `css-palette-global-mode'.")
+
+(nxhtml-custom-autoload 'css-palette-global-mode "css-palette" nil)
+
+(autoload 'css-palette-global-mode "css-palette" "\
+Toggle Css-Palette mode in every possible buffer.
+With prefix ARG, turn Css-Palette-Global mode on if and only if ARG is positive.
+Css-Palette mode is enabled in all buffers where `css-palette-turn-on-in-buffer' would do it.
+See `css-palette-mode' for more information on Css-Palette mode.
+
+\(fn &optional ARG)" t nil)
+
+;;;***
+
 ;;;### (autoloads (freemind-to-org-mode freemind-from-org-sparse-tree
 ;;;;;;  freemind-from-org-mode freemind-from-org-mode-node freemind-show)
-;;;;;;  "freemind" "util/freemind.el" (18659 17016))
+;;;;;;  "freemind" "util/freemind.el" (18969 63118))
 ;;; Generated autoloads from util/freemind.el
 
 (autoload 'freemind-show "freemind" "\
@@ -1632,8 +1590,26 @@ Not documented
 
 ;;;***
 
+;;;### (autoloads (gpl-mode) "gpl" "util/gpl.el" (18795 27308))
+;;; Generated autoloads from util/gpl.el
+
+(autoload 'gpl-mode "gpl" "\
+Mode for font-locking and editing color palettes of the GPL format.
+
+Such palettes are used and produced by free software applications
+such as the GIMP, Inkscape, Scribus, Agave and on-line tools such
+as http://colourlovers.com.
+
+You can also use
+URL `http://niels.kicks-ass.org/public/elisp/css-palette.el' to import
+such palette into a css-file as hexadecimal color palette.
+
+\(fn)" t nil)
+
+;;;***
+
 ;;;### (autoloads (html-write-mode) "html-write" "util/html-write.el"
-;;;;;;  (18664 54864))
+;;;;;;  (18790 45400))
 ;;; Generated autoloads from util/html-write.el
 
 (autoload 'html-write-mode "html-write" "\
@@ -1650,6 +1626,11 @@ rendered text.
 See the customization group `html-write' for more information about
 faces.
 
+The following keys are defined when you are on a tag handled by
+this minor mode:
+
+\\{html-write-keymap}
+
 IMPORTANT: Most commands you use works also on the text that is
 hidden.  The movement commands is an exception, but as soon as
 you edit the buffer you may also change the hidden parts.
@@ -1658,11 +1639,35 @@ you edit the buffer you may also change the hidden parts.
 
 ;;;***
 
-;;;### (autoloads (majmodpri-apply-priorities majmodpri-sort-lists
-;;;;;;  majmodpri) "majmodpri" "util/majmodpri.el" (18654 33920))
-;;; Generated autoloads from util/majmodpri.el
+;;;### (autoloads (htmlfontify-buffer) "htmlfontify" "util/htmlfontify.el"
+;;;;;;  (18790 45400))
+;;; Generated autoloads from util/htmlfontify.el
 
-(let ((loads (get 'majmodpri 'custom-loads))) (if (member '"majmodpri" loads) nil (put 'majmodpri 'custom-loads (cons '"majmodpri" loads))))
+(autoload 'htmlfontify-buffer "htmlfontify" "\
+Create a new buffer, named for the current buffer + a .html extension,
+containing an inline css-stylesheet and formatted css-markup html
+that reproduces the look of the current emacs buffer as closely
+as possible.
+
+Dangerous characters in the existing buffer are turned into html
+entities, so you should even be able to do html-within-html
+fontified display.
+
+You should, however, note that random control or eight-bit
+characters such as ^L () or ¤ (\244) won't get mapped yet.
+
+If the SRCDIR and FILE arguments are set, lookup etags derived
+entries in the `hfy-tags-cache' and add html anchors and
+hyperlinks as appropriate.
+
+\(fn &optional SRCDIR FILE)" t nil)
+
+;;;***
+
+;;;### (autoloads (majmodpri majmodpri-apply-priorities majmodpri-apply
+;;;;;;  majmodpri-sort-lists) "majmodpri" "util/majmodpri.el" (18975
+;;;;;;  5780))
+;;; Generated autoloads from util/majmodpri.el
 
 (autoload 'majmodpri-sort-lists "majmodpri" "\
 Sort the list used when selecting major mode.
@@ -1677,6 +1682,14 @@ See also `majmodpri-apply-priorities'.
 
 \(fn)" t nil)
 
+(autoload 'majmodpri-apply "majmodpri" "\
+Sort major mode lists and apply to existing buffers.
+Note: This function is suitable to add to
+`desktop-after-read-hook'. It will restore the multi major modes
+in buffers.
+
+\(fn)" nil nil)
+
 (autoload 'majmodpri-apply-priorities "majmodpri" "\
 Apply major mode priorities.
 First run `majmodpri-sort-lists' and then if CHANGE-MODES is
@@ -1685,10 +1698,12 @@ before applying.
 
 \(fn CHANGE-MODES)" t nil)
 
+(let ((loads (get 'majmodpri 'custom-loads))) (if (member '"majmodpri" loads) nil (put 'majmodpri 'custom-loads (cons '"majmodpri" loads))))
+
 ;;;***
 
-;;;### (autoloads (mlinks-mode) "mlinks" "util/mlinks.el" (18664
-;;;;;;  54864))
+;;;### (autoloads (mlinks-mode) "mlinks" "util/mlinks.el" (18981
+;;;;;;  49853))
 ;;; Generated autoloads from util/mlinks.el
 
 (autoload 'mlinks-mode "mlinks" "\
@@ -1697,11 +1712,11 @@ The hyperlinks are created in different ways for different major
 modes with the help of the functions in the list
 `mlinks-mode-functions'.
 
-The hyperlinks can be hilighted when the point is over them.
-Use `mlinks-toggle-hilight' to toggle this feature for the
-current buffer.
+The hyperlinks can be hilighted when point is over them.  Use
+`mlinks-toggle-hilight' to toggle this feature for the current
+buffer.
 
-All keybindings in this mode are by default done under the prefiÂ§x
+All keybindings in this mode are by default done under the prefi§x
 key
 
   C-c RET
@@ -1722,13 +1737,29 @@ By default the link moved to will be active, see
 
 ;;;***
 
+;;;### (autoloads (mumamo-multi-major-modep mumamo-mark-for-refontification)
+;;;;;;  "mumamo" "util/mumamo.el" (18994 46864))
+;;; Generated autoloads from util/mumamo.el
+
+(autoload 'mumamo-mark-for-refontification "mumamo" "\
+Mark region between MIN and MAX for refontification.
+
+\(fn MIN MAX)" nil nil)
+
+(autoload 'mumamo-multi-major-modep "mumamo" "\
+Return t if VALUE is a multi major mode function.
+
+\(fn VALUE)" nil nil)
+
+;;;***
+
 ;;;### (autoloads (mako-html-mumamo-mode org-mumamo-mode asp-html-mumamo-mode
 ;;;;;;  noweb2-mumamo-mode csound-sgml-mumamo-mode laszlo-nxml-mumamo-mode
 ;;;;;;  metapost-mumamo-mode cperl-mumamo-mode perl-mumamo-mode eruby-html-mumamo-mode
 ;;;;;;  eruby-mumamo-mode jsp-html-mumamo-mode smarty-html-mumamo-mode
 ;;;;;;  mjt-html-mumamo-mode genshi-html-mumamo-mode django-html-mumamo-mode
 ;;;;;;  embperl-html-mumamo-mode nxml-mumamo-mode html-mumamo-mode)
-;;;;;;  "mumamo-fun" "util/mumamo-fun.el" (18654 33922))
+;;;;;;  "mumamo-fun" "util/mumamo-fun.el" (18981 17703))
 ;;; Generated autoloads from util/mumamo-fun.el
 
 (autoload 'html-mumamo-mode "mumamo-fun" "\
@@ -1737,7 +1768,9 @@ This covers inlined style and javascript and PHP." t)
 
 (autoload 'nxml-mumamo-mode "mumamo-fun" "\
 Turn on multiple major modes for (X)HTML with main mode `nxml-mode'.
-This covers inlined style and javascript and PHP." t)
+This covers inlined style and javascript and PHP.
+
+See also `mumamo-alt-php-tags-mode'." t)
 
 (autoload 'embperl-html-mumamo-mode "mumamo-fun" "\
 Turn on multiple major modes for Embperl files with main mode `html-mode'.
@@ -1813,17 +1846,74 @@ This also covers inlined style and javascript." t)
 
 ;;;***
 
+;;;### (autoloads (mumamo-add-region) "mumamo-regions" "util/mumamo-regions.el"
+;;;;;;  (18980 31679))
+;;; Generated autoloads from util/mumamo-regions.el
+
+(autoload 'mumamo-add-region "mumamo-regions" "\
+Add a mumamo region.
+
+\(fn)" t nil)
+
+;;;***
+
+;;;### (autoloads (n-back-game) "n-back" "util/n-back.el" (18978
+;;;;;;  35999))
+;;; Generated autoloads from util/n-back.el
+
+(autoload 'n-back-game "n-back" "\
+Emacs n-Back game.
+This game is supposed to increase your working memory and fluid
+intelligence.
+
+In this game something is shown for half a second on the screen
+and maybe a sound is played.  You should then answer if parts of
+it is the same as you have seen or heard before.  This is
+repeated for about 20 trials.
+
+You answer with the keys shown in the bottom window.
+
+In the easiest version of the game you should answer if you have
+just seen or heard what is shown now.  By default the game gets
+harder as you play it with success.  Then first the number of
+items presented in a trial grows.  After that it gets harder by
+that you have to somehow remember not the last item, but the item
+before that (or even earlier). That is what \"n-Back\" stands
+for.
+
+Note that remember does not really mean remember clearly.  The
+game is for training your brain getting used to keep those things
+in the working memory, maybe as a cross-modal unit.  You are
+supposed to just nearly be able to do what you do in the game.
+And you are supposed to have fun, that is what your brain like.
+
+You should probably not overdue this. Half an hour a day playing
+might be an optimal time according to some people.
+
+The game is shamelessly modeled after Brain Workshop, see URL
+`http://brainworkshop.sourceforge.net/' just for the fun of
+getting it into Emacs.  The game resembles but it not the same as
+that used in the report by Jaeggi mentioned at the above URL.
+
+Not all features in Brain Workshop are implemented here, but some
+new are maybe ... - and you have it available here in Emacs.
+
+\(fn)" t nil)
+
+;;;***
+
 ;;;### (autoloads (info-open-file grep-query-replace emacs-Q-nxhtml
-;;;;;;  emacs-Q emacs--debug-init emacs-buffer-file emacs ourcomments-ido-buffer-raise-frame
+;;;;;;  emacs-Q emacs--no-desktop emacs--debug-init emacs-buffer-file
+;;;;;;  emacs ourcomments-ido-ctrl-tab ourcomments-ido-buffer-raise-frame
 ;;;;;;  ourcomments-ido-buffer-other-frame ourcomments-ido-buffer-other-window
 ;;;;;;  describe-symbol describe-defstruct describe-custom-group
 ;;;;;;  describe-command ourcomments-ediff-files find-emacs-other-file
 ;;;;;;  better-fringes-mode wrap-to-fill-column-mode wrap-to-fill-left-marg-modes
 ;;;;;;  wrap-to-fill-left-marg describe-key-and-map-briefly ourcomments-move-end-of-line
-;;;;;;  ourcomments-move-beginning-of-line major-modep multi-major-modep
-;;;;;;  major-or-multi-majorp unfill-individual-paragraphs unfill-region
-;;;;;;  unfill-paragraph define-toggle popup-menu-at-point) "ourcomments-util"
-;;;;;;  "util/ourcomments-util.el" (18663 19504))
+;;;;;;  ourcomments-move-beginning-of-line major-modep major-or-multi-majorp
+;;;;;;  unfill-individual-paragraphs unfill-region unfill-paragraph
+;;;;;;  define-toggle popup-menu-at-point) "ourcomments-util" "util/ourcomments-util.el"
+;;;;;;  (18979 64414))
 ;;; Generated autoloads from util/ourcomments-util.el
 
 (autoload 'popup-menu-at-point "ourcomments-util" "\
@@ -1880,11 +1970,6 @@ Not documented
 
 \(fn VALUE)" nil nil)
 
-(autoload 'multi-major-modep "ourcomments-util" "\
-Return t if VALUE is a multi major mode function.
-
-\(fn VALUE)" nil nil)
-
 (autoload 'major-modep "ourcomments-util" "\
 Return t if VALUE is a major mode function.
 
@@ -1897,17 +1982,17 @@ A major mode lisp function." :complete-function (lambda nil (interactive) (lisp-
 Move point to beginning of line or indentation.
 See `beginning-of-line' for ARG.
 
-If `physical-line-mode' is on then the visual line beginning is
-first tried.
+If `line-move-visual' is non-nil then the visual line beginning
+is first tried.
 
 \(fn ARG)" t nil)
 
 (autoload 'ourcomments-move-end-of-line "ourcomments-util" "\
-Move point to end of line or indentation.
+Move point to end of line or after last non blank char.
 See `end-of-line' for ARG.
 
-If `physical-line-mode' is on then the visual line ending is
-first tried.
+Similar to `ourcomments-move-beginning-of-line' but for end of
+line.
 
 \(fn ARG)" t nil)
 
@@ -1931,12 +2016,12 @@ Used by `wrap-to-fill-column-mode'. If nil then center the
 display columns. Otherwise it should be a number which will be
 the left margin.")
 
-(custom-autoload 'wrap-to-fill-left-marg "ourcomments-util" t)
+(nxhtml-custom-autoload 'wrap-to-fill-left-marg "ourcomments-util" t)
 
 (defvar wrap-to-fill-left-marg-modes '(text-mode fundamental-mode) "\
 Major modes where `wrap-to-fill-left-margin' may be nil.")
 
-(custom-autoload 'wrap-to-fill-left-marg-modes "ourcomments-util" t)
+(nxhtml-custom-autoload 'wrap-to-fill-left-marg-modes "ourcomments-util" t)
 
 (autoload 'wrap-to-fill-column-mode "ourcomments-util" "\
 Use `fill-column' display columns in buffer windows.
@@ -1950,6 +2035,10 @@ Note 2: The text property `wrap-prefix' is set by this mode to
 indent continuation lines.  This is not recorded in the undo
 list.
 
+Key bindings added by this minor mode:
+
+\\{wrap-to-fill-column-mode-map}
+
 \(fn &optional ARG)" t nil)
 
 (defvar better-fringes-mode nil "\
@@ -1959,7 +2048,7 @@ Setting this variable directly does not take effect;
 either customize it (see the info node `Easy Customization')
 or call the function `better-fringes-mode'.")
 
-(custom-autoload 'better-fringes-mode "ourcomments-util" nil)
+(nxhtml-custom-autoload 'better-fringes-mode "ourcomments-util" nil)
 
 (autoload 'better-fringes-mode "ourcomments-util" "\
 Choose another fringe bitmap color and bottom angle.
@@ -2025,6 +2114,25 @@ Raise frame showing buffer.
 
 \(fn)" t nil)
 
+(defvar ourcomments-ido-ctrl-tab nil "\
+Enable buffer switching using C-Tab with function `ido-mode'.
+This changes buffer switching with function `ido-mode' the
+following way:
+
+- You can use C-Tab.
+
+- You can show the selected buffer in three ways independent of
+  how you entered function `ido-mode' buffer switching:
+
+  * S-return: other window
+  * C-return: other frame
+  * M-return: raise frame
+
+Those keys are selected to at least be a little bit reminiscent
+of those in for example common web browsers.")
+
+(nxhtml-custom-autoload 'ourcomments-ido-ctrl-tab "ourcomments-util" nil)
+
 (autoload 'emacs "ourcomments-util" "\
 Start a new Emacs.
 
@@ -2037,6 +2145,11 @@ If there is no buffer file start with `dired'.
 \(fn)" t nil)
 
 (autoload 'emacs--debug-init "ourcomments-util" "\
+Not documented
+
+\(fn)" t nil)
+
+(autoload 'emacs--no-desktop "ourcomments-util" "\
 Not documented
 
 \(fn)" t nil)
@@ -2066,8 +2179,8 @@ Open an info file in `Info-mode'.
 
 ;;;***
 
-;;;### (autoloads (rnc-mode) "rnc-mode" "util/rnc-mode.el" (18654
-;;;;;;  33922))
+;;;### (autoloads (rnc-mode) "rnc-mode" "util/rnc-mode.el" (18775
+;;;;;;  60004))
 ;;; Generated autoloads from util/rnc-mode.el
 
 (autoload 'rnc-mode "rnc-mode" "\
@@ -2078,8 +2191,56 @@ Major mode for editing RELAX NG Compact Syntax schemas.
 
 ;;;***
 
-;;;### (autoloads (tabkey2-mode) "tabkey2" "util/tabkey2.el" (18662
-;;;;;;  2982))
+;;;### (autoloads (search-form) "search-form" "util/search-form.el"
+;;;;;;  (18778 14464))
+;;; Generated autoloads from util/search-form.el
+
+(autoload 'search-form "search-form" "\
+Display a form for search and replace.
+
+\(fn)" t nil)
+
+;;;***
+
+;;;### (autoloads (sex-mode) "sex-mode" "util/sex-mode.el" (18790
+;;;;;;  45400))
+;;; Generated autoloads from util/sex-mode.el
+
+(defvar sex-mode nil "\
+Non-nil if Sex mode is enabled.
+See the command `sex-mode' for a description of this minor mode.
+Setting this variable directly does not take effect;
+either customize it (see the info node `Easy Customization')
+or call the function `sex-mode'.")
+
+(nxhtml-custom-autoload 'sex-mode "sex-mode" nil)
+
+(autoload 'sex-mode "sex-mode" "\
+Open certain files in external programs.
+See `sex-get-file-open-cmd' for how to determine which files to
+open by external applications.  Note that this selection is
+nearly the same as in `org-mode'.  The main difference is that
+the fallback always is to open a file in Emacs. (This is
+necessary to avoid to disturb many of Emacs operations.)
+
+This affects all functions that opens files, like `find-file',
+`find-file-noselect' etc.
+
+However it does not affect files opened through Emacs client.
+
+Urls can also be handled, see `sex-handle-urls'.
+
+When opening a file with the shell a (temporary) dummy buffer is
+created in Emacs with major mode `sex-file-mode' and an external
+program is called to handle the file.  How this dummy buffer is
+handled is governed by `sex-keep-dummy-buffer'.
+
+\(fn &optional ARG)" t nil)
+
+;;;***
+
+;;;### (autoloads (tabkey2-mode) "tabkey2" "util/tabkey2.el" (18980
+;;;;;;  38708))
 ;;; Generated autoloads from util/tabkey2.el
 
 (defvar tabkey2-mode nil "\
@@ -2089,7 +2250,7 @@ Setting this variable directly does not take effect;
 either customize it (see the info node `Easy Customization')
 or call the function `tabkey2-mode'.")
 
-(custom-autoload 'tabkey2-mode "tabkey2" nil)
+(nxhtml-custom-autoload 'tabkey2-mode "tabkey2" nil)
 
 (autoload 'tabkey2-mode "tabkey2" "\
 More fun with Tab key number two (completion etc).
@@ -2143,7 +2304,7 @@ be opened in your webbrowser with WORD looked up.
 ;;;***
 
 ;;;### (autoloads (udev-cedet-update) "udev-cedet" "util/udev-cedet.el"
-;;;;;;  (18654 33922))
+;;;;;;  (18935 29598))
 ;;; Generated autoloads from util/udev-cedet.el
 
 (autoload 'udev-cedet-update "udev-cedet" "\
@@ -2156,7 +2317,7 @@ For how to start CEDET see `udev-cedet-load-cedet'.
 ;;;***
 
 ;;;### (autoloads (udev-ecb-update) "udev-ecb" "util/udev-ecb.el"
-;;;;;;  (18654 33922))
+;;;;;;  (18790 45400))
 ;;; Generated autoloads from util/udev-ecb.el
 
 (autoload 'udev-ecb-update "udev-ecb" "\
@@ -2169,7 +2330,7 @@ For how to start ECB see `udev-ecb-load-ecb'.
 ;;;***
 
 ;;;### (autoloads (udev-rinari-update) "udev-rinari" "util/udev-rinari.el"
-;;;;;;  (18654 44936))
+;;;;;;  (18790 45400))
 ;;; Generated autoloads from util/udev-rinari.el
 
 (autoload 'udev-rinari-update "udev-rinari" "\
@@ -2182,7 +2343,7 @@ see `udev-rinari-dir' and `udev-rinari-load-rinari'.
 ;;;***
 
 ;;;### (autoloads (viper-tutorial) "viper-tut" "util/viper-tut.el"
-;;;;;;  (18077 20316))
+;;;;;;  (18973 28380))
 ;;; Generated autoloads from util/viper-tut.el
 
 (autoload 'viper-tutorial "viper-tut" "\
@@ -2191,16 +2352,124 @@ If any of the standard Viper key bindings that are used in the
 tutorial have been changed then an explanatory note about this is
 shown in the beginning of the tutorial buffer.
 
-When the tutorial buffer is killed the content and the point
-position in the buffer is saved so that the tutorial may be
-resumed later.
+When the tutorial buffer is killed the content and point position
+in the buffer is saved so that the tutorial may be resumed
+later.
 
 \(fn PART &optional DONT-ASK-FOR-REVERT)" t nil)
 
 ;;;***
 
+;;;### (autoloads (vline-global-mode vline-mode) "vline" "util/vline.el"
+;;;;;;  (18973 28380))
+;;; Generated autoloads from util/vline.el
+
+(autoload 'vline-mode "vline" "\
+Display vertical line mode.
+
+\(fn &optional ARG)" t nil)
+
+(defvar vline-global-mode nil "\
+Non-nil if Vline-Global mode is enabled.
+See the command `vline-global-mode' for a description of this minor mode.
+Setting this variable directly does not take effect;
+either customize it (see the info node `Easy Customization')
+or call the function `vline-global-mode'.")
+
+(nxhtml-custom-autoload 'vline-global-mode "vline" nil)
+
+(autoload 'vline-global-mode "vline" "\
+Display vertical line mode as globally.
+
+\(fn &optional ARG)" t nil)
+
+;;;***
+
+;;;### (autoloads (winsav-switch-config winsav-save-full-config winsav-save-mode
+;;;;;;  winsav-put-window-tree) "winsav" "util/winsav.el" (18974
+;;;;;;  59068))
+;;; Generated autoloads from util/winsav.el
+
+(autoload 'winsav-put-window-tree "winsav" "\
+Put window structure SAVED-TREE into WINDOW.
+Restore a structure SAVED-TREE returned from
+`winsav-get-window-tree' into window WINDOW.
+
+If COPY-WIN-OVL is non-nil then overlays having a 'window
+property pointing to one of the windows in SAVED-TREE where this
+window still is shown will be copied to a new overlay with
+'window property pointing to the corresponding new window.
+
+If WIN-OVL-ALL-BUFS is non-nil then all buffers will be searched
+for overlays with a 'window property of the kind above.
+
+At the very end of this function the hook `winsav-after-put' is
+run.
+
+\(fn SAVED-TREE WINDOW &optional COPY-WIN-OVL WIN-OVL-ALL-BUFS)" nil nil)
+
+(defvar winsav-save-mode nil "\
+Non-nil if Winsav-Save mode is enabled.
+See the command `winsav-save-mode' for a description of this minor mode.")
+
+(nxhtml-custom-autoload 'winsav-save-mode "winsav" nil)
+
+(autoload 'winsav-save-mode "winsav" "\
+Toggle winsav configuration saving mode.
+With numeric ARG, turn winsav saving on if ARG is positive, off
+otherwise.
+
+When this mode is turned on, winsav configurations are saved from
+one session to another.  A winsav configuration consists of
+frames, windows and visible buffers configurations plus
+optionally buffers and files managed by the functions used by
+option `desktop-save-mode'
+
+By default this is integrated with `desktop-save-mode'.  If
+`desktop-save-mode' is on and `winsav-handle-also-desktop' is
+non-nil then save and restore also desktop.
+
+See the command `winsav-switch-config' for more information and
+other possibilities.
+
+Note: If you want to avoid saving when you exit just turn off
+this minor mode.
+
+For information about what is saved and restored and how to save
+and restore additional information see the function
+`winsav-save-configuration'.
+
+\(fn &optional ARG)" t nil)
+
+(autoload 'winsav-save-full-config "winsav" "\
+Saved current winsav configuration in directory DIRNAME.
+Then change to this configuration.
+
+See also `winsav-switch-config'.
+
+\(fn DIRNAME)" nil nil)
+
+(autoload 'winsav-switch-config "winsav" "\
+Change to winsav configuration in directory DIRNAME.
+If DIRNAME is the current winsav configuration directory then
+offer to save it or restore it from saved values.
+
+Otherwise, before switching offer to save the current winsav
+configuration.  Then finally switch to the new winsav
+configuration, creating it if it does not exist.
+
+If option `desktop-save-mode' is on then buffers and files are also
+restored and saved the same way.
+
+See also option `winsav-save-mode' and command
+`winsav-tell-configuration'.
+
+\(fn DIRNAME)" t nil)
+
+;;;***
+
 ;;;### (autoloads (winsize-save-window-configuration winsize-balance-siblings
-;;;;;;  resize-windows) "winsize" "util/winsize.el" (18659 17016))
+;;;;;;  resize-windows) "winsize" "util/winsize.el" (18969 63118))
 ;;; Generated autoloads from util/winsize.el
 
 (autoload 'resize-windows "winsize" "\
@@ -2218,6 +2487,8 @@ bindings during resizing:\\<winsize-keymap>
   `winsize-balance-siblings'             \\[winsize-balance-siblings]
   `fit-window-to-buffer'                 \\[fit-window-to-buffer]
   `shrink-window-if-larger-than-buffer'  \\[shrink-window-if-larger-than-buffer]
+
+  `winsav-rotate'                        \\[winsav-rotate]
 
   `winsize-move-border-up'      \\[winsize-move-border-up]
   `winsize-move-border-down'    \\[winsize-move-border-down]
@@ -2270,12 +2541,12 @@ windows.  To make this indication more prominent the text in the
 selected window is marked with the face hold in the variable
 `winsize-selected-window-face'.
 
-The option `juris-way' decides how the borders to move are
-selected. If this option is non-nil then the right or bottom
+The option `winsize-juris-way' decides how the borders to move
+are selected. If this option is non-nil then the right or bottom
 border are the ones that are moved with the arrow keys and the
 opposite border with shift arrow keys.
 
-If `juris-way' is nil then the following apply:
+If `winsize-juris-way' is nil then the following apply:
 
 As you select other borders or move to new a window the mouse
 pointer is moved inside the selected window to show which borders
@@ -2399,46 +2670,51 @@ Not documented
 
 ;;;***
 
-;;;### (autoloads nil nil ("autostart.el" "etc/schema/schema-path-patch.el"
-;;;;;;  "nxhtml/html-chklnk.el" "nxhtml/html-imenu.el" "nxhtml/html-move.el"
-;;;;;;  "nxhtml/html-pagetoc.el" "nxhtml/html-quote.el" "nxhtml/html-toc.el"
-;;;;;;  "nxhtml/html-upl.el" "nxhtml/html-wtoc.el" "nxhtml/nxhtml-anything-1.el"
-;;;;;;  "nxhtml/nxhtml-autoload.el" "nxhtml/nxhtml-js.el" "nxhtml/nxhtml-strval.el"
-;;;;;;  "nxhtml/outline-magic.el" "nxhtml/rngalt.el" "nxhtml/test-c-m.el"
-;;;;;;  "nxhtml/test-cust.el" "nxhtml/tests.el" "nxhtml/tidy-xhtml.el"
-;;;;;;  "nxhtml/wtest.el" "nxhtml/xhtml-help.el" "related/cgi+.el"
-;;;;;;  "related/find-recursive-orig.el" "related/find-recursive.el"
-;;;;;;  "related/flymake-helpers.el" "related/flymake-js.el" "related/flymake-keys.el"
-;;;;;;  "related/flymake-php.el" "related/flymu.el" "related/fold-dwim.el"
-;;;;;;  "related/js2-font-lock-new.el" "related/js2-font-lock.el"
-;;;;;;  "related/php-imenu.el" "related/snippet.el" "tests/angus77-setup-jde.el"
-;;;;;;  "tests/elunit.el" "tests/emacstest-suites.el" "tests/ert2.el"
-;;;;;;  "tests/in/bug271497.el" "tests/in/cr-lf.el" "tests/in/el-070722-index-2.el"
-;;;;;;  "tests/in/emacswiki-erb-bug.el" "tests/in/eval-in-html.el"
-;;;;;;  "tests/in/nxml-indent.el" "tests/in/utf8-problem.el" "tests/inemacs/bug1013.el"
-;;;;;;  "tests/nxhtmltest-helpers.el" "util/appmenu-fold.el" "util/appmenu.el"
-;;;;;;  "util/buffer-bg.el" "util/bw-rnc-load/schema-find.el" "util/chart.el"
-;;;;;;  "util/color-test-sent.el" "util/color-test.el" "util/custsets.el"
-;;;;;;  "util/ecb-batch-compile.el" "util/elunit.el" "util/ffip.el"
-;;;;;;  "util/fmode.el" "util/from-osxkeys.el" "util/fupd.el" "util/half-qwerty.el"
-;;;;;;  "util/hexcolor.el" "util/hfyview.el" "util/hl-needed.el"
-;;;;;;  "util/htmlfontify.21.el" "util/htmlfontify.el" "util/mumamo-aspnet.el"
-;;;;;;  "util/mumamo-test.el" "util/mumamo-trace.el" "util/mumamo.el"
-;;;;;;  "util/new-key-seq-widget.el" "util/nxml-mode-os-additions.el"
-;;;;;;  "util/ocr-user.el" "util/org-panel.el" "util/pause.el" "util/physical-line.el"
-;;;;;;  "util/popcmp.el" "util/rebind.el" "util/rxi.el" "util/search-form.el"
-;;;;;;  "util/sex-mode.el" "util/udev-nxhtml.el" "util/udev.el" "util/useful-commands.el"
-;;;;;;  "util/vline.el" "util/whelp.el" "util/winsav.el" "util/zen-mode.el")
-;;;;;;  (18665 17040 687000))
+;;;### (autoloads nil nil ("autostart.el" "autostart22.el" "etc/schema/schema-path-patch.el"
+;;;;;;  "nxhtml/doc/cedet-build.el" "nxhtml/html-chklnk.el" "nxhtml/html-imenu.el"
+;;;;;;  "nxhtml/html-move.el" "nxhtml/html-quote.el" "nxhtml/html-wtoc.el"
+;;;;;;  "nxhtml/nxhtml-anything-1.el" "nxhtml/nxhtml-autoload.el"
+;;;;;;  "nxhtml/nxhtml-strval.el" "nxhtml/nxhtmljs.el" "nxhtml/outline-magic.el"
+;;;;;;  "nxhtml/wtest.el" "related/flymake-helpers.el" "related/flymake-js.el"
+;;;;;;  "related/flymake-keys.el" "related/flymake-php.el" "related/flymu.el"
+;;;;;;  "related/fold-dwim.el" "related/php-imenu.el" "tests/angus77-setup-jde.el"
+;;;;;;  "tests/emacstest-suites.el" "tests/ert2.el" "tests/hfy-test.el"
+;;;;;;  "tests/inemacs/bug1013.el" "tests/mumamo-test.el" "tests/nxhtmltest-helpers.el"
+;;;;;;  "tests/temp-test.el" "util/appmenu-fold.el" "util/buffer-bg.el"
+;;;;;;  "util/custsets.el" "util/ecb-batch-compile.el" "util/ffip.el"
+;;;;;;  "util/fmode.el" "util/fupd.el" "util/hfyview.el" "util/hl-needed.el"
+;;;;;;  "util/htmlfontify.21.el" "util/key-cat.el" "util/mumamo-aspnet.el"
+;;;;;;  "util/mumamo-trace.el" "util/new-key-seq-widget.el" "util/nxml-mode-os-additions.el"
+;;;;;;  "util/ocr-user.el" "util/org-panel.el" "util/pause.el" "util/popcmp.el"
+;;;;;;  "util/rebind.el" "util/rxi.el" "util/udev-nxhtml.el" "util/udev.el"
+;;;;;;  "util/useful-commands.el" "util/whelp.el" "util/zen-mode.el")
+;;;;;;  (18995 30445 832000))
 
 ;;;***
 
-;;;### (autoloads (nxhtmlmaint-get-all-autoloads) "../nxhtml-maintenance"
-;;;;;;  "nxhtml-maintenance.el" (18659 17016))
-;;; Generated autoloads from nxhtml-maintenance.el
+;;;### (autoloads (nxhtmlmaint-byte-uncompile-all nxhtmlmaint-start-byte-compilation)
+;;;;;;  "../nxhtmlmaint" "nxhtmlmaint.el" (18940 22530))
+;;; Generated autoloads from nxhtmlmaint.el
 
-(autoload 'nxhtmlmaint-get-all-autoloads "../nxhtml-maintenance" "\
-Not documented
+(autoload 'nxhtmlmaint-start-byte-compilation "../nxhtmlmaint" "\
+Start byte compilation of nXhtml in new Emacs instance.
+Byte compiling in general makes elisp code run 5-10 times faster
+which is quite noticeable when you use nXhtml.
+
+This will also update the file nxhtml-loaddefs.el.
+
+You must restart Emacs to use the byte compiled files.
+
+If for some reason the byte compiled files does not work you can
+remove then with `nxhtmlmaint-byte-uncompile-all'.
+
+\(fn)" t nil)
+
+(autoload 'nxhtmlmaint-byte-uncompile-all "../nxhtmlmaint" "\
+Delete byte compiled files in nXhtml.
+This will also update the file nxhtml-loaddefs.el.
+
+See `nxhtmlmaint-start-byte-compilation' for byte compiling.
 
 \(fn)" t nil)
 

@@ -43,7 +43,7 @@
 ;;
 ;;; Code:
 
-(require 'ourcomments-util)
+(eval-when-compile (require 'ourcomments-util))
 
 (defgroup popcmp nil
   "Customization group for popup completion."
@@ -192,7 +192,6 @@ This works in the same circumstances as
           (message "No alternative found")
           nil)
       (let ((pop-map (make-sparse-keymap prompt))
-            (where (point-to-coord (point)))
             (sets (when (and popcmp-group-alternatives alt-sets)
                     (popcmp-getsets matching-alts alt-sets)))
             (add-alt (lambda (k tg)
@@ -228,8 +227,8 @@ This works in the same circumstances as
 This function can be used instead `completing-read'. The main
 purpose is to provide a popup style menu for completion when
 completion is tighed to text at point in a buffer. If a popup
-menu is used it will be shown at the point. Whether a popup menu
-or minibuffer completion is used is governed by
+menu is used it will be shown at window point. Whether a popup
+menu or minibuffer completion is used is governed by
 `popcmp-popup-completion'.
 
 The variables PROMPT, TABLE, PREDICATE, REQUIRE-MATCH,

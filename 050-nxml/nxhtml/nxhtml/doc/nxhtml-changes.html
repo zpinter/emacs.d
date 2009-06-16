@@ -262,6 +262,27 @@
           <a href="#v1.58">v1.58</a>
           <a href="#v1.59">v1.59</a>
           <a href="#v1.60">v1.60</a>
+          <a href="#v1.61">v1.61</a>
+          <a href="#v1.62">v1.62</a>
+          <a href="#v1.63">v1.63</a>
+          <a href="#v1.64">v1.64</a>
+          <a href="#v1.65">v1.65</a>
+          <a href="#v1.66">v1.66</a>
+          <a href="#v1.67">v1.67</a>
+          <a href="#v1.68">v1.68</a>
+          <a href="#v1.69">v1.69</a>
+          <a href="#v1.70">v1.70</a>
+          <a href="#v1.71">v1.71</a>
+          <a href="#v1.72">v1.72</a>
+          <a href="#v1.73">v1.73</a>
+          <a href="#v1.74">v1.74</a>
+          <a href="#v1.75">v1.75</a>
+          <a href="#v1.76">v1.76</a>
+          <a href="#v1.77">v1.77</a>
+          <a href="#v1.78">v1.78</a>
+          <a href="#v1.79">v1.79</a>
+          <a href="#v1.80">v1.80</a>
+          <a href="#v1.81">v1.81</a>
         </div>
 
         <dl>
@@ -1672,7 +1693,7 @@
           <dd id="v1.34-dd">
             <ul>
               <li>
-                <span style="font-size: 1.2em; color: red ()"
+                <span style="font-size: 1.2em; color: red ()" 
                       >Changed top directory name from nxml to nxhtml</span>
                 <p>
                   This will of course case some problems if you do not
@@ -2032,7 +2053,7 @@
                     major mode.
                   </li>
                   <li>
-                    Tried to fix https://answers.launchpad.net/nxhtml/+question/43320
+                    Tried to fix <a href="https://answers.launchpad.net/nxhtml/+question/43320">question 43320</a>.
                   </li>
                 </ul>
               </li>
@@ -2247,6 +2268,449 @@
                     write html files.
                   </li>
                 </ul>
+              </li>
+            </ul>
+          </dd>
+          <dt id="v1.61">1.61</dt>
+          <dd id="v1.61-dd">
+            <ul>
+              <li>
+                Bug fixes in html-write-mode and as-external.el.
+              </li>
+              <li>
+                Removed left over autoloads (maybe there was a problem with ruby-mode, not sure).
+              </li>
+              <li>
+                Fixed bug <a href="https://bugs.launchpad.net/nxhtml/+bug/290364">290364</a>,
+                see below about MuMaMo important changes.
+              </li>
+              <li>Fixed bug <a href="https://bugs.launchpad.net/nxhtml/+bug/272526">272526</a>.</li>
+              <li>Fixed bug <a href="https://bugs.launchpad.net/nxhtml/+bug/292393">292393</a>.</li>
+              <li>Fixed bug <a href="https://bugs.launchpad.net/nxhtml/+bug/300946">300946</a>.</li>
+              <li>Fixed bug <a href="https://bugs.launchpad.net/nxhtml/+bug/304569">304569</a>.</li>
+              <li>
+                Added some support for editing gmail messages in
+                as-external.el (to be used with It's All Text for
+                Firefox).
+              </li>
+              <li>
+                Some changes to face handling in Emacs had made htmlfontify.el fail.
+                Some changes in CSS handling in Firefox and IE made hfyview.el fail even more.
+                Tried to fix this.
+              </li>
+              <li>
+                Updated vline.el
+              </li>
+              <li>
+                Aaron Hawley merged in some changes he made to php-mode.el. Thanks Aaron!
+                Now nXhtml uses a slightly modified version of php-mode 1.5.0 is used
+              </li>
+              <li>
+                <b>MuMaMo important changes</b>
+                <p>
+                  Unfortunately the chunk dividing routines in
+                  mumamo.el can loop, see bug 290364 above.  The
+                  reason is that I tried to find chunks at current
+                  point in a buffer without looking through the buffer
+                  from the beginning.  Fontification works this way in
+                  Emacs.  It is a heuristic that sometimes fails
+                  however, but the consequences are merely just local
+                  errors in fontification.
+                </p>
+                <p>
+                  Chunk dividing must be more stable since it has a
+                  global impact on the files fontification. It
+                  therefore have to be done from the beginning of the
+                  buffer - just like a parser reading the file will
+                  do.
+                </p>
+                <p>
+                  I have done first part of this rewrite and I hope
+                  chunk dividing can not loop any more. Chunk dividing
+                  is now always done from the beginning.  However the
+                  routines actually finding the chunks still looks
+                  both upwards and downwards.  I will try to remove
+                  this unnecessary complexity later.
+                </p>
+              </li>
+            </ul>
+          </dd>
+          <dt id="v1.62">1.62</dt>
+          <dd id="v1.62-dd">
+            <ul>
+              <li>
+                MuMaMo:
+                <ul>
+                  <li>
+                    Fixed bugs in chunk creation that caused args out
+                    of range at buffer end.
+                  </li>
+                </ul>
+              </li>
+              <li>
+                Autoloading caused wrong libraries to load (for
+                example javascript from mozdev). Fixed.
+              </li>
+            </ul>
+          </dd>
+          <dt id="v1.63">1.63</dt>
+          <dd id="v1.63-dd">
+            <ul>
+              <li>
+                Removed find-recursive.el since there is no use for it
+                any more and it interferes with emacs-rails.  (It was
+                initally a bug fixs for emacs-rails.)
+              </li>
+              <li>
+                Fixed bugs in <i>html-write-mode</i>.
+              </li>
+              <li>
+                Used the new routines for finding chunks also during
+                xml validation and syntax-ppss.
+              </li>
+            </ul>
+          </dd>
+          <dt id="v1.64">1.64</dt>
+          <dd id="v1.64-dd">
+            <ul>
+              <li>
+                MuMaMo: nxml was not turned off properly when
+                switching from a multi major mode that used nxml-mode
+                or nxhtml-mode. Fixed. This was especially troublesome
+                for Emacs 22 users where multi major modes based on
+                nxhtml-mode does not always work.
+              </li>
+              <li>
+                Majmodpri.el: Added a defcustom to give multi major
+                modes based on nxhtm-mode or nxml-mode lower
+                priority. This is on by default in Emacs 22.
+              </li>
+            </ul>
+          </dd>
+          <dt id="v1.65">1.65</dt>
+          <dd id="v1.65-dd">
+            <ul>
+              <li>Fixed a bug in nxml-where.el.</li>
+              <li>
+                Fixed a minor bug in majmodpri.el.  It did not work if
+                magic-mode-alist contained anonymous functions.
+                (Thanks from Niels Giesen.)
+              </li>
+              <li>
+                Fixed a bug in pause.el and added some mindfulness to it.
+              </li>
+              <li>
+                Adjusted <i>ourcomments-move-beginning-of-line</i> (and dito
+                for end) to the new <i>line-move-visual</i> in Emacs 23.
+                Moved physical-line.el to <i>old</i> subdir since it is now
+                obsolete.
+              </li>
+              <li>
+                Made it possible to byte compile nXhtml.
+                <p>
+                  To do that use
+                  <i>M-x nxhtmlmaint-start-byte-compilation</i>.
+                </p>
+                <p>
+                  A lot of code changes to make byte compilation
+                  possible without a lot of warnings.  Most changes
+                  where just moving code around, but some where bug
+                  fixes.
+                </p>
+              </li>
+            </ul>
+          </dd>
+          <dt id="v1.66">1.66</dt>
+          <dd id="v1.66-dd">
+            <ul>
+              <li>
+                Further work on byte compiling.
+              </li>
+              <li>
+                Tried to fix some problem with defadvice in
+                ourcomments-util.el.
+              </li>
+              <li>
+                Tried to finish the command <i>M-x search-form</i>.
+              </li>
+              <li>
+                When no chunk is found (border case) then set the
+                major mode to the main major mode for the current
+                multi major mode.
+              </li>
+            </ul>
+          </dd>
+          <dt id="v1.67">1.67</dt>
+          <dd id="v1.67-dd">
+            <ul>
+              <li>
+                Removed css.el since it is in Emacs 22.2 and later.
+              </li>
+            </ul>
+          </dd>
+          <dt id="v1.68">1.68</dt>
+          <dd id="v1.68-dd">
+            <ul>
+              <li>
+                Fixed bugs related to byte compilation. This should
+                now work for both Emacs 22 and 23. Also added a menu
+                entry for byte compilation.
+              </li>
+              <li>
+                Removed nXml from the distribution to make it
+                smaller. nXml comes with Emacs 23 (not yet released of
+                course). For Emacs 22 users see EmacsWiki about where
+                to get nXml.
+                <p>
+                  Adding nXml to Emacs 22 startup should be done by
+                  using the file <i>nxhtml/autostart22.el</i>.
+                </p>
+                <p>
+                  NOTE 1: if you want to use <i>nxhtml-mode</i> in
+                  multi major modes in Emacs 22 (not recommended) you
+                  must also customize <i>majmodpri-no-nxml</i>.
+                </p>
+                <p>
+                  NOTE 2: The major mode <i>nxhtml-mode</i> as a
+                  major-mode works however very well also in Emacs 22.
+                </p>
+              </li>
+            </ul>
+          </dd>
+          <dt id="v1.69">1.69</dt>
+          <dd id="v1.69-dd">
+            <ul>
+              <li>
+                Chunks were unnecessary deleted and recreated after a
+                change even if all changes where within one
+                chunk. This could make editing very slow. Fixed.
+              </li>
+              <li>
+                Search for rng-auto.el in path. (Emacs 22 only.)
+              </li>
+            </ul>
+          </dd>
+          <dt id="v1.70">1.70</dt>
+          <dd id="v1.70-dd">
+            <ul>
+              <li>
+                Validation could not be turned on in multi major
+                modes. Fixed.
+              </li>
+            </ul>
+          </dd>
+          <dt id="v1.71">1.71</dt>
+          <dd id="v1.71-dd">
+            <ul>
+              <li>
+                Fixed the problem that showed up in the file
+                nxhtml/tests/in/kubica-freezing-i.html which could
+                make Emacs freeze.
+              </li>
+            </ul>
+          </dd>
+          <dt id="v1.72">1.72</dt>
+          <dd id="v1.72-dd">
+            <ul>
+              <li>
+                Somehow I dropped this: Search for rng-auto.el in
+                path. (Emacs 22 only.) Don't ask me how. Fixed again.
+              </li>
+            </ul>
+          </dd>
+          <dt id="v1.73">1.73</dt>
+          <dd id="v1.73-dd">
+            <ul>
+              <li>
+                Worked a bit more on byte compilation and elisp
+                libraries loading.  If you byte compile nXhtml it will
+                now load very few modules by default. It loads more
+                modules if you don't.
+              </li>
+              <li>
+                Added chart.el, a small elisp library to create charts.
+                This works by calling google charts library.
+                Chart.el is a bit beta, eh alpha, but still useful I believe.
+              </li>
+            </ul>
+          </dd>
+          <dt id="v1.74">1.74</dt>
+          <dd id="v1.74-dd">
+            <ul>
+              <li>
+                Found and fixed a bug in <em>fictive XML validation
+                headers</em>. This bug depended on the load order of
+                libraries.
+              </li>
+              <li>
+                Fixed a small bug in <i>nxml-where-mode</i>.
+              </li>
+            </ul>
+          </dd>
+          <dt id="v1.75">1.75</dt>
+          <dd id="v1.75-dd">
+            <ul>
+              <li>
+                Included css-color.el, css-palette.el and gpl.el from Niels Giesen.
+                (This replaces hexcolor.el which is no longer in nXhtml.)
+              </li>
+            </ul>
+          </dd>
+          <dt id="v1.76">1.76</dt>
+          <dd id="v1.76-dd">
+            <ul>
+              <li>
+                Fixed a long standing bug in XML validation. (I had
+                forgot to set the defadvice return value in defadvice
+                rng-set-initial-state in rngalt.el - I wonder why I
+                did not get any bug reports about this...)
+              </li>
+              <li>
+                css-color.el: bug fix for mIxEd case color names.
+              </li>
+              <li>
+                freemind.el: bug fixes.
+              </li>
+            </ul>
+          </dd>
+          <dt id="v1.77">1.77</dt>
+          <dd id="v1.77-dd">
+            <ul>
+              <li>
+                Fixed numerous bugs, please
+                see <a href="https://bugs.launchpad.net/nxhtml/">nXhtml bug tracker</a>
+                and dito <a href="https://answers.launchpad.net/nxhtml">question and answers</a>.
+              </li>
+              <li>
+                Added some missing autoloads.
+              </li>
+              <li>
+                Tried to fix some smaller troubles with Viper when
+                changing chunk.
+              </li>
+              <li>
+                Menus for Tidy were broken. Fixed.
+              </li>
+              <li>
+                Added a test that the <i>nxml-mode libraries included
+                in Emacs</i> are used and not the old ones.  (If I
+                understand it correctly this might have been a problem
+                for Debian/Ubuntu Emacs 23 snap-shots users where the
+                old nxml-mode has been a left over from earlier
+                snap-shots where it was needed.)
+              </li>
+              <li>
+                MuMaMo:
+                <ul>
+                  <li>
+                    Chunks are now always created from top to bottom.
+                    This should make chunk creation more stable.
+                    It also opens up for chunks in chunks in the future.
+                    (The code still needs work...)
+                  </li>
+                </ul>
+              </li>
+              <li>
+                majmodpri.el:
+                <ul>
+                  <li>
+                    To restore multi major modes in files loaded by
+                    desktop-save-mode the new
+                    function <i>majmodpri-apply</i> can be added
+                    to <i>desktop-after-read-hook</i>.
+                  </li>
+                  <li>
+                    New default for <i>majmodpri-sort-after-load</i>:
+                    Sort after loading certain features/libraries that
+                    are known to change <i>auto-mode-alist</i> and
+                    apply to current buffer.  This new default should
+                    hopefully make major mode selection less
+                    confusing.
+                  </li>
+                </ul>
+              </li>
+              <li>
+                winsav.el:
+                <ul>
+                  <li>
+                    Added save and restore between Emacs sessions for frame configuration.
+                    I am not sure how this works with special frames yet, but I have tested this with oneonone.el and it seems to work.
+                    Dedicated windows should also work.
+                  </li>
+                  <li>
+                    Added saving and restoring of named frame configurations.
+                  </li>
+                </ul>
+              </li>
+              <li>
+                javascript.el:
+                <ul>
+                  <li>
+                    Updated to Karl's newest version (and added my additions).
+                  </li>
+                </ul>
+              </li>
+              <li>
+                Added library usb-setup.el that might help a bit with
+                using Emacs from an USB stick.
+              </li>
+              <li>
+                Updated smarty-mode.el to the latest version.
+              </li>
+              <li>
+                <img alt="Happy brain" src="img/fun-brain-2.png" width="131" height="119" />
+                Added an n-back game for your brain (and mine).
+                Just do <b>M-x n-back-game</b> to start it.
+              </li>
+            </ul>
+          </dd>
+          <dt id="v1.78">1.78</dt>
+          <dd id="v1.78-dd">
+            <ul>
+              <li>
+                nXhtml version 1.78 is the release of the previous beta (which had
+                number 1.77 and existed in many versions).
+              </li>
+            </ul>
+          </dd>
+          <dt id="v1.79">1.79</dt>
+          <dd id="v1.79-dd">
+            <ul>
+              <li>
+                Added a function to simplify adding for example font
+                lock keywords for major modes used in multi major
+                mode: <i>mumamo-refresh-multi-font-lock</i>.
+              </li>
+            </ul>
+          </dd>
+          <dt id="v1.80">1.80</dt>
+          <dd id="v1.80-dd">
+            <ul>
+              <li>
+                Fixed a (rather serious) bug and cleaned up.
+              </li>
+              <li>
+                Added mumamo regions. Mumamo regions are temporary
+                mumamo chunks that you set up by selecting a region
+                and telling you want that in a new major mode. To use
+                this feature look in the nXhtml menu under <i>Chunks -
+                Region Chunks</i>.
+              </li>
+            </ul>
+          </dd>
+          <dt id="v1.81">1.81</dt>
+          <dd id="v1.81-dd">
+            <ul>
+              <li>
+                Added the minor mode <i>mumamo-alt-php-tags-mode</i>
+                that lets you work more easily with &lt;?php tags in
+                strings while you are still able to use XHTML
+                completion.
+              </li>
+              <li>
+                Added support for hi-lock, but please be aware that
+                chunk overlays hides background marking that hi-lock
+                does... - so you must use marking that changes foreground.
               </li>
             </ul>
           </dd>

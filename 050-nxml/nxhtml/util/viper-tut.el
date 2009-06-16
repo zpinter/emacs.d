@@ -55,92 +55,7 @@
     map)
   "Keymap that allows tabbing between buttons.")
 
-(defun viper-tut--detailed-help (button)
-  "Give detailed help about changed keys."
-  (with-output-to-temp-buffer (help-buffer)
-    (help-setup-xref (list #'viper-tut--detailed-help button)
-                     (interactive-p))
-    (with-current-buffer (help-buffer)
-      (let* ((tutorial-buffer  (button-get button 'tutorial-buffer))
-             ;;(tutorial-arg     (button-get button 'tutorial-arg))
-             (explain-key-desc (button-get button 'explain-key-desc))
-             (part             (button-get button 'part))
-             (changed-keys (with-current-buffer tutorial-buffer
-                             (let ((tutorial--lang "English"))
-                               (tutorial--find-changed-keys
-                                (if (= part viper-tut--emacs-part)
-                                    tutorial--default-keys
-                                  viper-tut--default-keys))))))
-        (when changed-keys
-          (insert
-           "The following key bindings used in the tutorial had been changed\n"
-           (if (= part viper-tut--emacs-part)
-               "from Emacs default in the "
-             "from Viper default in the ")
-           (buffer-name tutorial-buffer) " buffer:\n\n" )
-          (let ((frm "   %-9s %-27s %-11s %s\n"))
-            (insert (format frm "Key" "Standard Binding" "Is Now On" "Remark")))
-          (dolist (tk changed-keys)
-            (let* ((def-fun     (nth 1 tk))
-                   (key         (nth 0 tk))
-                   (def-fun-txt (nth 2 tk))
-                   (where       (nth 3 tk))
-                   (remark      (nth 4 tk))
-                   (rem-fun (command-remapping def-fun))
-                   (key-txt (key-description key))
-                   (key-fun (with-current-buffer tutorial-buffer (key-binding key)))
-                   tot-len)
-              (unless (eq def-fun key-fun)
-                ;; Insert key binding description:
-                (when (string= key-txt explain-key-desc)
-                  (put-text-property 0 (length key-txt) 'face '(:background "yellow") key-txt))
-                (insert "   " key-txt " ")
-                (setq tot-len (length key-txt))
-                (when (> 9 tot-len)
-                  (insert (make-string (- 9 tot-len) ? ))
-                  (setq tot-len 9))
-                ;; Insert a link describing the old binding:
-                (insert-button def-fun-txt
-                               'value def-fun
-                               'action
-                               (lambda(button) (interactive)
-                                 (describe-function
-                                  (button-get button 'value)))
-                               'follow-link t)
-                (setq tot-len (+ tot-len (length def-fun-txt)))
-                (when (> 36 tot-len)
-                  (insert (make-string (- 36 tot-len) ? )))
-                (when (listp where)
-                  (setq where "list"))
-                ;; Tell where the old binding is now:
-                (insert (format " %-11s " where))
-                ;; Insert a link with more information, for example
-                ;; current binding and keymap or information about
-                ;; cua-mode replacements:
-                (insert-button (car remark)
-                               'action
-                               (lambda(b) (interactive)
-                                 (let ((value (button-get b 'value)))
-                                   (tutorial--describe-nonstandard-key value)))
-                               'value (cdr remark)
-                               'follow-link t)
-                (insert "\n")))))
-
-
-
-        (insert "
-It is legitimate to change key bindings, but changed bindings do not
-correspond to what the tutorial says.  (See also " )
-        (insert-button "Key Binding Conventions"
-                       'action
-                       (lambda(button) (interactive)
-                         (info
-                          "(elisp) Key Binding Conventions")
-                         (message "Type C-x 0 to close the new window"))
-                       'follow-link t)
-        (insert ".)\n\n")
-        (print-help-return-message)))))
-
+(defconst viper-tut--emacs-part 6)
 
 (defconst viper-tut--default-keys
   `(
@@ -393,7 +308,7 @@ correspond to what the tutorial says.  (See also " )
     (viper-info-on-file [?\C-c ?\C-g])
     ;; ^L	Refresh screen
     ;;(recenter [(control ?l)])
-    (recenter [?\C-l])
+    (recenter-top-bottom [?\C-l])
 
     ;; !}fmt	Format the paragraph, joining and filling lines to
     ;; !}sort	Sort lines of a paragraph alphabetically
@@ -405,6 +320,93 @@ correspond to what the tutorial says.  (See also " )
     (viper-command-argument [?<])
 
     ))
+
+(defun viper-tut--detailed-help (button)
+  "Give detailed help about changed keys."
+  (with-output-to-temp-buffer (help-buffer)
+    (help-setup-xref (list #'viper-tut--detailed-help button)
+                     (interactive-p))
+    (with-current-buffer (help-buffer)
+      (let* ((tutorial-buffer  (button-get button 'tutorial-buffer))
+             ;;(tutorial-arg     (button-get button 'tutorial-arg))
+             (explain-key-desc (button-get button 'explain-key-desc))
+             (part             (button-get button 'part))
+             (changed-keys (with-current-buffer tutorial-buffer
+                             (let ((tutorial--lang "English"))
+                               (tutorial--find-changed-keys
+                                (if (= part viper-tut--emacs-part)
+                                    tutorial--default-keys
+                                  viper-tut--default-keys))))))
+        (when changed-keys
+          (insert
+           "The following key bindings used in the tutorial had been changed\n"
+           (if (= part viper-tut--emacs-part)
+               "from Emacs default in the "
+             "from Viper default in the ")
+           (buffer-name tutorial-buffer) " buffer:\n\n" )
+          (let ((frm "   %-9s %-27s %-11s %s\n"))
+            (insert (format frm "Key" "Standard Binding" "Is Now On" "Remark")))
+          (dolist (tk changed-keys)
+            (let* ((def-fun     (nth 1 tk))
+                   (key         (nth 0 tk))
+                   (def-fun-txt (nth 2 tk))
+                   (where       (nth 3 tk))
+                   (remark      (nth 4 tk))
+                   (rem-fun (command-remapping def-fun))
+                   (key-txt (key-description key))
+                   (key-fun (with-current-buffer tutorial-buffer (key-binding key)))
+                   tot-len)
+              (unless (eq def-fun key-fun)
+                ;; Insert key binding description:
+                (when (string= key-txt explain-key-desc)
+                  (put-text-property 0 (length key-txt) 'face '(:background "yellow") key-txt))
+                (insert "   " key-txt " ")
+                (setq tot-len (length key-txt))
+                (when (> 9 tot-len)
+                  (insert (make-string (- 9 tot-len) ? ))
+                  (setq tot-len 9))
+                ;; Insert a link describing the old binding:
+                (insert-button def-fun-txt
+                               'value def-fun
+                               'action
+                               (lambda(button) (interactive)
+                                 (describe-function
+                                  (button-get button 'value)))
+                               'follow-link t)
+                (setq tot-len (+ tot-len (length def-fun-txt)))
+                (when (> 36 tot-len)
+                  (insert (make-string (- 36 tot-len) ? )))
+                (when (listp where)
+                  (setq where "list"))
+                ;; Tell where the old binding is now:
+                (insert (format " %-11s " where))
+                ;; Insert a link with more information, for example
+                ;; current binding and keymap or information about
+                ;; cua-mode replacements:
+                (insert-button (car remark)
+                               'action
+                               (lambda(b) (interactive)
+                                 (let ((value (button-get b 'value)))
+                                   (tutorial--describe-nonstandard-key value)))
+                               'value (cdr remark)
+                               'follow-link t)
+                (insert "\n")))))
+
+
+
+        (insert "
+It is legitimate to change key bindings, but changed bindings do not
+correspond to what the tutorial says.  (See also " )
+        (insert-button "Key Binding Conventions"
+                       'action
+                       (lambda(button) (interactive)
+                         (info
+                          "(elisp) Key Binding Conventions")
+                         (message "Type C-x 0 to close the new window"))
+                       'follow-link t)
+        (insert ".)\n\n")
+        (print-help-return-message)))))
+
 
 (defvar viper-tut--part nil
   "Viper tutorial part.")
@@ -423,7 +425,7 @@ correspond to what the tutorial says.  (See also " )
 (defun viper-tut--save-tutorial ()
   "Save the tutorial buffer.
 This saves the part of the tutorial before and after the area
-showing changed keys.  It also saves the point position and the
+showing changed keys.  It also saves point position and the
 position where the display of changed bindings was inserted.
 
 Do not save anything if not `viper-mode' is enabled in the
@@ -446,15 +448,13 @@ tutorial buffer."
     (6 "(no file)" "Emacs tutorial for Viper Users")
     ))
 
-(defconst viper-tut--emacs-part 6)
-
 (defcustom viper-tut-directory
   (let* ((this-file (if load-file-name
                         load-file-name
                       (buffer-file-name)))
          (this-dir (file-name-directory this-file)))
     (file-name-as-directory
-     (expand-file-name "viper-tut" this-dir)))
+     (expand-file-name "../etc/viper-tut" this-dir)))
   "Directory where the Viper tutorial files lives."
   :type 'directory
   :group 'viper)
@@ -470,6 +470,8 @@ tutorial buffer."
                       (expand-file-name (nth 1 rec) viper-tut-directory)))))
           viper-tut--parts)
     tut-file))
+
+(defvar viper-is-on nil)
 
 (defun viper-tut--display-changes (changed-keys part)
   "Display changes to some default Viper key bindings.
@@ -582,7 +584,7 @@ CHANGED-KEYS should be a list in the format returned by
                           ;;(concat "** The key " key-desc " has been rebound, but you can use " where " instead ["))
                           (when (and s s2)
                             (setq s (format s key-desc where s2))
-                            (insert s)
+                            (insert s " [")
                             (insert-button s2
                                            'tutorial-buffer
                                            (current-buffer)
@@ -646,9 +648,9 @@ If any of the standard Viper key bindings that are used in the
 tutorial have been changed then an explanatory note about this is
 shown in the beginning of the tutorial buffer.
 
-When the tutorial buffer is killed the content and the point
-position in the buffer is saved so that the tutorial may be
-resumed later."
+When the tutorial buffer is killed the content and point position
+in the buffer is saved so that the tutorial may be resumed
+later."
   (interactive (list
 ;;                 (condition-case nil
 ;;                     (widget-choose "The following viper tutorials are available"
@@ -762,7 +764,8 @@ resumed later."
           (save-excursion
             (goto-char (point-min))
             (while (re-search-forward "'\\([][+a-zA-Z~<>!;,:.'\"%/?(){}$^0|-]\\)'" nil t)
-              (let ((matched-char (match-string 1)))
+              (let ((matched-char (match-string 1))
+                    (inhibit-read-only t))
                 (put-text-property 0 1 'vi-char t matched-char)
                 (put-text-property 0 1 'face '(:foreground "blue") matched-char)
                 (replace-match matched-char))))

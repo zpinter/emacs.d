@@ -47,6 +47,9 @@
 ;;
 ;;; Code:
 
+(eval-when-compile (require 'cl))
+(eval-when-compile (require 'mumamo))
+
 (defvar inlimg-img-regexp
   (rx (or (and "<img"
                (1+ space)
@@ -105,12 +108,17 @@
   "Face used for notes telling image is missing."
   :group 'inlimg)
 
+(defvar inlimg-img-keymap
+  (let ((map (make-sparse-keymap)))
+    (define-key map [(control ?c) ?+] 'inlimg-toggle-img-display)
+    map))
+
 (defun inlimg-next (pt display-image)
   "Display or hide next image after point PT.
 If DISPLAY-IMAGE is non-nil then display image, otherwise hide it.
 
 Return non-nil if an img tag was found."
-  (let (src beg end end-str img ovl remote beg-face)
+  (let (res src beg end end-str img ovl remote beg-face)
     (goto-char pt)
     (when (setq res (re-search-forward inlimg-img-regexp nil t))
       (setq src (or (match-string-no-properties 1)
@@ -190,11 +198,6 @@ Return non-nil if an img tag was found."
                           'inlimg-display display-image)))
     res))
 
-(defvar inlimg-img-keymap
-  (let ((map (make-sparse-keymap)))
-    (define-key map [(control ?c) ?+] 'inlimg-toggle-img-display)
-    map))
-
 (eval-after-load 'gimp
   '(gimp-add-point-bindings inlimg-img-keymap))
 
@@ -218,6 +221,23 @@ Return non-nil if an img tag was found."
                              start
                              end
                              (current-buffer))))
+
+;;;###autoload
+(define-minor-mode inlimg-mode
+  "Display <img ...> images inline.
+Images are displayed below the <img ...> tag using the margins in
+`inlimg-margins'.  The whole image or a slice of it may be
+displayed, see `inlimg-slice'.
+
+See also the command `inlimg-toggle-img-display'."
+  :keymap nil
+  :group 'inlimg
+  (if inlimg-mode
+      (add-hook 'after-change-functions 'inlimg-after-change nil t)
+    (remove-hook 'after-change-functions 'inlimg-after-change t))
+  (inlimg-cancel-timer)
+  (inlimg-update-whole-buffer))
+(put 'inlimg-mode 'permanent-local t)
 
 (defun inlimg-update-in-timer (start end buffer)
   "Update image display between START and END in buffer BUFFER."
@@ -276,23 +296,6 @@ Update image display in all buffers where the option
         (inlimg-update-whole-buffer)))))
 
 ;;;###autoload
-(define-minor-mode inlimg-mode
-  "Display <img ...> images inline.
-Images are displayed below the <img ...> tag using the margins in
-`inlimg-margins'.  The whole image or a slice of it may be
-displayed, see `inlimg-slice'.
-
-See also the command `inlimg-toggle-img-display'."
-  :keymap nil
-  :group 'inlimg
-  (if inlimg-mode
-      (add-hook 'after-change-functions 'inlimg-after-change nil t)
-    (remove-hook 'after-change-functions 'inlimg-after-change t))
-  (inlimg-cancel-timer)
-  (inlimg-update-whole-buffer))
-(put 'inlimg-mode 'permanent-local t)
-
-;;;###autoload
 (defun inlimg-toggle-img-display (point)
   "Toggle display of img image at point POINT.
 See also the command `inlimg-mode'."
@@ -303,6 +306,7 @@ See also the command `inlimg-mode'."
           img-end
           (ovls (overlays-at (point)))
           iovl
+	  is-displayed
           )
       (dolist (ovl ovls)
         (when (overlay-get ovl 'inlimg-img)
