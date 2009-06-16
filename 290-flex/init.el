@@ -3,7 +3,7 @@
 
 
 (defconst mumamo-actionscript-tag-start-regex
-  (rx "<mx:Script"
+  (rx "<mx:Script>"
       ;; FIX-ME: Commented out because of bug in Emacs
       ;;
       ;;(optional (0+ space) "<![CDATA[" )
