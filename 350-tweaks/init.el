@@ -78,6 +78,11 @@
 (global-set-key "\M-Z" 'zap-to-char)
 
 (defalias 'dtw 'delete-trailing-whitespace)
+(setq-default show-trailing-whitespace t)
+;(defface trailing-whitespace
+;  '((t (:background "pale green")))
+;  "Used for tabs and such.")
+(add-hook 'before-save-hook 'delete-trailing-whitespace)
 
 (custom-set-faces
  '(flymake-errline ((t :underline "red")))
@@ -145,14 +150,18 @@
 ;;dired tweaks
 (defun dired-launch-command ()
   (interactive)
-  (dired-do-shell-command 
-   (case system-type       
+  (dired-do-shell-command
+   (case system-type
      (gnu/linux "gnome-open") ;right for gnome (ubuntu), not for other systems
      (darwin "open"))
    nil
    (dired-get-marked-files t current-prefix-arg)))
 
 (define-key dired-mode-map "o" 'dired-launch-command)
+
+; winner mode, loop through window configs
+(when (fboundp 'winner-mode)
+  (winner-mode 1))
 
 (smex-initialize)
 
