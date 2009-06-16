@@ -1,6 +1,6 @@
 (add-module-path "lisp")
 (require 'actionscript-mode)
-
+(load "ani-fcsh.el")
 
 (defconst mumamo-actionscript-tag-start-regex
   (rx "<mx:Script>"
