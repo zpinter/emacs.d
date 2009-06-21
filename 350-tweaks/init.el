@@ -78,7 +78,7 @@
 (global-set-key "\M-Z" 'zap-to-char)
 
 (defalias 'dtw 'delete-trailing-whitespace)
-(setq-default show-trailing-whitespace t)
+;(setq-default show-trailing-whitespace t)
 ;(defface trailing-whitespace
 ;  '((t (:background "pale green")))
 ;  "Used for tabs and such.")
@@ -158,10 +158,21 @@
    (dired-get-marked-files t current-prefix-arg)))
 
 (define-key dired-mode-map "o" 'dired-launch-command)
+(define-key dired-mode-map "b" 'shell-current-directory)
 
 ; winner mode, loop through window configs
 (when (fboundp 'winner-mode)
   (winner-mode 1))
+
+
+; save and close buffer
+(global-set-key [(control x) (control d)]
+		'(lambda ()
+		   (interactive)
+		   (if (y-or-n-p-with-timeout "Do you really want to save and close buffer ? " 4 nil)
+				 (progn
+					(save-buffer)
+					(kill-buffer (buffer-name (current-buffer)))))))
 
 (smex-initialize)
 

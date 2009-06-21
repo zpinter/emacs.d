@@ -10,3 +10,6 @@
 (defun add-module-path (p)
   (add-to-list 'load-path (expand-file-name (concat zconfig-current-module-dir "/" p)))
 )
+
+(defun ismac ()
+	 (or (eq system-type "darwin") (eq system-type 'darwin)))
