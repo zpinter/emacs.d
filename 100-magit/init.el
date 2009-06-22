@@ -1,5 +1,8 @@
-(add-module-path "magit")
+(add-module-path "lisp")
 (require 'magit)
+
+(setenv "PATH" (concat (getenv "PATH") ":/opt/local/bin"))
+(setq exec-path (append exec-path '("/opt/local/bin")))
 
 (defalias 'gs 'magit-status)
 (defalias 'gsr 'magit-svn-rebase)

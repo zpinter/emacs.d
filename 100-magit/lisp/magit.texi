@@ -264,7 +264,11 @@ Another choice is stage everything at the time of hitting @kbd{c}.
 
 You can type @kbd{C-c C-a} in the buffer with the change description
 to toggle a flag that determines whether the next commit will
-@emph{amending} the current commit in HEAD.
+@emph{amend} the current commit in HEAD.
+
+Typing @kbd{C-c C-s} will toggle the @code{--signoff} option.  The
+default is determined by the @code{magit-commit-signoff} customization
+variable.
 
 If you change your mind and don't want to go ahead with your commit
 while you are in the @code{*magit-log-edit*} buffer, you can just
@@ -425,6 +429,10 @@ You can switch to a different branch by typing @kbd{b}.  This will
 immediately checkout the branch into your working copy, so you
 shouldn't have any local modifications when switching branches.
 
+If you try to switch to a remote branch, Magit will offer to create a
+local tracking branch for it instead.  This way, you can easily start
+working on new branches that have appeared in a remote repository.
+
 Similar to @kbd{x}, typing @kbd{b} while point is at a commit
 description will offer that commit as the default to switch to.
 This will result in a detached head.
@@ -489,7 +497,11 @@ is already in progress, ask you how to continue.
 
 When a rebase is stopped in the middle because of a conflict, the
 header of the status buffer will indicate how far along you are in the
-series of commits that are being replayed.
+series of commits that are being replayed.  When that happens, you
+should resolve the conflicts and stage everything and hit @kbd{R c} to
+continue the rebase.  Alternatively, hitting @kbd{c} or @kbd{C} while
+in the middle of a rebase will also ask you whether to continue the
+rebase.
 
 Of course, you can initiate a rebase in any number of ways, by
 configuring @code{git pull} to rebase instead of merge, for example.
@@ -571,8 +583,8 @@ only push the current branch to the remote.  In other words, it will
 run @code{git push <remote> <branch>}.
 
 Typing @kbd{f} will run @code{git remote update} and @kbd{F} will run
-@code{git pull}.  You should have setup your Git configuration to do
-the right thing for @code{git pull}.
+@code{git pull}.  When you don't have a default branch configured to
+be pulled into the current one, you will be asked for it.
 
 If there is a default remote repository for the current branch, Magit
 will show that repository in the status buffer header.
