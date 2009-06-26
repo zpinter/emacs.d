@@ -160,9 +160,20 @@
 (define-key dired-mode-map "o" 'dired-launch-command)
 (define-key dired-mode-map "b" 'shell-current-directory)
 
+(defalias 'mkdir 'make-directory)
+
 ; winner mode, loop through window configs
 (when (fboundp 'winner-mode)
   (winner-mode 1))
+
+; add the function back to the latest carbon emacs
+(defun mac-toggle-max-window ()
+  (interactive)
+  (set-frame-parameter nil 'fullscreen (if (frame-parameter nil 'fullscreen)
+                                           nil
+                                           'fullboth)))
+
+(setq ssl-certificate-directory "~/.certs")
 
 
 ; save and close buffer

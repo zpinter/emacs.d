@@ -1,3 +1,9 @@
+(add-module-path "lisp")
+
+(require 'pop3)
+
+(setq mail-user-agent 'gnus-user-agent)
+
 ;; ;; Default smtpmail.el configurations.
 ;; (require 'smtpmail)
 ;; (setq send-mail-function 'smtpmail-send-it
