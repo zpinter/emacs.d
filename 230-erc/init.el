@@ -1,4 +1,3 @@
-(add-module-path "lisp")
 (require 'erc-auto)
 
 ;; (eval-after-load "erc"

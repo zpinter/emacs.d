@@ -12,5 +12,5 @@
 (fset 'sgml-mode 'nxml-mode)
 (fset 'html-mode 'nxml-mode)
 
-(add-module-path "nxhtml")
+(zconfig-add-lisp-path "nxhtml")
 (load "autostart.el")

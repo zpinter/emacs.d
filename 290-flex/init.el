@@ -1,4 +1,3 @@
-(add-module-path "lisp")
 (require 'actionscript-mode)
 (load "ani-fcsh.el")
 

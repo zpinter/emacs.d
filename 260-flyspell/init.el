@@ -1,4 +1,3 @@
-(add-module-path "lisp")
 (autoload 'flyspell-mode "flyspell" "On-the-fly spelling checker." t)
 
 (dolist (hook '(text-mode-hook))

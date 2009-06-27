@@ -1,4 +1,3 @@
-(add-module-path "lisp")
 (require 'anything)
 (require 'anything-config)
 
@@ -11,12 +10,12 @@
         anything-c-source-man-pages
         anything-c-source-locate
         anything-c-source-emacs-commands
-        anything-c-source-emacs-variables		  
+        anything-c-source-emacs-variables
         anything-c-source-bookmarks
         anything-c-source-org-headline
 		  anything-c-source-imenu
-		  anything-c-source-google-suggest		  
-		  anything-c-source-calculation-result		  
+		  anything-c-source-google-suggest
+		  anything-c-source-calculation-result
 		  anything-c-source-complex-command-history
         ))
 

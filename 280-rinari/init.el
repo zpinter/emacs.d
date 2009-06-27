@@ -1,4 +1,3 @@
-(add-module-path "lisp")
 (require 'rinari)
 
 (require 'mumamo-fun) ;nxml should already be installed

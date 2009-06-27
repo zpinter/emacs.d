@@ -1,4 +1,3 @@
-(add-module-path "lisp")
 (require 'twit)
 
 ;; (load "~/my-elisp/twit.el")

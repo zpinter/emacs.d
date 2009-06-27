@@ -5,7 +5,6 @@
 
 (global-set-key (kbd "C-x C-b") 'ido-switch-buffer)
 
-(add-module-path "lisp")
 (require 'smex)
 
 ;; (require 'bookmark+)

@@ -1,4 +1,3 @@
-(add-module-path "lisp")
 (require 'open-resource)
 
 (defun dired-open-resource (filepattern)

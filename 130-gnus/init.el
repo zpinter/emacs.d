@@ -1,5 +1,3 @@
-(add-module-path "lisp")
-
 (require 'pop3)
 
 (setq mail-user-agent 'gnus-user-agent)

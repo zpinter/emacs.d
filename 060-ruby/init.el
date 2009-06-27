@@ -1,5 +1,3 @@
-(add-module-path "ruby")
-
 (autoload 'ruby-mode "ruby-mode"
   "Mode for editing ruby source files")
 (add-to-list 'auto-mode-alist '("\\.rb$" . ruby-mode))

@@ -1,4 +1,3 @@
-(add-module-path "lisp")
 (require 'remember)
 
 ;; (setq remember-annotation-functions '(org-remember-annotation))

@@ -1,4 +1,4 @@
-(add-module-path "org-mode/lisp")
+(zconfig-add-lisp-path "lisp/lisp")
 (require 'org-install)
 
 ;; (setq font-lock-maximum-decoration
@@ -52,13 +52,13 @@
         ("org-base"
          :static-directory "~/org/"
          :base-extension "css\\|js\\|png\\|jpg\\|gif\\|pdf\\|mp3\\|ogg\\|swf"
-         :publishing-directory "~/Dropbox/Public/orgpub/"			
+         :publishing-directory "~/Dropbox/Public/orgpub/"
          :recursive t
          :publishing-function org-publish-attachment
          )
 
 		  ("org" :components ("org-notes" "org-static"))
-		  
+
         ))
 
 ; Use IDO for target completion
@@ -70,7 +70,7 @@
 ; Targets start with the file name - allows creating level 1 tasks
 (setq org-refile-use-outline-path (quote file))
 
-; Targets complete in steps so we start with filename, TAB shows the next level of targets etc 
+; Targets complete in steps so we start with filename, TAB shows the next level of targets etc
 (setq org-outline-path-complete-in-steps t)
 
 

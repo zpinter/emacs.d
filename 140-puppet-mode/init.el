@@ -1,4 +1,3 @@
-(add-module-path "puppet")
 ;;
 ;; Setup puppet-mode for autoloading
 ;;

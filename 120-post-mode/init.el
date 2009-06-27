@@ -1,4 +1,3 @@
-(add-module-path "post")
 (load "post.el")
 
 ; sup support

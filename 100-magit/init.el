@@ -1,4 +1,3 @@
-(add-module-path "lisp")
 (require 'magit)
 
 (setenv "PATH" (concat (getenv "PATH") ":/opt/local/bin"))

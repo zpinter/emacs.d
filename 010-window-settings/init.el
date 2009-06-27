@@ -1,4 +1,3 @@
-(add-module-path "maxframe")
                                         ;disable gui crap
 (if (fboundp 'scroll-bar-mode) (scroll-bar-mode -1))
 
@@ -25,3 +24,40 @@ determining the maximize number of columns to fit on a display"
 ;;   (require 'carbon-font)
 ;;   (fixed-width-set-default-fontset
 ;;    "-apple-inconsolata-medium-r-normal--14-*-*-*-*-*-iso10646-1"))
+
+
+(if (and (ismac) window-system)
+    (progn
+
+		(require 'cua-base)
+		(cua-mode t)
+
+      ;; fix a mac-specific problem with ptys
+      (setq process-connection-type nil)
+
+		(mac-key-mode t)
+
+      ;; Mac-style cut/copy/paste
+      (setq mac-command-key-is-meta nil)
+      (setq cua-enable-cua-keys nil)
+		(global-set-key [(alt W)] 'delete-frame)
+      (global-set-key [(alt x)] 'cua-cut-region)
+      (global-set-key [(alt c)] 'cua-copy)
+      (global-set-key [(alt v)] 'cua-paste)
+      (global-set-key [(alt a)] 'mark-whole-buffer)
+      (global-set-key [(alt s)] 'save-buffer)
+      (global-set-key [(alt S)] 'write-file)
+      (global-set-key [(alt p)] 'ps-print-buffer)
+      (global-set-key [(alt o)] 'find-file)
+      (global-set-key [(alt q)] 'save-buffers-kill-emacs)
+      (global-set-key [(alt w)] 'kill-buffer-and-window)
+      (global-set-key [(alt z)] 'undo)
+      (global-set-key [(alt f)] 'isearch-forward)
+      (global-set-key [(alt g)] 'query-replace)
+      (global-set-key [(alt l)] 'goto-line)
+      (global-set-key [(alt m)] 'iconify-frame)
+      (global-set-key [(alt n)] 'new-frame)
+      (global-set-key [kp-delete] 'delete-char)
+      (global-set-key [(control kp-home)] 'beginning-of-buffer)
+      (global-set-key [(control kp-end)] 'end-of-buffer)))
+

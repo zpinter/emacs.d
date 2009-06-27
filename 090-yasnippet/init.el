@@ -1,4 +1,3 @@
-(add-module-path "yasnippet")
 (require 'yasnippet-bundle)
 (yas/initialize)
 (yas/load-directory (concat zconfig-current-module-dir "/snippets"))
