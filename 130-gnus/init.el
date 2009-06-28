@@ -1,6 +1,8 @@
-(require 'pop3)
-
+(setq gnus-read-active-file nil)
 (setq mail-user-agent 'gnus-user-agent)
+
+(require 'extract-ical)
+(extract-ical-gnus-insinuate)
 
 ;; ;; Default smtpmail.el configurations.
 ;; (require 'smtpmail)
