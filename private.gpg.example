@@ -1,0 +1,11 @@
+;; -*- mode: emacs-lisp -*- -*- epa-file-encrypt-to: ("zpinter@zacharypinter.com") -*-
+
+;; put a file like this in your home directory as ~/private.gpg and easypg will autoencrypt it
+;; then you can call something like (setq auth-sources `((:source ,(zconfig-private-eval 'zpinter-authinfo) :host t :protocol t)))  in your .gnus
+
+(setq zpinter-gmail-password "somegreatpassword")
+(setq zpinter-effectiveui-password "someothergreatpassword")
+
+(setq zpinter-authinfo
+		'((("machine" . "news.giganews.com") ("login" . "someloginname") ("password" . "somepassword"))
+		 (("machine" . "zpimap") ("login" . "zpinter@zacharypinter.com") ("password" . "someotherpassword") ("port" . "993"))))

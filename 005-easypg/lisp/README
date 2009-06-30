@@ -1,0 +1,124 @@
+* What's this?
+
+EasyPG is an all-in-one GnuPG interface for Emacs.  It has two
+aspects: convenient tools which allow to use GnuPG from Emacs (EasyPG
+Assistant), and a fully functional interface library to GnuPG (EasyPG
+Library).
+
+* Features
+
+The EasyPG Assistant provides the following features:
+
+- Keyring browser.
+- Cryptographic operations on regions.
+- Cryptographic operations on files.
+- Dired integration.
+- Encryption/decryption of *.gpg files.
+
+The EasyPG Library provides the following features:
+
+- The API covers most functions of GnuPG like GPGME.
+- S/MIME support using gpgsm.
+- Designed to avoid potential security pitfalls around Emacs
+
+* Requirements
+
+** GNU Emacs 21.4, XEmacs 21.4, or later
+
+** GnuPG 1.4.3 or later
+   Earlier versions are supported but not recommended.
+
+* Quick start
+
+** Installation
+
+  $ ./configure
+  $ sudo make install
+
+Add the following line to your ~/.emacs
+
+  (require 'epa-setup)
+
+Restart emacs and type `M-x epa- TAB', and you will see a lot of
+commands available.  For example,
+
+- To browse your keyring, type `M-x epa-list-keys'
+- To create a cleartext signature of the region, type `M-x epa-sign-region'
+
+You can also do some cryptographic operations from dired.
+
+  M-x dired
+  (mark some files)
+  : e (or M-x epa-dired-do-encrypt)
+  (select recipients by 'm' and click [OK])
+
+* MUA Integration
+
+The EasyPG Library can be used in combination with various MUA (Mail
+User Agents).
+
+** CVS version of Gnus
+
+CVS version of Gnus uses EasyPG by default.  To make sure of that,
+check mml2015-use set to 'epg.  Other options which affect on the
+EasyPG are
+
+  mml2015-signers
+  mml2015-encrypt-to-self
+  mml2015-cache-passphrase
+  mml2015-passphrase-cache-expiry
+  mml2015-verbose
+
+NOTE: You don't need pgg-epg.el in this case.
+
+** PGG based MUA
+
+PGG is outdated PGP library used by old Gnus (<= v5.11), MH-E, etc.
+
+There is a PGG backend written using EasyPG called pgg-epg.el.
+However, EasyPG API is a superset of PGG and pgg-epg.el provides
+nothing but compatibility with PGG.
+
+*** Limitations of PGG
+
+As I noted "PGG is outdated PGP library" above, PGG has several
+limitations.  For example
+
+- PGG can't handle a message signed with multiple keys.
+- PGG can't prompt a user which key is being used.
+- PGG can't create a binary PGP messages.
+- PGG doesn't provide a way to select keys per cryptographic operation.
+- PGG ignores GnuPG's trust metrics.
+
+** SEMI based MUA
+
+SEMI is the MIME library used by Wanderlust, cmail, T-gnus, etc.
+
+There is an EasyPG capable SEMI library called EMIKO-EasyPG.  It can
+be downloaded from the same site of the EasyPG distribution point.
+
+* Security
+
+There are security pitfalls around Emacs.  EasyPG is written with
+avoiding them.
+
+** Passphrase may leak to a temporary file.
+
+The function call-process-region writes data in region to a temporary
+file. If your PGP library used this function, your passphrases would
+leak to the filesystem.
+
+The EasyPG Library does not use call-process-region to communicate
+with a gpg subprocess.
+
+** Passphrase may be stolen from a core file.
+
+If Emacs crashes and dumps core, Lisp strings in memory are also
+dumped within the core file. read-passwd function clears passphrase
+strings by (fillarray string 0) to avoid this risk. However, Emacs
+performs compaction in gc_sweep phase. If GC happens before fillarray,
+passphrase strings may be moved elsewhere in memory. Therefore,
+passphrase caching in elisp is generally a bad idea.
+
+The EasyPG Library dares to disable passphrase caching. Fortunately,
+there is more secure way to cache passphrases - use gpg-agent.

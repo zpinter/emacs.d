@@ -1,0 +1,1152 @@
+2008-02-07  Daiki Ueno  <ueno@unixuser.org>
+
+	* EasyPG: Version 0.0.16 released.
+	* configure.ac: Bump up version.
+
+2008-02-06  Daiki Ueno  <ueno@unixuser.org>
+
+	* epa-file.el (epa-file-passphrase-callback-function): Use
+	canonical file names as keys for cache.
+
+2008-01-22  Daiki Ueno  <ueno@unixuser.org>
+
+	* epa-mail.el (epa-mail--find-usable-key): New function.
+	(epa-mail-encrypt): Use it.
+	Reported by intrigeri <intrigeri@boum.org>.
+
+2007-11-26  Daiki Ueno  <ueno@unixuser.org>
+
+	* epg-package-info.el.in (epg-bug-report-address): New constant.
+
+	* configure.ac: Use modern AC_INIT.
+
+2007-09-05  Daiki Ueno  <ueno@unixuser.org>
+
+	* EasyPG: Version 0.0.15 released.
+	* configure.ac: Bump up version.
+
+2007-09-05  Daiki Ueno  <ueno@unixuser.org>
+
+	* epa.el (epa-validity-face-alist): Fixed misuse of the list
+	widget type.
+	(epa-font-lock-keywords): Define as defvar.
+	(epa--show-key): Don't signal an error even if a time cannot be decoded.
+
+	* epa-file.el (epa-file-auto-mode-alist-entry): New variable.
+	(epa-file-enable): Install a strip-suffix entry in auto-mode-alist.
+	(epa-file-disable): Remove the entry from auto-mode-alist.
+
+2007-08-31  Daiki Ueno  <ueno@unixuser.org>
+
+	* epa.el (epa-verify-region): Decode the plaintext by
+	coding-system-for-read or one saved in epa-coding-system-used.
+
+2007-08-02  Adrian Aichner  <adrian@xemacs.org> (tiny change)
+
+	* epa.el (epa-validity-high): Fix load error by adding missing
+	paren pair.
+
+2007-07-30  Daiki Ueno  <ueno@unixuser.org>
+
+	* epa-file.el (epa-file-insert-file-contents): Ignore errors from
+	file-local-copy.
+
+2007-07-29  Daiki Ueno  <ueno@unixuser.org>
+
+	* EasyPG: Version 0.0.14 released.
+	* configure.ac: Bump up version.
+
+2007-07-29  Daiki Ueno  <ueno@unixuser.org>
+
+	* epa.el: Use :weight or :slant keywords to define faces, if
+	available.
+
+2007-07-17  Daiki Ueno  <ueno@unixuser.org>
+
+	* epa-file.el (epa-file-insert-file-contents): If a file is not
+	directly accessible, use the local copy of the file.
+	Reported by Jaroslav Gresula <jgresula@gmail.com>
+
+2007-07-10  Daiki Ueno  <ueno@unixuser.org>
+
+	* epa.el: Removed -face suffix from face names;
+	removed face symbol vars.
+
+2007-05-29  Daiki Ueno  <ueno@unixuser.org>
+
+	* EasyPG: Version 0.0.13 released.
+	* configure.ac: Bump up version.
+
+2007-05-29  Daiki Ueno  <ueno@unixuser.org>
+
+	* epa-file.el (epa-file-write-region): Supply the BUFFER argument
+	to local-variable-p.
+	(epa-file-find-file-hook): Mark the current buffer as unmodified.
+	Suggested by Adrian Aichner <adrian@elisp.de>
+
+2007-04-29  Daiki Ueno  <ueno@unixuser.org>
+
+	* epa-file.el (epa-file-write-region): Don't use epa-textmode.
+
+2007-04-29  Daiki Ueno  <ueno@unixuser.org>
+
+	* EasyPG: Version 0.0.12 released.
+	* configure.ac: Bump up version.
+
+2007-04-29  Daiki Ueno  <ueno@unixuser.org>
+
+	* epa-file.el (epa-file-write-region): Respect epa-armor and
+	epa-textmode.
+
+2007-04-26  Daiki Ueno  <ueno@unixuser.org>
+
+	* epg.el (epg--prompt-GET_BOOL-untrusted_key.override): Lookup
+	user-id from epg-user-id-alist.
+
+2007-04-22  Daiki Ueno  <ueno@unixuser.org>
+
+	* epa-file.el (epa-file-select-keys): New command.
+
+2007-04-21  Daiki Ueno  <ueno@unixuser.org>
+
+	* epa-file.el (epa-file-write-region): Ask recipients only the
+	first time.
+	(epa-file-select-keys): New user option.
+
+2007-04-19  Daiki Ueno  <ueno@unixuser.org>
+
+	* epa.el (epa-mark-key): Renamed from epa-mark; signal an error if
+	no key is on the line.
+	(epa-unmark-key): Renamed from epa-unmark.
+	(epa-toggle-mark): Abolished.
+
+	* epa-file.el (epa-file-insert-file-contents): Guess the value of
+	epa-file-encrypt-to from 'encrypted-to context-result.
+	(epa-file-encrypt-to): Make it permanent local.
+
+	* epg.el (epg--status-ENC_TO): New function.
+
+2007-04-04  Daiki Ueno  <ueno@unixuser.org>
+	    Chris Moore <dooglus@users.sourceforge.jp>
+
+	* epa-file.el (epa-file--file-name-regexp-set): New Custom :set
+	function.
+	(epa-file-name-regexp): Use it.
+	(epa-file-name-regexp-update): New command.
+	(epa-file-name-regexp): Accept backup filenames.
+	Reported by "[ #10192 ] customizing epa-file-name-regexp fails"
+
+2007-04-04  Daiki Ueno  <ueno@unixuser.org>
+
+	* epa-file.el (epa-file-find-file-hook): New function.
+	(epa-file-enable): Add epa-file-find-file-hook to find-file-hooks.
+	(epa-file-disable): Remove epa-file-find-file-hook from
+	find-file-hooks.
+
+2007-03-29  Daiki Ueno  <ueno@unixuser.org>
+
+	* EasyPG: Version 0.0.11 released.
+	* configure.ac: Bump up version.
+
+2007-03-26  Daiki Ueno  <ueno@unixuser.org>
+
+	* epa.el (epa--insert-keys): Changed arglist.  All callers
+	changed.
+	(epa--select-keys): New function.
+	(epa-select-keys): Use it; don't popup menu if keys have elements
+	less than 2.
+
+2007-03-25  Daiki Ueno  <ueno@unixuser.org>
+
+	* epa.el (epa-protocol): defcustom -> defvar.
+	(epa-armor): Ditto.
+	(epa-textmode): Ditto.
+
+2007-03-24  Daiki Ueno  <ueno@unixuser.org>
+
+	* epa.el (epa-select-keys): Simplified; don't select the first
+	matching key.
+	(epa-key-list-mode-map): Bind revert-buffer instead of
+	epa-list-keys.
+	(epa-key-list-mode): Set revert-buffer-function to epa--revert-buffer.
+	(epa--revert-buffer): New function.
+
+	* epg.el (epg--list-keys-1): Accept a list of strings as NAME
+	argument.
+	(epg-list-keys): Ditto.
+
+2007-03-21  Daiki Ueno  <ueno@unixuser.org>
+
+	* epa-file.el (epa-file-inhibit-auto-save): New user option.
+	(epa-file-insert-file-contents): Turn off auto-save-mode if
+	epa-file-inhibit-auto-save is non-nil.
+	Reported by "[ #9937] epa-file auto-saves in plain text"
+
+	* epa.el (epa--list-keys): New function.
+	(epa-list-keys): Use it.
+	(epa-list-secret-keys): New command.
+
+2007-03-20  Daiki Ueno  <ueno@unixuser.org>
+
+	* epa.el (epa-display-info): Generate new *Info* buffer if buffer
+	is not alive.
+	(epa-verify-cleartext-in-region): s/armor/cleartext/g.
+
+	* Makefile.am (info_TEXINFOS): Added epa.texi.
+	* epa.texi: New file.
+
+2007-03-19  Daiki Ueno  <ueno@unixuser.org>
+
+	* epg.el (epg--decode-percent-escape): New function.
+
+2007-03-08  Daiki Ueno  <ueno@unixuser.org>
+
+	* epg.el (epg-list-keys): Parse GnuPG's print_string escape.
+
+2007-03-08  Daiki Ueno  <ueno@unixuser.org>
+
+	* epa-mail.el (epa-mail-mode-hook): New variable.
+	(epa-mail-mode-on-hook): New variable.
+	(epa-mail-mode-off-hook): New variable.
+
+	* epg.el (epg--start): Make the process-buffer unibyte.
+	(epg--status-USERID_HINT): Decode user-id.
+	(epg--status-IMPORTED): Decode user-id.
+
+2007-03-07  Daiki Ueno  <ueno@unixuser.org>
+
+	* epg.el (epg--start): Don't specify --use-agent if the protocol
+	is CMS; set coding-system-for-read to binary.
+	(epg--status-*SIG): Decode user-id.
+
+2007-02-02  Daiki Ueno  <ueno@unixuser.org>
+
+	* epa-file.el (epa-file-write-region): Set a dummy filename
+	for buffer-file-name when calling select-safe-coding-system.
+
+2007-01-30  Daiki Ueno  <ueno@unixuser.org>
+
+	* epg.el (epg-last-status): New variable.
+	(epg--process-filter): Set epg-last-status after calling a status
+	handler.
+	(epg--prompt-GET_BOOL): New function.
+	(epg--prompt-GET_BOOL-untrusted_key.override): New function.
+	(epg--status-GET_BOOL): Call epg--prompt-GET_BOOL-* instead of
+	y-or-n-p.
+
+2007-01-29  Daiki Ueno  <ueno@unixuser.org>
+
+	* EasyPG: Version 0.0.10 released.
+	* configure.ac: Bump up version.
+
+2007-01-29  Daiki Ueno  <ueno@unixuser.org>
+
+	* epg-config.el: Require epg-package-info.
+	* configure.ac: Generate epg-package-info.el.
+	* Makefile.am (DISTCLEANFILES): Added epg-package-info.el.
+	* COMPILE (epg-modules): Added epg-package-info.
+	* epg-package-info.el.in: New file.
+
+2007-01-29  Daiki Ueno  <ueno@unixuser.org>
+
+	* epa-setup.el (epa-mail-mode): Autoload; setup	mail-mode-hook.
+	* epa.el: Removed epa-*-mail stuff.
+	* Makefile.am (EXTRA_DIST): Added epa-mail.el.
+	* COMPILE (epg-modules): Added epa-mail.
+	* epa-mail.el: New file.
+
+2007-01-05  Daiki Ueno  <ueno@unixuser.org>
+
+	* epg-pgp50i.el: Removed.
+
+	* epa.el (epa-key-list-mode-map): Renamed from epa-keys-mode-map.
+	(epa-key-list-mode): Renamed from epa-keys-mode.  All callers
+	changed.
+
+	* epg.el (epg--status-VALIDSIG): Don't set expiration-time if it
+	is "0".
+	(epg--make-sub-key-1): Ditto.
+	(epg--decode-hexstring): "\\x" -> "\\\\x".
+	(epg--decode-quotedstring): Ditto.
+
+	* pgg-epg.el (pgg-epg-encrypt-region): Ask a user whether to skip a
+	recipient whose public key is not available.
+	* epa.el (epa-encrypt-mail): Ask a user whether to skip a
+	recipient whose public key is not available.
+
+2007-01-04  Daiki Ueno  <ueno@unixuser.org>
+
+	* epa.el (epa-decrypt-mail): Renamed from epa-decrypt.
+	(epa-verify-mail): Renamed from epa-verify.
+	(epa-sign-mail): Renamed from epa-sign.
+	(epa-encrypt-mail): Renamed from epa-encrypt.
+	(epa-import-mail): Renamed from epa-import.
+
+	* configure.ac: Don't exit if GnuPG (>= 1.4.3) is unavailable.
+
+	* epg.el (epg-signature-to-string): Print creation-time and used
+	pubkey-algorithm.
+	(epg-sign-string): If the GnuPG version is earlier than 1.4.3,
+	fallback to use a temp file as an input.
+	(epg-encrypt-string): Ditto.
+
+2006-12-31  Daiki Ueno  <ueno@unixuser.org>
+
+	* epa.el (epa-mail-modes): New user option.
+	(epa--mail-mode-p): New function.
+	(epa-sign): Use it.
+	(epa-encrypt): Use it.
+	(epa--find-coding-system-for-mime-charset): New function.
+	(epa-decrypt-armor-in-region): Use it.
+	(epa-progress-callback-function): Use handback as the prompt.
+	(epa-encrypt-region): Take 4th argument SIGN.
+	(epa-encrypt): Ditto.
+
+2006-12-31  Daiki Ueno  <ueno@unixuser.org>
+
+	* epa.el (epa--derived-mode-p): New alias.
+	(epa-sign): Use it.
+	(epa-encrypt): Use it.
+
+2006-12-31  Daiki Ueno  <ueno@unixuser.org>
+
+	* epa.el (epa--read-signature-type): New function.
+	(epa-decrypt): New command.
+	(epa-verify): New command.
+	(epa-sign): New command.
+	(epa-encrypt): New command.
+	(epa-import-armor-in-region): New command.
+	(epa-import): New command.
+	(epa-decrypt-region): Confirm user to replace the region.
+	(epa-display-info): Delete "*Info*" window.
+
+2006-12-29  Daiki Ueno  <ueno@unixuser.org>
+
+	* EasyPG: Version 0.0.9 released.
+	* epg-config.el (epg-version-number): Bump up.
+	* configure.ac: Bump up version.
+
+2006-12-28  Daiki Ueno  <ueno@unixuser.org>
+
+	* epa.el (epa-sign-file): Ask signing key only when a prefix arg
+	is given; ask signature type only when a prefix arg is given.
+	(epa-sign-region): Ditto.
+
+2006-12-26  Daiki Ueno  <ueno@unixuser.org>
+
+	* epg-config.el (epg-passphrase-coding-system): Default to nil.
+
+2006-12-20  Hiroya Murata  <lapis-lazuli@pop06.odn.ne.jp>
+
+	* epa.el (epa--format-fingerprint-1): New function.
+	(epa--format-fingerprint): Ditto.
+	(epa--show-key): Use it.
+
+2006-12-20  Daiki Ueno  <ueno@unixuser.org>
+
+	* epa-file.el (epa-file-write-region): Don't attempt to write the
+	region to "/" to determine safe coding-system.
+
+	* epa.el (epa-list-keys): Abolished PROTOCOL arg.
+	(epa-sign-file): Save the output to *.p7s or *.p7m file if
+	epa-protocol is CMS.
+	(epa-encrypt-file): Ditto.
+	(epa-last-coding-system-specified): New variable.
+	(epa-decrypt-region): Try to decode with the
+	epa-coding-system-used text property.
+	(epa--select-safe-coding-system): New function.
+	(epa-verify-region): Try to decode with the epa-coding-system-used
+	text property.
+	(epa-sign-region): Query user to select coding-system to encode;
+	set the epa-coding-system-used text property on the result.
+	(epa-encrypt-region): Ditto.
+
+2006-12-19  Daiki Ueno  <ueno@unixuser.org>
+
+	* epg.el (epg-export-keys-to-file): Fixed a typo.
+
+	* epa.el (epa-protocol): New user option.
+	(epa-sign-region): --armor & --textmode.
+	(epa-encrypt-region): Ditto.
+	(epa-list-keys): If prefix-arg is specified, use "OpenPGP" as the
+	default protocol.
+	(epa-import-keys-region): New command.
+	(epa-insert-keys): New command.
+	(epa--insert-keys): Renamed from epa-insert-keys.
+
+2006-12-11  Daiki Ueno  <ueno@unixuser.org>
+
+	* pgg-epg.el (pgg-epg-decrypt-region): Don't call
+	decode-coding-string if it is not bound.
+
+	* epa-file.el (epa-file--encode-coding-string): New alias.
+	(epa-file--decode-coding-string): New alias.
+	(epa-file-write-region): Use epa-file--encode-coding-string.
+	(epa-file-decode-and-insert): Use epa-file--decode-coding-string.
+
+	* epa.el (epa--encode-coding-string): New alias.
+	(epa--decode-coding-string): New alias.
+	(epa-verify-region): Use epa--encode-coding-string.
+	(epa-sign-region): Ditto; use epa--decode-coding-string.
+	(epa-encrypt-region): Use epa--encode-coding-string.
+
+	* epg.el (epg--encode-coding-string): New alias.
+	(epg--status-GET_HIDDEN): Use it.
+
+2006-11-29  Daiki Ueno  <ueno@unixuser.org>
+
+	* EasyPG: Version 0.0.8 released.
+	* epg-config.el (epg-version-number): Bump up.
+	* configure.ac: Bump up version.
+
+2006-11-20  Andreas Seltenreich <uwi7@rz.uni-karlsruhe.de> (tiny change)
+
+	* epa-file.el (epa-file-encrypt-to): New file local variable.
+	(epa-file-write-region): Specify recipients by epa-file-encrypt-to.
+
+2006-11-26  Daiki Ueno  <ueno@unixuser.org>
+
+	* epa.el (epa-sign-file): Query signature type at a time.
+	(epa-decrypt-file): Display output file name on completion.
+	(epa-sign-file): Ditto.
+	(epa-encrypt-file): Ditto.
+
+2006-11-25  Daiki Ueno  <ueno@unixuser.org>
+
+	* epa.el (epa-keys-mode): Don't call widget-setup.
+	(epa-list-keys): Call widget-setup here.
+	(epa-select-keys): Ditto.
+
+2006-11-24  Hiroya Murata  <lapis-lazuli@pop06.odn.ne.jp>
+
+	* epg.el (epg-delete-keys): Remove redundant argument for `error'
+	and fix a close parenthesis.
+
+2006-11-24  Daiki Ueno  <ueno@unixuser.org>
+
+	* epg.el (epg--status-GET_HIDDEN): Encode passphrase with eol-type LF.
+	Reported by Hiroya Murata  <lapis-lazuli@pop06.odn.ne.jp>.
+	cf. <emacs-mime-ja:02090>
+
+2006-11-23  Daiki Ueno  <ueno@unixuser.org>
+
+	* epa.el (epa-sign-region): Query signature type at a time.
+
+2006-11-22  Hiroya Murata  <lapis-lazuli@pop06.odn.ne.jp>
+
+	* epg.el (epg-context-set-passphrase-callback): Add optional
+	argument `handback'.
+	(epg-context-set-progress-callback): Ditto.
+
+2006-11-14  Daiki Ueno  <ueno@unixuser.org>
+
+	* epa.el (epa--key-widget-value-create): Allow empty user IDs.
+	(epa--show-key): Ditto.
+	Reported by Werner Koch <wk@gnupg.org>.
+
+	* epg.el (epg--start): Don't specify --enable-progress-filter for
+	gpgsm.
+	(epg--status-PROGRESS): Check if progress-callback is set.
+
+2006-11-12  Daiki Ueno  <ueno@unixuser.org>
+
+	* epg.el (epg-error): New error.
+	(epg--check-error-for-decrypt): New function.
+	(epg-decrypt-file): Use it.
+	(epg-decrypt-string): Use it.
+	(epg--start): Added a very basic test to check whether to specify
+	--use-agent.
+
+	* epa.el (epa-decrypt-file): Expand file name.
+	(epa-verify-file): Ditto.
+	(epa-import-keys): Ditto.
+
+2006-11-12  Daiki Ueno  <ueno@unixuser.org>
+
+	* epg.el (epg-delete-keys): Decode delete-problem.
+
+	* epa.el (epa-popup-info-window): Turn on by default.
+	(epa-display-info): Split selected window instead of pop-to-buffer.
+
+2006-11-12  Daiki Ueno  <ueno@unixuser.org>
+
+	* epa.el (epa-display-info): Generalized; renamed from
+	epa-display-verify-result.
+	(epa-decrypt-file): Use it.
+	(epa-verify-file): Use it.
+	(epa-decrypt-region): Use it.
+	(epa-verify-region): Use it.
+	(epa-import-keys): Show import result.
+	(epa-display-verify-result): Make it obsolete.
+
+	* epg.el (epg-start-sign-keys): Make it obsolete; signing a key is
+	out of scope.
+	(epg-sign-keys): Make it obsolete.
+	(epg-make-import-status): New object epg-import-status.
+	(epg-make-import-result): New object epg-import-result.
+	(epg--status-IMPORT_RES): New function.
+	(epg-import-result-to-string): New function.
+
+	* epa.el (epa-keys-mode-map): Don't bind epa-sign-keys.
+	(epa-sign-keys): Make it obsolete.
+
+2006-11-11  Daiki Ueno  <ueno@unixuser.org>
+
+	* epg.el (epg-start-sign): Don't set --armor nor --textmode if
+	mode is set for a cleartext signature.
+	(epg-make-context): New slot "sig-notations".
+	(epg--args-from-sig-notations): New function.
+	(epg-start-sign): Specify --sig-notation or --sig-policy-url if
+	desired.
+	(epg-start-encrypt): Ditto.
+	(epg-make-signature): New slot "notations".
+	(epg--status-NOTATION_NAME): New function.
+	(epg--status-NOTATION_DATA): New function.
+	(epg--status-POLICY_URL): New function.
+
+2006-10-29  Daiki Ueno  <ueno@unixuser.org>
+
+	* EasyPG: Version 0.0.7 released.
+	* epg-config.el (epg-version-number): Bump up.
+	* configure.ac: Bump up version.
+
+2006-10-29  Daiki Ueno  <ueno@unixuser.org>
+
+	* epa-file.el
+	(epa-file-cache-passphrase-for-symmetric-encryption): New user
+	option.
+
+2006-10-12  Daiki Ueno  <ueno@unixuser.org>
+
+	* epg.el (epg-start-verify): Fixed a clearsign verification bug.
+	Reported by Hirohisa Yamaguchi <umq@ueo.co.jp>.
+
+2006-09-29  Daiki Ueno  <ueno@unixuser.org>
+
+	* EasyPG: Version 0.0.6 released.
+	* epg.el (epg-version-number): Bump up.
+	* configure.ac: Bump up version.
+
+2006-09-29  Daiki Ueno  <ueno@unixuser.org>
+
+	* epa.el (epa-verify-cleartext-in-region): Renamed from
+	epa-verify-armor-in-region.
+
+	* epg.el (epg-passphrase-callback-function): Suggest to use
+	epa-passphrase-callback-function instead.
+	(epg-start-verify): Don't specify --verify if SIGNATURE is a
+	normal or a clear text signature.
+	(epg-verify-file): Mention that the plaintext will be stored into
+	the file PLAIN after successful verification.
+	(epg-verify-string): Mention that the plaintext will be returned
+	after successful verification.
+
+2006-09-27  Daiki Ueno  <ueno@unixuser.org>
+
+	* epa-file.el (epa-file-insert-file-contents): Set progress callback.
+	(epa-file-write-region): Ditto.
+
+	* epa.el (epa-decrypt-file): Set callbacks.
+	(epa-sign-file): Ditto.
+	(epa-encrypt-file): Ditto.
+	(epa-decrypt-region): Ditto.
+	(epa-sign-region): Ditto.
+	(epa-encrypt-region): Ditto.
+	(epa-sign-keys): Ditto.
+
+	* epg.el (epg-progress-callback-function): Removed.
+
+2006-09-24  Daiki Ueno  <ueno@unixuser.org>
+
+	* epa.el (epa-passphrase-callback-function): Moved from epg.el.
+	(epa-progress-callback-function): Ditto.
+	* epg.el (epg-passphrase-callback-function): Made it obsolete.
+	(epg-progress-callback-function): Ditto.
+
+2006-09-23  Daiki Ueno  <ueno@unixuser.org>
+
+	* epg.el (epg-start-decrypt): Append "--" to the end of options.
+	(epg-start-verify): Ditto.
+	(epg-start-sign): Ditto.
+	(epg-start-encrypt): Ditto.
+	(epg-start-import-keys): Ditto.
+	(epg-start-generate-key): Ditto.
+
+2006-09-23  Daiki Ueno  <ueno@unixuser.org>
+
+	* epg.el (epg-make-context): Don't set progress-callback by
+	default.
+	(epg--start): Don't specify --enable-progress-filter if
+	progress-callback is not set.
+	(epg--status-GET_HIDDEN): Signal an error if passphrase-callback
+	is not set.
+
+2006-09-15  Daiki Ueno  <ueno@unixuser.org>
+
+	* epg.el (epg-progress-callback-function): Show the percentage.
+
+2006-09-15  Juliusz Chroboczek <Juliusz.Chroboczek@pps.jussieu.fr>
+
+	* pgg-epg.el (mml2015-gpg-extract-signature-details): Fixed a typo.
+
+2006-09-13  Daiki Ueno  <ueno@unixuser.org>
+
+	* epg-config.el (epg-passphrase-coding-system): Renamed from
+	epg-locale-coding-system.
+
+2006-09-11  Daiki Ueno  <ueno@unixuser.org>
+
+	* epa-file.el (epa-file-decode-and-insert): New function which
+	utilizes decode-coding-inserted-region if available.
+	(epa-file-insert-file-contents): Use it.
+
+	* epg.el (epg--start): Specify --enable-progress-filter in
+	imitation of GPGME.
+	(epg-progress-callback-function): Remove a couple of %%'s.
+
+2006-09-05  Hiroya Murata  <lapis-lazuli@pop06.odn.ne.jp>
+
+	* epg-config.el (epg-configuration): Fixed the last change;
+	collect configuration other than group and algorithm.
+
+2006-09-05  Daiki Ueno  <ueno@unixuser.org>
+
+	* epg-config.el (epg-debug): Moved from epg.el.
+	(epg-configuration): Parse group configuration.
+	(epg-expand-group): New function.
+
+2006-09-04  Daiki Ueno  <ueno@unixuser.org>
+
+	* EasyPG: Version 0.0.5 released.
+	* epg.el (epg-version-number): Bump up.
+	* configure.ac: Bump up version.
+
+2006-09-04  Daiki Ueno  <ueno@unixuser.org>
+
+	* epg-config.el (epg-locale-coding-system): New user option.
+
+	* epg.el (epg--list-keys-1): Respect epg-gpg-home-directory.
+	(epg--clear-string): New function.
+	(epg--status-GET_HIDDEN): Encode passphrase with
+	terminal-coding-system.
+
+	* epg-config.el (epg-gpg-minimum-version): New constant.
+	(epg-config--parse-version): New function.
+	(epg-config--compare-version): New function.
+	(epg-configuration): Respect epg-gpg-home-directory.
+
+2006-09-03  Daiki Ueno  <ueno@unixuser.org>
+
+	* epg-config.el: New file; moved GnuPG configuration check from
+	epg.el.
+
+2006-09-02  Daiki Ueno  <ueno@unixuser.org>
+
+	* epg.el (epg-check-configuration): New function.
+	(epg-gpg-home-directory): New user option.
+
+	* pgg-epg.el (pgg-epg-lookup-key): New function.
+
+2006-07-29  Daiki Ueno  <ueno@unixuser.org>
+
+	* EasyPG: Version 0.0.4 released.
+	* epg.el (epg-version-number): Bump up.
+	* configure.ac: Bump up version.
+
+2006-07-29  Daiki Ueno  <ueno@unixuser.org>
+
+	* acinclude.m4 (AC_CHECK_GPG): Run $3 if there is no gpg executable.
+
+2006-07-28  Daiki Ueno  <ueno@unixuser.org>
+
+	* epg.el (epg-start-encrypt): Extract primary key ID from
+	epg-context-signers.
+	Reported by Steve Youngs <steve@sxemacs.org>
+
+	* pgg-epg.el (pgg-epg-encrypt-region): Fixed a bug; it didn't
+	give CONTEXT to epg-list-keys.
+	Reported by Steve Youngs <steve@sxemacs.org>
+
+2006-07-18  Daiki Ueno  <ueno@unixuser.org>
+
+	* epg-pgp50i.el (epg-pgp50i--process-filter): Use
+	epg-process-filter-running instead of epg-pgp50i-status; Don't
+	save-excursion during handler execution.
+	(epg-pgp50i--read-line): Renamed from epg-pgp50i--wait-for-line;
+	don't allow process input.
+	(epg-pgp50i--parse-time): New function.
+	(epg-pgp50i--status-BAD_SIGNATURE): New function.
+
+	* epg.el (epg--process-filter): Don't save-excursion during
+	handler execution.
+
+2006-07-18  Daiki Ueno  <ueno@unixuser.org>
+
+	* acinclude.m4 (AC_CHECK_GPG): Renamed from AC_PATH_GPG.
+
+	* epg.el (epg-process-filter-running): New variable.
+	(epg--start): Setup epg-process-filter-running.
+	(epg--process-filter): Allow only one status handler to run at a
+	time; update epg-read-point everytime the point changes.
+
+2006-07-14  Daiki Ueno  <ueno@unixuser.org>
+
+	* epg-pgp50i.el: New file.
+
+2006-07-13  Daiki Ueno  <ueno@unixuser.org>
+
+	* acinclude.m4 (AC_PATH_GPG): New macro.
+	* configure.ac: Check gpg version.
+	Suggested by Max Froumentin <max@lapin-bleu.net>
+
+2006-07-10  Daiki Ueno  <ueno@unixuser.org>
+
+	* epg.el (epg--status-ERRSIG): Don't remove the last verify-result.
+	(epg-signature-to-string): Remove a trailing whitespace.
+
+	* epa.el (epa-keys-mode-map): Bind return to epa-toggle-mark.
+	(epa-toggle-mark): New command.
+
+2006-07-04  Daiki Ueno  <ueno@unixuser.org>
+
+	* pgg-epg.el (pgg-epg-sign-region): Select the signing key matched
+	with pgg-default-user-id.
+	Reported by Elias Oltmanns <oltmanns@uni-bonn.de>
+
+2006-07-01  Daiki Ueno  <ueno@unixuser.org>
+
+	* epa.el (epa-select-keys): If SECRET is specified, select a
+	primary secret key by default.
+
+2006-06-29  Daiki Ueno  <ueno@unixuser.org>
+
+	* EasyPG: Version 0.0.3 released.
+	* epg.el (epg-version-number): Bump up.
+	* configure.ac: Bump up version.
+
+2006-06-12  Daiki Ueno  <ueno@unixuser.org>
+
+	* epa-file.el (epa-file-insert-file-contents): Don't move the
+	point to the end of the inserted region.
+	Reported by doug <douglas.bagley@gmail.com>
+
+2006-06-01  Daiki Ueno  <ueno@unixuser.org>
+
+	* epa-file.el (epa-file-insert-file-contents): Support partial read.
+
+2006-05-30  Hiroya Murata  <lapis-lazuli@pop06.odn.ne.jp>
+
+	* epa-file.el (epa-file-write-region): Encode the plain text with
+	coding-system-for-write.
+
+2006-05-30  Daiki Ueno  <ueno@unixuser.org>
+
+	* epa-file.el (epa-file-insert-file-contents):
+	Decode the decrypted text with coding-system-for-read.
+
+2006-05-29  Daiki Ueno  <ueno@unixuser.org>
+
+	* EasyPG: Version 0.0.2 released.
+	* epg.el (epg-version-number): Bump up.
+	* configure.ac: Bump up version.
+
+2006-05-29  Daiki Ueno  <ueno@unixuser.org>
+
+	* epg.el (epg--time-from-seconds): New function.
+	(epg--status-ERRSIG): Convert seconds from epoch to encoded-time.
+	(epg--status-VALIDSIG): Ditto.
+	(epg--status-KEYEXPIRED): Ditto.
+
+2006-05-28  Daiki Ueno  <ueno@unixuser.org>
+
+	* epg.el (epg-start-import-keys): Don't specify filename if keys
+	is a string data.
+
+2006-05-27  Daiki Ueno  <ueno@unixuser.org>
+
+	* epg.el (epg--process-filter): Pass epg-context instead of
+	process to status handlers.
+	(epg--status-NO_PUBKEY): Check if the previous signature's key-id
+	matches with the given key-id.
+
+2006-05-26  Daiki Ueno  <ueno@unixuser.org>
+
+	* epg.el (epg--status-NO_PUBKEY): Replace the previous signature's
+	status from 'error to 'no-pubkey.
+	(epg--status-ERRSIG): Just add 'error signature to the verify result.
+
+	* epa.el (epa-insert-keys): Renamed from epa-list-keys-1; don't
+	disable inhibit-quit here; make text-properties nonsticky.
+	(epa-popup-info-window): New user option.
+	(epa-info-window-height): New user option.
+	(epa-display-verify-result): New function.
+	(epa-decrypt-file): Use it.
+	(epa-verify-file): Use it.
+	(epa-decrypt-region): Use it.
+	(epa-verify-region): Use it.
+
+	* epg.el (epg-make-context): New slot "operation".
+	(epg-passphrase-callback-function): Confirm passphrase when
+	performing symmetric encryption.
+
+2006-05-25  Daiki Ueno  <ueno@unixuser.org>
+
+	* epa.el (epa-decrypt-file): Display verify result if the message
+	is signed.
+	(epa-decrypt-region): New command.
+	(epa-verify-region): New command.
+	(epa-decrypt-armor-in-region): New command.
+	(epa-verify-armor-in-region): New command.
+	(epa-sign-region): New command.
+	(epa-encrypt-region): New command.
+
+2006-05-11  Daiki Ueno  <ueno@unixuser.org>
+
+	* epa.el (epa-armor): New user option.
+	(epa-textmode): New user option.
+
+2006-05-02  Daiki Ueno  <ueno@unixuser.org>
+
+	* epg.el (epg-make-key-signature): New object epg-key-signature.
+	(epg-list-keys): Collect key signatures.
+	(epg-make-sub-key): Renamed secret -> secret-p.
+	(epg-list-keys-postprocess-one-key): Abolished.
+	(epg-list-keys): Reverse all keys, sub-keys, user-ids, and key
+	signatures by itself.
+	(epg-no-data-reason-alist): New constant.
+	(epg-unexpected-reason-alist): New constant.
+
+2006-05-01  Daiki Ueno  <ueno@unixuser.org>
+
+	* epg.el (epg-invalid-recipients-reason-alist): Renamed.
+	(epg-delete-problem-reason-alist): Renamed.
+	(epg-import-ok-reason-alist): New constant.
+	(epg-import-problem-reason-alist): New constant.
+	(epg-status-IMPORTED): New function.
+	(epg-status-IMPORT_OK): New function.
+	(epg-status-IMPORT_PROBLEM): New function.
+	(epg-start-import-keys): Don't use a temporary output file.
+	(epg-start-receive-keys): New function.
+	(epg-import-keys-from-server): New function.
+	(epg-receive-keys): Alias to epg-import-keys-from-server.
+
+2006-05-01  Daiki Ueno  <ueno@unixuser.org>
+
+	* epg.el (epg-start): Signal an error if the process of CONTEXT is
+	already running for other operations.
+	(epg-flush): Abolished.
+	(epg-start-generate-key): New function.
+	(epg-generate-key-from-file): New function.
+	(epg-generate-key-from-string): New function.
+	(epg-status-KEY_CREATED): New function.
+	(epg-status-KEY_NOT_CREATED): New function.
+	(epg-new-signature-type-alist): New variable.
+	(epg-make-new-signature): New object epg-new-signature.
+	(epg-status-SIG_CREATED): Set epg-new-signature object.
+	(epg-new-signature-to-string): New function.
+	(epg-make-signature): Added slots for signature class and version.
+	(epg-start-sign): Fixed rule of the MODE argument.
+
+2006-04-30  Daiki Ueno  <ueno@unixuser.org>
+
+	* epa.el (epa-delete-keys): Support deletion of secret keys.
+
+	* pgg-epg.el (pgg-epg-decrypt-region): Convert line endings of the
+	decrypted text.
+
+	* epg.el (epg-read-output): Don't convert line endings of the
+	output file.
+	(epg-cancel): Set 'error result.
+
+2006-04-29  Daiki Ueno  <ueno@unixuser.org>
+
+	* epg.el (epg-make-signature): Removed user-id; added
+	creation-time, expiration-time, pubkey-algorithm,
+	digest-algorithm.
+	(epg-process-sentinel): Abolished.
+	(epg-signature-to-string): Decode DN.
+	(epg-list-keys): Cache user-id in epg-user-id-alist.
+	(epg-make-user-id): Renamed name -> string.
+
+2006-04-29  Daiki Ueno  <ueno@unixuser.org>
+
+	* epg.el (epg-status-ERRSIG): New function.
+	(epg-verify-file): Signal an error if we encounter ERRSIG status.
+	(epg-verify-string): Ditto.
+
+2006-04-28  Daiki Ueno  <ueno@unixuser.org>
+
+	* epg.el: Added typecheck to accessors to objects.
+
+2006-04-26  Daiki Ueno  <ueno@unixuser.org>
+
+	* epg.el (epg-status-GET_HIDDEN): Pass epg-context as the first
+	argument of passphrase-callback.
+	(epg-status-PROGRESS): Ditto.
+
+2006-04-26  Daiki Ueno  <ueno@unixuser.org>
+
+	* epa.el (epa-select-keys): Don't set inhibit-quit when
+	recursive-edit is called.
+	(epg-cancel): New function.
+
+2006-04-25  Daiki Ueno  <ueno@unixuser.org>
+
+	* epg.el (epg-process-sentinel): New function; set 'error if gpg
+	process exited abnormally, but we have not received an error
+	response from it.
+	(epg-sign-file): Signal an error only when a signature is not
+	created.
+	(epg-sign-string): Ditto.
+	(epg-encrypt-file): Signal an error if SIGN is specified and
+	signature is not created.
+	(epg-encrypt-string): Ditto.
+
+2006-04-22  Daiki Ueno  <ueno@unixuser.org>
+
+	* epa.el (epa-key-widget-value-create): Decode DN.
+	(epa-list-keys): Add the PROTOCOL argument.
+	(epa-select-keys): Require CONTEXT as the first argument.
+
+	* epg.el (epg-gpgsm-program): New user option.
+	(epg-dn-type-alist): New variable.
+	(epg-start): Don't specify --command-fd if protocol is CMS.
+	(epg-list-keys): Require CONTEXT as the first argument.
+	(epg-dn-from-string): New function.
+	(epg-decode-dn): New function.
+
+2006-04-21  Daiki Ueno  <ueno@unixuser.org>
+
+	* epa.el (epa-sign-keys): New command.
+
+	* epg.el (epg-start-sign-keys): New function.
+	(epg-sign-keys): New function.
+	(epg-status-GET_HIDDEN): Enable local quit.
+	(epg-status-GET_BOOL): Ditto.
+	(epg-status-GET_LINE): Ditto.
+
+2006-04-20  Daiki Ueno  <ueno@unixuser.org>
+
+	* epa.el (epa-list-keys-1): Add 'epa-list-keys property to keylist
+	region.
+
+2006-04-20  Daiki Ueno  <ueno@unixuser.org>
+
+	* pgg-epg.el (pgg-epg-secret-key-id-list): New variable.
+	(pgg-epg-passphrase-callback): New function.
+
+	* epa.el (epa-select-keys): Added "Cancel" button.
+
+2006-04-20  Daiki Ueno  <ueno@unixuser.org>
+
+	* epg.el (epg-signature-to-string): New function.
+
+2006-04-20  Daiki Ueno  <ueno@unixuser.org>
+
+	* epa-file.el (epa-file-write-region): RECIPIENTS is now a list of
+	key objects.
+	* epa-dired.el (epa-dired-do-encrypt): RECIPIENTS is now a list of
+	key objects.
+
+	* epa.el (epa-select-keys): Added MODE argument.
+	(epa-encrypt-file): RECIPIENTS is now a list of key objects.
+
+	* epg.el (epg-status-SIG_CREATED): New function.
+	(epg-start-sign): epg-context-signers is now a list of key objects.
+	(epg-start-encrypt): RECIPIENTS is now a list of key objects.
+
+2006-04-19  Daiki Ueno  <ueno@unixuser.org>
+
+	* epa.el (epa-verify-file): Show results in minibuffer.
+	* epg.el (epg-debug-buffer): New variable.
+	(epg-flush): New function.
+
+2006-04-18  Daiki Ueno  <ueno@unixuser.org>
+
+	* epa.el (epa-export-keys): New command.
+	* epg.el (epg-start-export-keys): Accept a list of epg-key object
+	instead of a regexp.
+
+2006-04-18  Daiki Ueno  <ueno@unixuser.org>
+
+	* epa.el (epa-keys-mode-map): Bind epa-list-keys; epa-import-key.
+	(epa-import-key): New command.
+
+	* epg.el (epg-delete-problem-alist): New constant.
+	(epg-status-DELETE_PROBLEM): New function.
+	(epg-start-delete-key): New function.
+	(epg-delete-key): New function.
+	(epg-wait-for-completion): Add the NO-EOF argument.
+
+2006-04-18  Daiki Ueno  <ueno@unixuser.org>
+
+	* epg.el (epg-start): Insert the command-line arguments to the
+	debug buffer.
+	(epg-start-encrypt): Wait for BEGIN_ENCRYPTION.
+	(epg-start-delete-key): New function.
+	(epg-delete-key): New function.
+
+	* epa.el (epa-key): New widget.
+	(epa-key-widget-action): New function.
+	(epa-key-widget-value-create): New function.
+	(epa-key-widget-button-face-get): New function.
+	(epa-key-widget-help-echo): New function.
+
+2006-04-17  Daiki Ueno  <ueno@unixuser.org>
+
+	* epa-file.el (epa-file-write-region): Check if START is a string.
+
+2006-04-17  Daiki Ueno  <ueno@unixuser.org>
+
+	* epa-file.el: Rewritten with file-name-handler.
+	(epa-file-handler): New variable.
+	(epa-file-enable): New command.
+	(epa-file-disable): New command.
+
+	* epa-setup.el: Call epa-file-enable.
+
+2006-04-17  Daiki Ueno  <ueno@unixuser.org>
+
+	* epa-file.el (epa-passphrase): New variable.
+	(epa-file-passphrase-callback-function): New function.
+	(epa-find-file): Reset buffer-undo-list; set
+	buffer-file-coding-system to last-coding-system-used after
+	decoding.
+
+2006-04-17  Daiki Ueno  <ueno@unixuser.org>
+
+	* epa-file.el (epa-write-file): Try to write region to "/" to get
+	last-coding-system-used to be set.
+
+2006-04-17  Daiki Ueno  <ueno@unixuser.org>
+
+	* epa-file.el: New implementation of epf.el.
+
+	* epf.el: Abolished.
+
+2006-04-17  Daiki Ueno  <ueno@unixuser.org>
+
+	* epa.el (epa-verify-file): Display verify result.
+
+	* epg.el (epg-invalid-recipients-alist): New variable.
+	(epg-status-INV_RECP): New function.
+	(epg-status-NO_RECP): New function.
+
+	* epa.el (epa-keys-mode-map): Bind epa-decrypt-file,
+	epa-verify-file, epa-sign-file, and epa-encrypt-file.
+	(epa-decrypt-file): New function imported from epa-dired.el.
+	(epa-verify-file): New function imported from epa-dired.el.
+	(epa-sign-file): New function imported from epa-dired.el.
+	(epa-encrypt-file): New function imported from epa-dired.el.
+
+2006-04-16  Daiki Ueno  <ueno@unixuser.org>
+
+	* epa.el (epa-select-keys): Renamed from epa-ask-keys; use
+	recursive-edit.
+	* epa-dired.el (epa-dired-encrypt-file): Use epa-select-keys.
+
+2006-04-16  Daiki Ueno  <ueno@unixuser.org>
+
+	* epa-setup.el: New file.
+	* epa-dired.el: New file.
+
+	* epg.el (epg-colons-pub-spec): Abolished.
+	(epg-colons-sec-spec): Abolished.
+	(epg-colons-uid-spec): Abolished.
+	(epg-colons-fpr-spec): Abolished.
+	(epg-key-validity-alist): New variable.
+	(epg-key-capablity-alist): New variable.
+	(epg-make-key): New object epg-key.
+	(epg-make-sub-key): New object epg-sub-key.
+	(epg-make-user-id): New object epg-user-id.
+	(epg-list-keys-1): Renamed from epg-list-keys.
+	(epg-list-keys): Rewritten.
+
+2006-04-15  Daiki Ueno  <ueno@unixuser.org>
+
+	* epg.el (epg-list-keys): Make the NAME argument optional.
+
+2006-04-13  Daiki Ueno  <ueno@unixuser.org>
+
+	* epa.el: Added header.
+
+	* epg.el (epg-list-keys): Specify --with-fingerprint.
+	(epg-colons-fpr-spec): New variable.
+	(epg-colons-pub-spec): Renamed trust -> validity and ownertrust ->
+	owner-trust.
+	(epg-colons-sec-spec): Ditto.
+	(epg-colons-uid-spec): Renamed trust -> validity.
+
+2006-04-13  Daiki Ueno  <ueno@unixuser.org>
+
+	* epa.el: New file.
+
+	* epg.el (epg-cipher-algorithm-alist): New constant.
+	(epg-pubkey-algorithm-alist): New constant.
+	(epg-digest-algorithm-alist): New constant.
+	(epg-compress-algorithm-alist): New constant.
+	(epg-configuration): New function.
+	(epg-start): Don't specify --yes.
+
+2006-04-13  Daiki Ueno  <ueno@unixuser.org>
+
+	* epg.el (epg-make-data-from-file): New function.
+	(epg-make-data-from-string): New function.
+	(epg-data-file): New function.
+	(epg-data-string): New function.
+	(epg-start-decrypt): Get a cipher text from a data object.
+	(epg-delete-output-file): New function.
+	(epg-decrypt-file): Add the 3rd argument PLAIN to specify where
+	the output goes.
+	(epg-start-verify): Get a signature and signed-text from a data
+	object.
+	(epg-verify-file): Added the 3rd argument PLAIN to specify where
+	the output goes; return the plain text if PLAIN is nil.
+	(epg-verify-string): Return the plain text.
+	(epg-start-sign): Get a plain text from a data object.
+	(epg-sign-file): Added the 3rd argument SIGNATURE to specify where
+	the output goes.
+	(epg-start-encrypt): Get a plain text from a data object.
+	(epg-encrypt-file): Added the 4th argument CIPHER to specify where
+	the output goes.
+	(epg-start-import-keys): Get keys from a data object.
+	(epg-import-keys-1): New function.
+	(epg-import-keys-from-file): Use it.
+	(epg-import-keys-from-string): Use it.
+
+2006-04-12  Daiki Ueno  <ueno@unixuser.org>
+
+	* epf.el: Renamed from epg-file.el.
+
+2006-04-12  Daiki Ueno  <ueno@unixuser.org>
+
+	* epg.el (epg-status-GET_BOOL): New function.
+	(epg-status-GET_LINE): New function.
+	(epg-prompt-alist): New variable, to be filled.
+
+	* pgg-epg.el (mml2015-gpg-extract-signature-details): New function.
+	* epg.el (epg-signature-fingerprint): New function.
+	(epg-signature-set-fingerprint): New function.
+	(epg-status-VALIDSIG): New function.
+
+	* epg.el (epg-reset): Don't reset result.
+	(epg-start-decrypt): Reset result before epg-start.
+	(epg-start-verify): Ditto.
+	(epg-start-sign): Ditto.
+	(epg-start-encrypt): Ditto.
+	(epg-start-export-keys): Ditto.
+	(epg-start-import-keys): Ditto.
+
+	* Makefile.am (EXTRA_DIST): Added pgg-epg.el.
+	* pgg-epg.el: New file.
+
+	* epg.el (epg-start-export-keys): New function.
+	(epg-export-keys): New function.
+	(epg-start-import-keys): New function.
+	(epg-import-keys): New function.
+	(epg-verify-file): New function.
+
+	* epg-file.el (epg-file-write-region): Support public key encryption.
+
+	* epg.el (epg-passphrase-callback-function): Always display key-id.
+

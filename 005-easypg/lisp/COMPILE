@@ -1,0 +1,89 @@
+;;; -*- Emacs-Lisp -*-
+
+(defvar epg-modules
+  '(epg-package-info epg-config epg epa epa-dired epa-file epa-mail epa-setup))
+
+(defun epg-compile-modules (modules)
+  (let ((load-path (cons nil load-path))
+	error-modules)
+    (while modules
+      (let ((source (expand-file-name
+		     (concat (symbol-name (car modules)) ".el"))))
+	(if (file-newer-than-file-p source (concat source "c"))
+	    (condition-case error
+		(byte-compile-file source)
+	      (error
+	       (setq error-modules (cons (car modules) error-modules))))))
+      (setq modules (cdr modules)))
+    (if error-modules
+	(princ (concat "\n\
+  WARNING: ---------------------------------------------------------
+  WARNING: Couldn't compile following modules:
+  WARNING: 
+  WARNING:   " (mapconcat #'symbol-name error-modules ", ") "\n\
+  WARNING: 
+  WARNING: You should probably stop here, try \"make distclean\" to clear
+  WARNING: the last build, and then reconfigure.
+  WARNING: ---------------------------------------------------------\n\n")))))
+
+(defun epg-compile-module ()
+  (let ((load-path (cons nil load-path)))
+    (let ((source (expand-file-name
+		   (concat (car command-line-args-left) ".el"))))
+      (if (file-newer-than-file-p source (concat source "c"))
+	  (byte-compile-file source)))))
+
+(defun epg-install-modules (modules dest just-print)
+  (unless (or just-print (file-exists-p dest))
+    (make-directory dest t))
+  (while modules
+    (let ((name (symbol-name (car modules))))
+      (princ (format "%s.el -> %s\n" name dest))
+      (unless just-print
+	(copy-file (expand-file-name (concat name ".el"))
+		   (expand-file-name (concat name ".el") dest)
+		   t t))
+      (princ (format "%s.elc -> %s\n" name dest))
+      (unless just-print
+	(if (file-exists-p (expand-file-name (concat name ".elc")))
+	    (copy-file (expand-file-name (concat name ".elc"))
+		       (expand-file-name (concat name ".elc") dest)
+		       t t)
+	  (princ (format "(%s was not successfully compiled, ignored)\n"
+			 name)))))
+    (setq modules (cdr modules))))
+
+(defun epg-install-just-print-p ()
+  (let ((flag (getenv "MAKEFLAGS"))
+	case-fold-search)
+    (if flag
+	(string-match "^\\(\\(--[^ ]+ \\)+-\\|[^ =-]\\)*n" flag))))
+
+(defun epg-examine ()
+  (princ (mapconcat #'symbol-name epg-modules " ")))
+
+(defun epg-compile ()
+  (epg-compile-modules epg-modules))
+
+(defun epg-install ()
+  (epg-install-modules
+   epg-modules
+   (expand-file-name "epg" (car command-line-args-left))
+   (epg-install-just-print-p)))
+
+(defun epg-compile-package ()
+  (setq autoload-package-name "epg")
+  (add-to-list 'command-line-args-left ".")
+  (batch-update-directory)
+  (add-to-list 'command-line-args-left ".")
+  (Custom-make-dependencies)
+  (epg-compile-modules
+   (append epg-modules
+	   '(auto-autoloads custom-load))))
+
+(defun epg-install-package ()
+  (epg-install-modules
+   (append epg-modules
+	   '(auto-autoloads custom-load))
+   (expand-file-name "lisp/epg" (car command-line-args-left))
+   (epg-install-just-print-p)))

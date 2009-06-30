@@ -1,0 +1,8 @@
+*.elc
+Makefile
+auto-autoloads.el
+custom-load.el
+gnus-load.el
+old
+semantic.cache
+version
