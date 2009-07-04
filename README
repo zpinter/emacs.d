@@ -1,17 +1,34 @@
 This is my Emacs config, made public
 
 Initial Setup:
-Install the inconsolita font, or edit 010-window-settings
+Install the inconsolita font, or edit window-settings
 
 Clone the repository to ~/emacs.d
-Create a symlink to ~/.emacs (e.g.  ln -s ~/emacs.d/.emacs ~/.emacs)
+Create a symlink to ~/.emacs_full (e.g.  ln -s ~/emacs.d/.emacs_full ~/.emacs)
 
 Core Ideas:
 
-"Modules" are created by adding a folder to ~/emacs.d in the following format: ###-modulename
-The number of the module determines the sequence in which it gets loaded.
-Every module has an init.el file that sets up paths, loads files, defines keybindings, etc
-A module can optionally include a private.el file, which gets loaded before the init.el file. These private files are kept from being versioned (via .gitignore), so you can store passwords here.
+A module is composed of the following:
+lisp/    #auto-loaded to the path, contains .el files
+info/    #auto-loaded to the info path
+icons/   #auto-loaded to the image-load-path
+init.el  #executed after load paths have been set
+private.el #executed before init.el, use it to set variables for init.el that you don't want committed to the git repo
 
-To disable a module:
-Simple rename it. OFF-modulename would never get loaded, since "OFF" is not a number.
+To load a module, run zconfig-load-module:
+(zconfig-load-module "gnus")
+
+To load multiple modules, run zconfig-load-modules:
+(zconfig-load-modules (list
+                        "core"
+                        "easypg"
+                        "window-settings"
+                        "ido"
+                        "hippie-expand"
+                        "shell-current-directory"
+                        "open-resource"
+                        "tweaks"
+                        ))
+
+To launch emacs with a different set of modules:
+emacs -nw -Q -l ~/.emacs_lite

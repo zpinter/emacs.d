@@ -1,0 +1,12 @@
+(load "~/emacs.d/zconfig.el")
+
+(zconfig-load-modules (list
+                        "core"
+                        "easypg"
+                        "window-settings"
+                        "ido"
+                        "hippie-expand"
+                        "shell-current-directory"
+                        "open-resource"
+                        "tweaks"
+                        ))

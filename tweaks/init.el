@@ -52,7 +52,7 @@
 (defconst use-backup-dir t)
 
 (defvar user-temporary-file-directory
-  (concat emacsd "tmp/"))
+  (concat zconfig-emacsd "tmp/"))
 
 (make-directory user-temporary-file-directory t)
 (setq backup-directory-alist
@@ -157,8 +157,10 @@
    nil
    (dired-get-marked-files t current-prefix-arg)))
 
-(define-key dired-mode-map "o" 'dired-launch-command)
-(define-key dired-mode-map "b" 'shell-current-directory)
+(add-hook 'dired-mode-hook
+			 '(lambda ()
+				 (define-key dired-mode-map "o" 'dired-launch-command)
+				 (define-key dired-mode-map "b" 'shell-current-directory)))
 
 (defalias 'mkdir 'make-directory)
 
@@ -196,5 +198,4 @@
 
 (smex-initialize)
 
-(server-start)
 
