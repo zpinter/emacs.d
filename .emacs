@@ -1,13 +1,29 @@
 (setq emacsd "~/emacs.d/")
 
+(setq zconfig-errors nil)
+
+(defmacro zconfig-module-error-wrap (fn module-name)
+  `(unwind-protect
+       (let (retval)
+         (condition-case ex
+             (setq retval (progn ,fn))
+           ('error
+            (message (format "Caught exception in %s: [%s]" ,module-name ex))
+				(add-to-list 'zconfig-errors (list ,module-name ex))
+            (setq retval (cons 'exception (list ex)))))
+         retval)
+     nil))
+
 (defun zconfig-load-all-modules ()
   (let (
         (module-directories (directory-files emacsd nil "^[0-9]+\-")))
 
     (dolist (element module-directories value)
       (setq value nil)
-      (zconfig-load-module element)
+		(zconfig-module-error-wrap (zconfig-load-module element) element)
     ))
+  (if zconfig-errors
+		(display-warning :error (concat "There were errors loading modules! " (prin1-to-string zconfig-errors))))
 )
 
 (defun zconfig-add-lisp-path (p)
