@@ -176,8 +176,17 @@
 (setq ssl-certificate-directory "~/.certs")
 
 
+;file encoding
+(prefer-coding-system 'utf-8)
+(modify-coding-system-alist 'file "\\.txt\\'" 'utf-8)
+(modify-coding-system-alist 'file "\\.org\\'" 'utf-8)
+(set-default-coding-systems 'utf-8)
+(set-terminal-coding-system 'utf-8)
+(set-keyboard-coding-system 'utf-8)
+(setq default-buffer-file-coding-system 'utf-8)
+
 ; save and close buffer
-(global-set-key [(control x) (control d)]
+(global-set-key [(control c) (k)]
 		'(lambda ()
 		   (interactive)
 		   (if (y-or-n-p-with-timeout "Do you really want to save and close buffer ? " 4 nil)

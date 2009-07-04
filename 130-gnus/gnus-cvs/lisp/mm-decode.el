@@ -674,7 +674,7 @@ Postpone undisplaying of viewers for types in
     (with-current-buffer
           (generate-new-buffer " *mm*")
       ;; Preserve the data's unibyteness (for url-insert-file-contents).
-      (mm-set-buffer-multibyte mb)
+      (unless mb (mm-disable-multibyte))
       (insert-buffer-substring obuf beg)
       (current-buffer))))
 

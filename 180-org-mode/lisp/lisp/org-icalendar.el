@@ -6,7 +6,7 @@
 ;; Author: Carsten Dominik <carsten at orgmode dot org>
 ;; Keywords: outlines, hypermedia, calendar, wp
 ;; Homepage: http://orgmode.org
-;; Version: 6.27a
+;; Version: 6.28e
 ;;
 ;; This file is part of GNU Emacs.
 ;;
@@ -27,6 +27,8 @@
 ;;; Commentary:
 
 (require 'org-exp)
+
+(declare-function org-bbdb-anniv-export-ical "org-bbdb" nil)
 
 (defgroup org-export-icalendar nil
   "Options specific for iCalendar export of Org-mode files."
@@ -109,6 +111,12 @@ all         include both done and not done items."
 	  (const :tag "Unfinished" t)
 	  (const :tag "Unblocked" unblocked)
 	  (const :tag "All" all)))
+
+(defcustom org-icalendar-include-bbdb-anniversaries nil
+  "Non-nil means, a combined iCalendar files should include anniversaries.
+The anniversaries are define in the BBDB database."
+  :group 'org-export-icalendar
+  :type 'boolean)
 
 (defcustom org-icalendar-include-sexps t
   "Non-nil means, export to iCalendar files should also cover sexp entries.
@@ -214,6 +222,9 @@ file and store it under the name `org-combined-agenda-icalendar-file'."
 	      (org-start-icalendar-file category))
 	    (org-print-icalendar-entries combine)
 	    (when (or (and combine (not files)) (not combine))
+	      (when (and combine org-icalendar-include-bbdb-anniversaries)
+		(require 'org-bbdb)
+		(org-bbdb-anniv-export-ical))
 	      (org-finish-icalendar-file)
 	      (set-buffer ical-buffer)
 	      (run-hooks 'org-before-save-iCalendar-file-hook)

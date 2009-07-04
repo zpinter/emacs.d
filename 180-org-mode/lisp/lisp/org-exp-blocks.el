@@ -1,25 +1,24 @@
 ;;; org-exp-blocks.el --- pre-process blocks when exporting org files
 
-;; Copyright (C) 2008 Eric Schulte
+;; Copyright (C) 2009
+;;   Free Software Foundation, Inc.
 
 ;; Author: Eric Schulte
 
-;; This file is not currently part of GNU Emacs.
+;; This file is part of GNU Emacs.
+;;
+;; GNU Emacs is free software: you can redistribute it and/or modify
+;; it under the terms of the GNU General Public License as published by
+;; the Free Software Foundation, either version 3 of the License, or
+;; (at your option) any later version.
 
-;; This program is free software; you can redistribute it and/or
-;; modify it under the terms of the GNU General Public License as
-;; published by the Free Software Foundation; either version 2, or (at
-;; your option) any later version.
-
-;; This program is distributed in the hope that it will be useful, but
-;; WITHOUT ANY WARRANTY; without even the implied warranty of
-;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-;; General Public License for more details.
+;; GNU Emacs is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
 
 ;; You should have received a copy of the GNU General Public License
-;; along with this program ; see the file COPYING.  If not, write to
-;; the Free Software Foundation, Inc., 59 Temple Place - Suite 330,
-;; Boston, MA 02111-1307, USA.
+;; along with GNU Emacs.  If not, see <http://www.gnu.org/licenses/>.
 
 ;;; Commentary:
 ;;
@@ -27,8 +26,8 @@
 ;; export using the `org-export-preprocess-hook'.  It can be used for
 ;; exporting new types of blocks from org-mode files and also for
 ;; changing the default export behavior of existing org-mode blocks.
-;; The `org-export-blocks' and `org-export-interblocks' alist can be
-;; used to control how blocks and the spaces between blocks
+;; The `org-export-blocks' and `org-export-interblocks' variables can
+;; be used to control how blocks and the spaces between blocks
 ;; respectively are processed upon export.
 ;;
 ;; The type of a block is defined as the string following =#+begin_=,
@@ -65,19 +64,73 @@
 ;;      and also replaces \R{} chunks in the file with their result
 ;;      when passed to R.  This require the `R' command which is
 ;;      provided by ESS (Emacs Speaks Statistics).
+;;
+;;; Adding new blocks
+;;
+;; When adding a new block type first define a formatting function
+;; along the same lines as `org-export-blocks-format-dot' and then use
+;; `org-export-blocks-add-block' to add your block type to
+;; `org-export-blocks'.
+
+(eval-when-compile
+  (require 'cl))
+(require 'org)
+
+(defvar comint-last-input-end)
+(defvar comint-prompt-regexp)
+(defvar comint-last-input-end)
+(defvar htmlp)
+(defvar latexp)
+(defvar docbookp)
+(defvar asciip)
+
+(declare-function comint-send-input "comint" (&optional no-newline artificial))
+(declare-function R "ess" nil)
+
+(defun org-export-blocks-set (var value)
+  "Set the value of `org-export-blocks' and install fontification."
+  (set var value)
+  (mapc (lambda (spec)
+	  (if (nth 2 spec)
+	      (setq org-protecting-blocks
+		    (delete (symbol-name (car spec))
+			    org-protecting-blocks))
+	    (add-to-list 'org-protecting-blocks
+			 (symbol-name (car spec)))))
+	value))
 
 (defcustom org-export-blocks
-  '((comment org-export-blocks-format-comment)
-    (ditaa org-export-blocks-format-ditaa)
-    (dot org-export-blocks-format-dot)
-    (r org-export-blocks-format-R)
-    (R org-export-blocks-format-R))
+  '((comment org-export-blocks-format-comment t)
+    (ditaa org-export-blocks-format-ditaa nil)
+    (dot org-export-blocks-format-dot nil)
+    (r org-export-blocks-format-R nil)
+    (R org-export-blocks-format-R nil))
   "Use this a-list to associate block types with block exporting
 functions.  The type of a block is determined by the text
 immediately following the '#+BEGIN_' portion of the block header.
 Each block export function should accept three argumets..."
   :group 'org-export-general
-  :type 'alist)
+  :type '(repeat
+	  (list
+	   (symbol :tag "Block name")
+	   (function :tag "Block formatter")
+	   (boolean :tag "Fontify content as Org syntax")))
+  :set 'org-export-blocks-set)
+
+(defun org-export-blocks-add-block (block-spec)
+  "Add a new block type to `org-export-blocks'.  BLOCK-SPEC
+should be a three element list the first element of which should
+indicate the name of the block, the second element should be the
+formatting function called by `org-export-blocks-preprocess' and
+the third element a flag indicating whether these types of blocks
+should be fontified in org-mode buffers (see
+`org-protecting-blocks').  For example the BLOCK-SPEC for ditaa
+blocks is as follows...
+
+  (ditaa org-export-blocks-format-ditaa nil)"
+  (unless (member block-spec org-export-blocks)
+    (setq org-export-blocks (cons block-spec org-export-blocks))
+    (org-export-blocks-set 'org-export-blocks org-export-blocks)))
 
 (defcustom org-export-interblocks
   '((r org-export-interblocks-format-R)
@@ -129,7 +182,7 @@ specified in BLOCKS which default to the value of
 	  (blocks org-export-blocks-witheld)
 	  (case-fold-search t)
 	  (types '())
-	  type func start end)
+	  indentation type func start end)
       (flet ((interblock (start end type)
 			 (save-match-data
 			   (when (setf func (cadr (assoc type org-export-interblocks)))
@@ -137,16 +190,22 @@ specified in BLOCKS which default to the value of
 	(goto-char (point-min))
 	(setf start (point))
 	(while (re-search-forward
-		"^#\\+begin_\\(\\S-+\\)[ \t]*\\(.*\\)?[\r\n]\\([^\000]*?\\)#\\+end_\\S-+.*" nil t)
-	  (save-match-data (setf type (intern (match-string 1))))
+		"^\\([ \t]*\\)#\\+begin_\\(\\S-+\\)[ \t]*\\(.*\\)?[\r\n]\\([^\000]*?\\)[\r\n][ \t]*#\\+end_\\S-+.*" nil t)
+          (save-match-data (setq indentation (length (match-string 1))))
+	  (save-match-data (setf type (intern (match-string 2))))
 	  (unless (memq type types) (setf types (cons type types)))
 	  (setf end (save-match-data (match-beginning 0)))
 	  (interblock start end type)
 	  (if (setf func (cadr (assoc type org-export-blocks)))
-	      (replace-match (save-match-data
-			       (if (memq type blocks)
-				   ""
-				 (apply func (match-string 3) (split-string (match-string 2) " ")))) t t))
+	      (progn
+                (replace-match (save-match-data
+                                 (if (memq type blocks)
+                                     ""
+                                   (apply func (save-match-data (org-remove-indentation (match-string 4)))
+                                          (split-string (match-string 3) " ")))) t t)
+                ;; indent the replaced match
+                (indent-region (match-beginning 0) (match-end 0) indentation)
+                ))
 	  (setf start (save-match-data (match-end 0))))
 	(mapcar (lambda (type)
 		  (interblock start (point-max) type))
@@ -160,14 +219,14 @@ specified in BLOCKS which default to the value of
 ;;--------------------------------------------------------------------------------
 ;; ditaa: create images from ASCII art using the ditaa utility
 (defvar org-ditaa-jar-path (expand-file-name
-			"ditaa.jar"
-			(file-name-as-directory
-			 (expand-file-name
-			  "scripts"
-			  (file-name-as-directory
-			   (expand-file-name
-			    ".."
-			    (file-name-directory (or load-file-name buffer-file-name)))))))
+			    "ditaa.jar"
+			    (file-name-as-directory
+			     (expand-file-name
+			      "scripts"
+			      (file-name-as-directory
+			       (expand-file-name
+				"../contrib"
+				(file-name-directory (or load-file-name buffer-file-name)))))))
   "Path to the ditaa jar executable")
 
 (defun org-export-blocks-format-ditaa (body &rest headers)
@@ -186,7 +245,7 @@ passed to the ditaa utility as command line arguments."
 		 (mapconcat (lambda (x) (substring x (if (> (length x) 1) 2 1)))
 			    (org-split-string body "\n")
 			    "\n")))
-    (cond 
+    (cond
      ((or htmlp latexp docbookp)
       (with-temp-file data-file (insert body))
       (message (concat "java -jar " org-ditaa-jar-path " " args " " data-file " " out-file))
@@ -221,7 +280,7 @@ digraph data_relationships {
   (let ((out-file (if headers (car headers)))
 	(args (if (cdr headers) (mapconcat 'identity (cdr headers) " ")))
 	(data-file (make-temp-file "org-ditaa")))
-    (cond 
+    (cond
      ((or htmlp latexp docbookp)
       (with-temp-file data-file (insert body))
       (message (concat "dot " data-file " " args " -o " out-file))
@@ -268,6 +327,7 @@ other backends, it converts the comment into an EXAMPLE segment."
 (defvar interblock-R-buffer nil
   "Holds the buffer for the current R process")
 
+(defvar count) ; dynamicaly scoped from `org-export-blocks-preprocess'?
 (defun org-export-blocks-format-R (body &rest headers)
   "Process R blocks and replace \R{} forms outside the blocks
 with their values as determined by R."

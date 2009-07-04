@@ -7,7 +7,7 @@
 ;;         Thomas Baumann <thomas dot baumann at ch dot tum dot de>
 ;; Keywords: outlines, hypermedia, calendar, wp
 ;; Homepage: http://orgmode.org
-;; Version: 6.27a
+;; Version: 6.28e
 ;;
 ;; This file is part of GNU Emacs.
 ;;
@@ -346,6 +346,39 @@ This is used by Org to re-create the anniversary hash table."
   (require 'bbdb-com)
   (concat "bbdb:"
 	  (bbdb-record-name (car (bbdb-completing-read-record "Name: ")))))
+
+(defun org-bbdb-anniv-export-ical ()
+  "Extract anniversaries from BBDB and convert them to icalendar format."
+  (require 'bbdb)
+  (require 'diary-lib)
+  (unless (hash-table-p org-bbdb-anniv-hash)
+    (setq org-bbdb-anniv-hash
+	  (make-hash-table :test 'equal :size 366)))
+  (when (or org-bbdb-updated-p
+	    (= 0 (hash-table-count org-bbdb-anniv-hash)))
+    (org-bbdb-make-anniv-hash))
+  (maphash 'org-bbdb-format-vevent org-bbdb-anniv-hash))
+
+(defun org-bbdb-format-vevent (key recs)
+  (let (rec categ)
+    (while (setq rec (pop recs))
+      (setq categ (or (nth 2 rec) org-bbdb-default-anniversary-format))
+      (princ (format "BEGIN:VEVENT
+UID: ANNIV-%4i%02i%02i-%s
+DTSTART:%4i%02i%02i
+SUMMARY:%s
+DESCRIPTION:%s
+CATEGORIES:%s
+RRULE:FREQ=YEARLY
+END:VEVENT\n"
+		     (nth 0 rec) (nth 0 key) (nth 1 key)
+		     (mapconcat 'identity
+				(org-split-string (nth 1 rec) "[^a-zA-Z0-90]+")
+				"-")
+		     (nth 0 rec) (nth 0 key) (nth 1 key)
+		     (nth 1 rec) 
+		     (concat (capitalize categ) " " (nth 1 rec))
+		     categ)))))
 
 (provide 'org-bbdb)
 

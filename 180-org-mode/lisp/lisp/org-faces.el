@@ -6,7 +6,7 @@
 ;; Author: Carsten Dominik <carsten at orgmode dot org>
 ;; Keywords: outlines, hypermedia, calendar, wp
 ;; Homepage: http://orgmode.org
-;; Version: 6.27a
+;; Version: 6.28e
 ;;
 ;; This file is part of GNU Emacs.
 ;;
@@ -363,6 +363,16 @@ list of attributes, like (:foreground \"blue\" :weight bold :underline t)."
   "Face for checkboxes"
   :group 'org-faces)
 
+(unless (facep 'org-checkbox-statistics-todo)
+  (copy-face 'org-todo 'org-checkbox-statistics-todo)
+  (set-face-doc-string 'org-checkbox-statistics-todo
+		       "Face used for unfinished checkbox statistics."))
+
+(unless (facep 'org-checkbox-statistics-done)
+  (copy-face 'org-done 'org-checkbox-statistics-done)
+  (set-face-doc-string 'org-checkbox-statistics-done
+		       "Face used for finished checkbox statistics."))
+
 (defcustom org-tag-faces nil
   "Faces for specific tags.
 This is a list of cons cells, with tags in the car and faces in the cdr.
@@ -402,7 +412,7 @@ changes."
   :group 'org-faces)
 
 (defface org-code
-  (org-compatible-face nil
+  (org-compatible-face 'shadow
     '((((class color grayscale) (min-colors 88) (background light))
        (:foreground "grey50"))
       (((class color grayscale) (min-colors 88) (background dark))
@@ -415,8 +425,28 @@ changes."
   :group 'org-faces
   :version "22.1")
 
+(defface org-meta-line
+  (org-compatible-face 'font-lock-comment-face nil)
+  "Face for meta lines startin with \"#+\"."
+  :group 'org-faces
+  :version "22.1")
+
+(defface org-block
+  (org-compatible-face 'shadow
+    '((((class color grayscale) (min-colors 88) (background light))
+       (:foreground "grey50"))
+      (((class color grayscale) (min-colors 88) (background dark))
+       (:foreground "grey70"))
+      (((class color) (min-colors 8) (background light))
+       (:foreground "green"))
+      (((class color) (min-colors 8) (background dark))
+       (:foreground "yellow"))))
+  "Face text in #+begin ... #+end blocks."
+  :group 'org-faces
+  :version "22.1")
+
 (defface org-verbatim
-  (org-compatible-face nil
+  (org-compatible-face 'shadow
     '((((class color grayscale) (min-colors 88) (background light))
        (:foreground "grey50" :underline t))
       (((class color grayscale) (min-colors 88) (background dark))
@@ -592,6 +622,11 @@ If it is less than 8, the level-1 face gets re-used for level N+1 etc."
       (t (,@font))))
   "Face used to highlight math latex and other special exporter stuff."
   :group 'org-faces)
+
+(unless (facep 'org-mode-line-clock)
+  (copy-face 'modeline 'org-mode-line-clock)
+  (set-face-doc-string 'org-agenda-date
+		       "Face used for clock display in mode line."))
 
 (provide 'org-faces)
 

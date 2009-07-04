@@ -6,7 +6,7 @@
 ;; Author: Carsten Dominik <carsten at orgmode dot org>
 ;; Keywords: outlines, hypermedia, calendar, wp
 ;; Homepage: http://orgmode.org
-;; Version: 6.27a
+;; Version: 6.28e
 ;;
 ;; This file is part of GNU Emacs.
 ;;
@@ -186,6 +186,7 @@ calendar           |  %:type %:date"
 		 (const :tag "Use `org-default-notes-file'" nil))
 		(choice :tag "Destin. headline"
 		 (string :tag "Specify")
+		 (function :tag "Function")
 		 (const :tag "Use `org-remember-default-headline'" nil)
 		 (const :tag "At beginning of file" top)
 		 (const :tag "At end of file" bottom))
@@ -431,6 +432,8 @@ to be run from that hook to function properly."
 
 	(when (functionp file)
 	  (setq file (funcall file)))
+	(when (functionp headline)
+	  (setq headline (funcall headline)))
 	(when (and file (not (file-name-absolute-p file)))
 	  (setq file (expand-file-name file org-directory)))
 
@@ -788,11 +791,11 @@ See also the variable `org-reverse-note-order'."
     (replace-match ""))
   (goto-char (point-max))
   (beginning-of-line 1)
-  (while (looking-at "[ \t]*$\\|##.*")
+  (while (and (looking-at "[ \t]*$\\|##.*") (> (point) 1))
     (delete-region (1- (point)) (point-max))
     (beginning-of-line 1))
   (catch 'quit
-    (if org-note-abort (throw 'quit nil))
+    (if org-note-abort (throw 'quit t))
     (let* ((visitp (org-bound-and-true-p org-jump-to-target-location))
 	   (backup-file
 	    (and buffer-file-name
@@ -802,6 +805,16 @@ See also the variable `org-reverse-note-order'."
 		 (string-match "^remember-[0-9]\\{4\\}"
 			       (file-name-nondirectory buffer-file-name))
 		 buffer-file-name))
+
+	   (dummy
+	    (unless (string-match "\\S-" (buffer-string))
+	      (message "Nothing to remember")
+	      (and backup-file
+		   (ignore-errors
+		     (delete-file backup-file)
+		     (delete-file (concat backup-file "~"))))
+	      (set-buffer-modified-p nil)
+	      (throw 'quit t)))
 	   (previousp (and (member current-prefix-arg '((16) 0))
 			   org-remember-previous-location))
 	   (clockp (equal current-prefix-arg 2))
@@ -1028,9 +1041,9 @@ See also the variable `org-reverse-note-order'."
 			   "^remember-.*[0-9]$"))))
 		  (when (> n 0)
 		    (message
-		     "%d backup files (unfinished remember calls) in %s" 
+		     "%d backup files (unfinished remember calls) in %s"
 		     n org-remember-backup-directory))))))))))
-  
+
   t)    ;; return t to indicate that we took care of this note.
 
 (defun org-do-remember (&optional initial)

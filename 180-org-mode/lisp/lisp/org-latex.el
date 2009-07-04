@@ -4,7 +4,7 @@
 ;;
 ;; Emacs Lisp Archive Entry
 ;; Filename: org-latex.el
-;; Version: 6.27a
+;; Version: 6.28e
 ;; Author: Bastien Guerry <bzg AT altern DOT org>
 ;; Maintainer: Carsten Dominik <carsten.dominik AT gmail DOT com>
 ;; Keywords: org, wp, tex
@@ -207,7 +207,7 @@ formats for not-done and done states, or an association list with setup
 for individual keywords.  If a keyword shows up for which there is no
 markup defined, the first one in the association list will be used."
   :group 'org-export-latex
-  :type '(choice 
+  :type '(choice
 	  (string :tag "Default")
 	  (cons :tag "Distinguish undone and done"
 		(string :tag "Not-DONE states")
@@ -216,7 +216,7 @@ markup defined, the first one in the association list will be used."
 		  (cons
 		   (string :tag "Keyword")
 		   (string :tag "Markup")))))
-	   
+
 (defcustom org-export-latex-timestamp-markup "\\textit{%s}"
   "A printf format string to be applied to time stamps."
   :group 'org-export-latex
@@ -273,6 +273,18 @@ will pass them (combined with the LaTeX default list parameters) to
 `org-list-to-generic'."
   :group 'org-export-latex
   :type 'plist)
+
+(defcustom org-export-latex-verbatim-wrap
+  '("\\begin{verbatim}\n" . "\\end{verbatim}\n")
+  "Environment to be wrapped around a fixed-width section in LaTeX export.
+This is a cons with two strings, to be added before and after the
+fixed-with text.
+
+Defaults to \\begin{verbatim} and \\end{verbatim}."
+  :group 'org-export_translation
+  :group 'org-export-latex
+  :type '(cons (string :tag "Open")
+	       (string :tag "Close")))
 
 (defcustom org-export-latex-remove-from-headlines
   '(:todo nil :priority nil :tags nil)
@@ -584,6 +596,17 @@ when PUB-DIR is set, use this as the publishing directory."
 
     ;; finalization
     (unless body-only (insert "\n\\end{document}"))
+
+    ;; Relocate the table of contents
+    (goto-char (point-min))
+    (when (re-search-forward "\\[TABLE-OF-CONTENTS\\]" nil t)
+      (goto-char (point-min))
+      (while (re-search-forward "\\\\tableofcontents\\>[ \t]*\n?" nil t)
+	(replace-match ""))
+      (goto-char (point-min))
+      (and (re-search-forward "\\[TABLE-OF-CONTENTS\\]" nil t)
+	   (replace-match "\\tableofcontents" t t)))
+
     (or to-buffer (save-buffer))
     (goto-char (point-min))
     (or (org-export-push-to-kill-ring "LaTeX")
@@ -622,9 +645,15 @@ when PUB-DIR is set, use this as the publishing directory."
       (while cmds
 	(setq cmd (pop cmds))
 	(while (string-match "%b" cmd)
-	  (setq cmd (replace-match (shell-quote-argument base) t t cmd)))
+	  (setq cmd (replace-match 
+		     (save-match-data
+		       (shell-quote-argument base))
+		     t t cmd)))
 	(while (string-match "%s" cmd)
-	  (setq cmd (replace-match (shell-quote-argument file) t t cmd)))
+	  (setq cmd (replace-match
+		     (save-match-data
+		       (shell-quote-argument file))
+		     t t cmd)))
 	(shell-command cmd outbuf outbuf)))
     (message "Processing LaTeX file...done")
     (if (not (file-exists-p pdffile))
@@ -1356,19 +1385,35 @@ The conversion is made depending of STRING-BEFORE and STRING-AFTER."
 	(replace-match rpl t t)))
     (backward-char)))
 
+(defvar org-export-latex-use-verb nil)
 (defun org-export-latex-emph-format (format string)
   "Format an emphasis string and handle the \\verb special case."
   (when (equal format "\\verb")
     (save-match-data
-      (let ((ll "~,./?;':\"|!@#%^&-_=+abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ<>()[]{}"))
-	(catch 'exit
-	  (loop for i from 0 to (1- (length ll)) do
-		(if (not (string-match (regexp-quote (substring ll i (1+ i)))
-				       string))
-		    (progn
-		      (setq format (concat "\\verb" (substring ll i (1+ i))
-					   "%s" (substring ll i (1+ i))))
-		      (throw 'exit nil))))))))
+      (if org-export-latex-use-verb
+	  (let ((ll "~,./?;':\"|!@#%^&-_=+abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ<>()[]{}"))
+	    (catch 'exit
+	      (loop for i from 0 to (1- (length ll)) do
+		    (if (not (string-match (regexp-quote (substring ll i (1+ i)))
+					   string))
+			(progn
+			  (setq format (concat "\\verb" (substring ll i (1+ i))
+					       "%s" (substring ll i (1+ i))))
+			  (throw 'exit nil))))))
+	(let ((start 0)
+	      (trans '(("\\" . "\\backslash")
+		       ("~" . "\\ensuremath{\\sim}")
+		       ("^" . "\\ensuremath{\\wedge}")))
+	      (rtn "") char)
+	  (while (string-match "[\\{}$%&_#~^]" string)
+	    (setq char (match-string 0 string))
+	    (if (> (match-beginning 0) 0)
+		(setq rtn (concat rtn (substring string
+						 0 (match-beginning 0)))))
+	    (setq string (substring string (1+ (match-beginning 0))))
+	    (setq char (or (cdr (assoc char trans)) (concat "\\" char))
+		  rtn (concat rtn char)))
+	  (setq string (concat rtn string) format "\\texttt{%s}")))))
   (setq string (org-export-latex-protect-string
 		(format format string))))
 
@@ -1411,7 +1456,9 @@ The conversion is made depending of STRING-BEFORE and STRING-AFTER."
 			      (expand-file-name
 			       raw-path)
 			      org-export-latex-inline-image-extensions)
-			     (equal desc full-raw-path))
+			     (or (get-text-property 0 'org-no-description
+						    raw-path)
+				 (equal desc full-raw-path)))
 			(setq imgp t)
 		      (progn (when (string-match "\\(.+\\)::.+" raw-path)
 			       (setq raw-path (match-string 1 raw-path)))
@@ -1450,6 +1497,7 @@ The conversion is made depending of STRING-BEFORE and STRING-AFTER."
 
 (defvar org-latex-entities)   ; defined below
 (defvar org-latex-entities-regexp)   ; defined below
+(defvar org-latex-entities-exceptions)   ; defined below
 
 (defun org-export-latex-preprocess (parameters)
   "Clean stuff in the LaTeX export."
@@ -1464,7 +1512,7 @@ The conversion is made depending of STRING-BEFORE and STRING-AFTER."
   (while (re-search-forward "^[ \t]*\\\\begin{\\([a-zA-Z]+\\*?\\)}" nil t)
     (let* ((start (progn (beginning-of-line) (point)))
 	   (end (or (and (re-search-forward
-			  (concat "^[ \t]*\\\\end{" 
+			  (concat "^[ \t]*\\\\end{"
 				  (regexp-quote (match-string 1))
 				  "}") nil t)
 			 (point-at-eol))
@@ -1498,20 +1546,20 @@ The conversion is made depending of STRING-BEFORE and STRING-AFTER."
   ;; Convert blockquotes
   (goto-char (point-min))
   (while (search-forward "ORG-BLOCKQUOTE-START" nil t)
-    (replace-match "\\begin{quote}" t t))
+    (org-replace-match-keep-properties "\\begin{quote}" t t))
   (goto-char (point-min))
   (while (search-forward "ORG-BLOCKQUOTE-END" nil t)
-    (replace-match "\\end{quote}" t t))
+    (org-replace-match-keep-properties "\\end{quote}" t t))
 
   ;; Convert verse
   (goto-char (point-min))
   (while (search-forward "ORG-VERSE-START" nil t)
-    (replace-match "\\begin{verse}" t t)
+    (org-replace-match-keep-properties "\\begin{verse}" t t)
     (beginning-of-line 2)
     (while (and (not (looking-at "[ \t]*ORG-VERSE-END.*")) (not (eobp)))
       (when (looking-at "\\([ \t]+\\)\\([^ \t\n]\\)")
 	(goto-char (match-end 1))
-	(replace-match
+	(org-replace-match-keep-properties
 	 (org-export-latex-protect-string
 	  (concat "\\hspace*{1cm}" (match-string 2))) t t)
 	(beginning-of-line 1))
@@ -1520,15 +1568,15 @@ The conversion is made depending of STRING-BEFORE and STRING-AFTER."
 	(insert "\\\\"))
       (beginning-of-line 2))
     (and (looking-at "[ \t]*ORG-VERSE-END.*")
-	 (replace-match "\\end{verse}" t t)))
+	 (org-replace-match-keep-properties "\\end{verse}" t t)))
 
   ;; Convert center
   (goto-char (point-min))
   (while (search-forward "ORG-CENTER-START" nil t)
-    (replace-match "\\begin{center}" t t))
+    (org-replace-match-keep-properties "\\begin{center}" t t))
   (goto-char (point-min))
   (while (search-forward "ORG-CENTER-END" nil t)
-    (replace-match "\\end{center}" t t))
+    (org-replace-match-keep-properties "\\end{center}" t t))
 
   (run-hooks 'org-export-latex-after-blockquotes-hook)
 
@@ -1549,9 +1597,13 @@ The conversion is made depending of STRING-BEFORE and STRING-AFTER."
 
   ;; Protect LaTeX entities
   (goto-char (point-min))
-  (while (re-search-forward org-latex-entities-regexp nil t)
-    (add-text-properties (match-beginning 0) (match-end 0)
-			 '(org-protected t)))
+  (let (a)
+    (while (re-search-forward org-latex-entities-regexp nil t)
+      (if (setq a (assoc (match-string 0) org-latex-entities-exceptions))
+	  (replace-match (org-add-props (nth 1 a) nil 'org-protected t)
+			 t t)
+	(add-text-properties (match-beginning 0) (match-end 0)
+			     '(org-protected t)))))
 
   ;; Replace radio links
   (goto-char (point-min))
@@ -1731,6 +1783,7 @@ The conversion is made depending of STRING-BEFORE and STRING-AFTER."
    "\\medskip"
    "\\multicolumn"
    "\\multiput"
+   ("\\nbsp" "~")
    "\\newcommand"
    "\\newcounter"
    "\\newenvironment"
@@ -1802,9 +1855,14 @@ The conversion is made depending of STRING-BEFORE and STRING-AFTER."
    "\\vspace")
  "A list of LaTeX commands to be protected when performing conversion.")
 
+(defvar org-latex-entities-exceptions nil)
+
 (defconst org-latex-entities-regexp
   (let (names rest)
     (dolist (x org-latex-entities)
+      (when (consp x)
+	(add-to-list 'org-latex-entities-exceptions x)
+	(setq x (car x)))
       (if (string-match "[a-z][A-Z]$" x)
 	  (push x names)
 	(push x rest)))

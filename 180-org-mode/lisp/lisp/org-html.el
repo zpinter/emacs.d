@@ -6,7 +6,7 @@
 ;; Author: Carsten Dominik <carsten at orgmode dot org>
 ;; Keywords: outlines, hypermedia, calendar, wp
 ;; Homepage: http://orgmode.org
-;; Version: 6.27a
+;; Version: 6.28e
 ;;
 ;; This file is part of GNU Emacs.
 ;;
@@ -60,11 +60,18 @@ by the footnotes themselves."
   :type 'string)
 
 (defcustom org-export-html-xml-declaration
-  "<?xml version=\"1.0\" encoding=\"%s\"?>"
+  '(("html" . "<?xml version=\"1.0\" encoding=\"%s\"?>")
+    ("php" . "<?php echo '<?xml version=\"1.0\" encoding=\"%s\" ?>'; ?>"))
   "The extension for exported HTML files.
-%s will be replaced with the charset of the exported file."
+%s will be replaced with the charset of the exported file.
+This may be a string, or an alist with export extensions
+and corresponding declarations."
   :group 'org-export-html
-  :type 'string)
+  :type '(choice
+	  (string :tag "Single declaration")
+	  (repeat :tag "Dependent on extension"
+		  (cons (string :tag "Extension")
+			(string :tag "Declaration")))))
 
 (defcustom org-export-html-style-include-scripts t
   "Non-nil means, include the javascript snippets in exported HTML files.
@@ -275,6 +282,35 @@ See also the variable `org-export-html-table-use-header-tags-for-first-column'."
 This is customizable so that alignment options can be specified."
   :group 'org-export-tables
   :type '(cons (string :tag "Opening tag") (string :tag "Closing tag")))
+
+(defcustom org-export-table-row-tags '("<tr>" . "</tr>")
+  "The opening tag for table data fields.
+This is customizable so that alignment options can be specified.
+Instead of strings, these can be Lisp forms that will be evaluated
+for each row in order to construct the table row tags.  During evaluation,
+the variable `head' will be true when this is a header line, nil when this
+is a body line.  And the variable `nline' will contain the line number,
+starting from 1 in the first header line.  For example
+
+  (setq org-export-table-row-tags
+        (cons '(if head
+                   \"<tr>\"
+                 (if (= (mod nline 2) 1)
+                     \"<tr class=\\\"tr-odd\\\">\"
+                   \"<tr class=\\\"tr-even\\\">\"))
+              \"</tr>\"))
+
+will give even lines the class \"tr-even\" and odd lines the class \"tr-odd\"."
+  :group 'org-export-tables
+  :type '(cons 
+	  (choice :tag "Opening tag"
+		  (string :tag "Specify")
+		  (sexp))
+	  (choice :tag "Closing tag"
+		  (string :tag "Specify")
+		  (sexp))))
+
+
 
 (defcustom org-export-html-table-use-header-tags-for-first-column nil
   "Non-nil means, format column one in tables with header tags.
@@ -696,8 +732,14 @@ lang=\"%s\" xml:lang=\"%s\">
 <body>
 <div id=\"content\">
 "
-		 (format org-export-html-xml-declaration
-			 (or charset "iso-8859-1"))
+		 (format
+		  (or (and (stringp org-export-html-xml-declaration)
+			   org-export-html-xml-declaration)
+		      (cdr (assoc html-extension org-export-html-xml-declaration))
+		      (cdr (assoc "html" org-export-html-xml-declaration))
+
+		      "")
+		  (or charset "iso-8859-1"))
 		 language language (org-html-expand title)
 		 (or charset "iso-8859-1")
 		 date author description keywords
@@ -826,15 +868,20 @@ lang=\"%s\" xml:lang=\"%s\">
 	      (org-open-par))
 	    (throw 'nextline nil))
 
+	  (org-export-html-close-lists-maybe line)
+
 	  ;; Protected HTML
 	  (when (get-text-property 0 'org-protected line)
-	    (let (par)
+	    (let (par (ind (get-text-property 0 'original-indentation line)))
 	      (when (re-search-backward
 		     "\\(<p>\\)\\([ \t\r\n]*\\)\\=" (- (point) 100) t)
 		(setq par (match-string 1))
 		(replace-match "\\2\n"))
 	      (insert line "\n")
 	      (while (and lines
+			  (or (= (length (car lines)) 0)
+			      (not ind)
+			      (equal ind (get-text-property 0 'original-indentation (car lines))))
 			  (or (= (length (car lines)) 0)
 			      (get-text-property 0 'org-protected (car lines))))
 		(insert (pop lines) "\n"))
@@ -1121,7 +1168,7 @@ lang=\"%s\" xml:lang=\"%s\">
 	    (org-html-level-start level txt umax
 				  (and org-export-with-toc (<= level umax))
 				  head-count)
-	    
+
 	    ;; QUOTES
 	    (when (string-match quote-re line)
 	      (org-close-par-maybe)
@@ -1167,7 +1214,8 @@ lang=\"%s\" xml:lang=\"%s\">
 		    ((= llt ?\)) "^\\([ \t]*\\)\\(\\([-+*] \\)\\|\\([0-9]+)\\) \\)?\\( *[^ \t\n\r]\\|[ \t]*$\\)")
 		    (t (error "Invalid value of `org-plain-list-ordered-item-terminator'")))
 		   line)
-	      (setq ind (org-get-string-indentation line)
+	      (setq ind (or (get-text-property 0 'original-indentation line)
+			    (org-get-string-indentation line))
 		    item-type (if (match-beginning 4) "o" "u")
 		    starter (if (match-beginning 2)
 				(substring (match-string 2 line) 0 -1))
@@ -1486,9 +1534,9 @@ lang=\"%s\" xml:lang=\"%s\">
 		    (delq nil (mapcar
 			       (lambda (x) (string-match "^[ \t]*|-" x))
 			       (cdr lines)))))
-	 
-	 (nlines 0) fnum i
-	 tbopen line fields html gr colgropen)
+
+	 (nline 0) fnum i
+	 tbopen line fields html gr colgropen rowstart rowend)
     (if splice (setq head nil))
     (unless splice (push (if head "<thead>" "<tbody>") html))
     (setq tbopen t)
@@ -1505,12 +1553,14 @@ lang=\"%s\" xml:lang=\"%s\">
 	;; Break the line into fields
 	(setq fields (org-split-string line "[ \t]*|[ \t]*"))
 	(unless fnum (setq fnum (make-vector (length fields) 0)))
-	(setq nlines (1+ nlines) i -1)
-	(push (concat "<tr>"
+	(setq nline (1+ nline) i -1
+	      rowstart (eval (car org-export-table-row-tags))
+	      rowend (eval (cdr org-export-table-row-tags)))
+	(push (concat rowstart
 		      (mapconcat
 		       (lambda (x)
 			 (setq i (1+ i))
-			 (if (and (< i nlines)
+			 (if (and (< i nline)
 				  (string-match org-table-number-regexp x))
 			     (incf (aref fnum i)))
 			 (cond
@@ -1528,7 +1578,7 @@ lang=\"%s\" xml:lang=\"%s\">
 			   (concat (car org-export-table-data-tags) x
 				   (cdr org-export-table-data-tags)))))
 		       fields "")
-		      "</tr>")
+		      rowend)
 	      html)))
     (unless splice (if tbopen (push "</tbody>" html)))
     (unless splice (push "</table>\n" html))
@@ -1541,12 +1591,12 @@ lang=\"%s\" xml:lang=\"%s\">
 	      (lambda (x)
 		(setq gr (pop org-table-colgroup-info))
 		(format "<col align=\"%s\" />"
-			(if (> (/ (float x) nlines) org-table-number-fraction)
+			(if (> (/ (float x) nline) org-table-number-fraction)
 			    "right" "left")))
 	      fnum "")
 	     "</colgroup>")
 	    html)
-      
+
       ;; Since the output of HTML table formatter can also be used in
       ;; DocBook document, we want to always include the caption to make
       ;; DocBook XML file valid.
@@ -1851,6 +1901,24 @@ If there are links in the string, don't modify these."
   "Close <li> if necessary."
   (org-close-par-maybe)
   (insert (if (equal type "d") "</dd>\n" "</li>\n")))
+
+(defvar in-local-list)
+(defvar local-list-indent)
+(defvar local-list-type)
+(defun org-export-html-close-lists-maybe (line)
+  (let ((ind (or (get-text-property 0 'original-indentation line)))
+;		 (and (string-match "\\S-" line)
+;		      (org-get-indentation line))))
+	didclose)
+    (when ind
+      (while (and in-local-list
+		  (<= ind (car local-list-indent)))
+	(setq didclose t)
+	(org-close-li (car local-list-type))
+	(insert (format "</%sl>\n" (car local-list-type)))
+	(pop local-list-type) (pop local-list-indent)
+	(setq in-local-list local-list-indent))
+      (and didclose (org-open-par)))))
 
 (defvar body-only) ; dynamically scoped into this.
 (defun org-html-level-start (level title umax with-toc head-count)

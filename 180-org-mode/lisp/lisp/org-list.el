@@ -7,7 +7,7 @@
 ;;	   Bastien Guerry <bzg AT altern DOT org>
 ;; Keywords: outlines, hypermedia, calendar, wp
 ;; Homepage: http://orgmode.org
-;; Version: 6.27a
+;; Version: 6.28e
 ;;
 ;; This file is part of GNU Emacs.
 ;;
@@ -484,11 +484,13 @@ the whole buffer."
 The face will be `org-done' when all relevant boxes are checked.  Otherwise
 it will be `org-todo'."
   (if (match-end 1)
-      (if (equal (match-string 1) "100%") 'org-done 'org-todo)
+      (if (equal (match-string 1) "100%")
+	  'org-checkbox-statistics-done
+	'org-checkbox-statistics-todo)
     (if (and (> (match-end 2) (match-beginning 2))
 	     (equal (match-string 2) (match-string 3)))
-	'org-done
-      'org-todo)))
+	'org-checkbox-statistics-done
+      'org-checkbox-statistics-todo)))
 
 (defun org-beginning-of-item ()
   "Go to the beginning of the current hand-formatted item.
@@ -1050,14 +1052,17 @@ cdr is the indentation string."
 
 (defun org-list-end (indent)
   "Return the position of the end of the list.
-INDENT is the indentation of the list."
+INDENT is the indentation of the list, as a string."
   (save-excursion
     (catch 'exit
       (while (or (looking-at org-list-beginning-re)
-		 (looking-at (concat "^" indent "[ \t]+\\|^$")))
+		 (looking-at (concat "^" indent "[ \t]+\\|^$"))
+		 (> (or (get-text-property (point) 'original-indentation) -1)
+		     (length indent)))
 	(if (eq (point) (point-max))
 	    (throw 'exit (point-max)))
-	(forward-line 1))) (point)))
+	(forward-line 1)))
+    (point)))
 
 (defun org-list-insert-radio-list ()
   "Insert a radio list template appropriate for this major mode."
@@ -1230,7 +1235,7 @@ with overruling parameters for `org-list-to-generic'."
 LIST is as returnd by `org-list-parse-list'.  PARAMS is a property list
 with overruling parameters for `org-list-to-generic'."
   (org-list-to-generic
-   list 
+   list
    (org-combine-plists
     '(:splicep nil :ostart "@itemize @minus" :oend "@end itemize"
 	       :ustart "@enumerate" :uend "@end enumerate"

@@ -5,7 +5,7 @@
 ;; Author: Carsten Dominik <carsten at orgmode dot org>
 ;; Keywords: outlines, hypermedia, calendar, wp
 ;; Homepage: http://orgmode.org
-;; Version: 6.27a
+;; Version: 6.28e
 ;;
 ;; This file is part of GNU Emacs.
 ;;
@@ -45,6 +45,7 @@
 (declare-function org-show-context "org" (&optional key))
 (declare-function org-back-to-heading "org" (&optional invisible-ok))
 (declare-function org-end-of-subtree "org"  (&optional invisible-ok to-heading))
+(defvar org-odd-levels-only) ;; defined in org.el
 
 (defconst org-footnote-re
   (concat "[^][\n]"   ; to make sure it is not at the beginning of a line
@@ -57,7 +58,7 @@
 	  "\\]")
   "Regular expression for matching footnotes.")
 
-(defconst org-footnote-definition-re 
+(defconst org-footnote-definition-re
   (org-re "^\\(\\[\\([0-9]+\\|fn:[-_[:word:]]+\\)\\]\\)")
   "Regular expression matching the definition of a footnote.")
 
@@ -322,8 +323,18 @@ Org-mode exporters.
 When SORT-ONLY is set, only sort the footnote definitions into the
 referenced sequence."
   ;; This is based on Paul's function, but rewritten.
-  (let ((count 0) ref def idef ref-table beg beg1 marker a before
-	ins-point)
+  (let* ((limit-level
+	  (and (boundp 'org-inlinetask-min-level)
+	       org-inlinetask-min-level
+	       (1- org-inlinetask-min-level)))
+	 (nstars (and limit-level
+		      (if org-odd-levels-only
+			  (and limit-level (1- (* limit-level 2)))
+			limit-level)))
+	 (outline-regexp
+	  (concat "\\*" (if nstars (format "\\{1,%d\\} " nstars) "+ ")))
+	 (count 0)
+	 ref def idef ref-table beg beg1 marker a before ins-point)
      (save-excursion
       ;; Now find footnote references, and extract the definitions
       (goto-char (point-min))
@@ -363,7 +374,7 @@ referenced sequence."
 		org-footnote-fill-after-inline-note-extraction
 		(fill-paragraph)))
 	 (if (not a) (push (list ref marker def (if idef t nil)) ref-table))))
-      
+
       ;; First find and remove the footnote section
       (goto-char (point-min))
       (cond
@@ -386,7 +397,7 @@ referenced sequence."
 	      (insert "* " org-footnote-section "\n")
 	      (setq ins-point (point))))))
        (t
-	(if (re-search-forward 
+	(if (re-search-forward
 	     (concat "^"
 		     (regexp-quote org-footnote-tag-for-non-org-mode-files)
 		     "[ \t]*$")
@@ -397,7 +408,7 @@ referenced sequence."
 	(delete-region (point) (point-max))
 	(insert "\n\n" org-footnote-tag-for-non-org-mode-files "\n")
 	(setq ins-point (point))))
-      
+
       ;; Insert the footnotes again
       (goto-char (or ins-point (point-max)))
       (setq ref-table (reverse ref-table))
@@ -457,7 +468,7 @@ ENTRY is (fn-label num-mark definition)."
   (beginning-of-line 0)
   (while (and (not (bobp)) (= (char-after) ?#))
     (beginning-of-line 0))
-  (if (looking-at "#\\+TBLFM:") (beginning-of-line 2))
+  (if (looking-at "[ \t]*#\\+TBLFM:") (beginning-of-line 2))
   (end-of-line 1)
   (skip-chars-backward "\n\r\t "))
 

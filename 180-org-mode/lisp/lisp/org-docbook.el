@@ -4,7 +4,7 @@
 ;;
 ;; Emacs Lisp Archive Entry
 ;; Filename: org-docbook.el
-;; Version: 6.27a
+;; Version: 6.28e
 ;; Author: Baoqiu Cui <cbaoqiu AT yahoo DOT com>
 ;; Maintainer: Baoqiu Cui <cbaoqiu AT yahoo DOT com>
 ;; Keywords: org, wp, docbook
@@ -642,15 +642,20 @@ publishing directory."
 	      (org-export-docbook-open-para))
 	    (throw 'nextline nil))
 
+	  (org-export-docbook-close-lists-maybe line)
+
 	  ;; Protected HTML
 	  (when (get-text-property 0 'org-protected line)
-	    (let (par)
+	    (let (par (ind (get-text-property 0 'original-indentation line)))
 	      (when (re-search-backward
 		     "\\(<para>\\)\\([ \t\r\n]*\\)\\=" (- (point) 100) t)
 		(setq par (match-string 1))
 		(replace-match "\\2\n"))
 	      (insert line "\n")
 	      (while (and lines
+			  (or (= (length (car lines)) 0)
+			      (not ind)
+			      (equal ind (get-text-property 0 'original-indentation (car lines))))
 			  (or (= (length (car lines)) 0)
 			      (get-text-property 0 'org-protected (car lines))))
 		(insert (pop lines) "\n"))
@@ -972,7 +977,8 @@ publishing directory."
 		    ((= llt ?\)) "^\\([ \t]*\\)\\(\\([-+*] \\)\\|\\([0-9]+)\\) \\)?\\( *[^ \t\n\r]\\|[ \t]*$\\)")
 		    (t (error "Invalid value of `org-plain-list-ordered-item-terminator'")))
 		   line)
-	      (setq ind (org-get-string-indentation line)
+	      (setq ind (or (get-text-property 0 'original-indentation line)
+			    (org-get-string-indentation line))
 		    item-type (if (match-beginning 4) "o" "u")
 		    starter (if (match-beginning 2)
 				(substring (match-string 2 line) 0 -1))
@@ -1143,6 +1149,28 @@ publishing directory."
   (if (equal type "d")
       (insert "</listitem></varlistentry>\n")
     (insert "</listitem>\n")))
+
+(defvar in-local-list)
+(defvar local-list-indent)
+(defvar local-list-type)
+(defun org-export-docbook-close-lists-maybe (line)
+  (let ((ind (or (get-text-property 0 'original-indentation line)))
+;		 (and (string-match "\\S-" line)
+;		      (org-get-indentation line))))
+	didclose)
+    (when ind
+      (while (and in-local-list
+		  (<= ind (car local-list-indent)))
+	(setq didclose t)
+	(let ((listtype (car local-list-type)))
+	  (org-export-docbook-close-li listtype)
+	  (insert (cond
+		   ((equal listtype "o") "</orderedlist>\n")
+		   ((equal listtype "u") "</itemizedlist>\n")
+		   ((equal listtype "d") "</variablelist>\n"))))
+	(pop local-list-type) (pop local-list-indent)
+	(setq in-local-list local-list-indent))
+      (and didclose (org-export-docbook-open-para)))))
 
 (defun org-export-docbook-level-start (level title)
   "Insert a new level in DocBook export.

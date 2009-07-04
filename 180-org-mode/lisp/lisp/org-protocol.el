@@ -10,7 +10,7 @@
 ;;
 ;;
 ;; Filename: org-protocol.el
-;; Version: 6.27a
+;; Version: 6.28e
 ;; Author: Bastien Guerry <bzg AT altern DOT org>
 ;; Author: Daniel M German <dmg AT uvic DOT org>
 ;; Author: Sebastian Rose <sebastian_rose AT gmx DOT de>
@@ -371,7 +371,7 @@ returned list."
       (progn
        (dolist (e l ret)
          (setq ret
-               (append ret 
+               (append ret
                        (list
                         (if (stringp e)
                             (if (stringp replacement)
@@ -465,7 +465,7 @@ Now template ?b will be used."
                               :initial region)
         (raise-frame)
         (org-remember nil (string-to-char template)))
-    
+
     (message "Org-mode not loaded."))
   nil)
 

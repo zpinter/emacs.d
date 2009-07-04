@@ -6,7 +6,7 @@
 ;; Author: Carsten Dominik <carsten at orgmode dot org>
 ;; Keywords: outlines, hypermedia, calendar, wp
 ;; Homepage: http://orgmode.org
-;; Version: 6.27a
+;; Version: 6.28e
 ;;
 ;; This file is part of GNU Emacs.
 ;;
@@ -573,7 +573,7 @@ When nil, simply write \"#ERROR\" in corrupted fields.")
 		 (make-string sp2 ?\ ) "%%%s%ds" (make-string sp1 ?\ ) "|"))
 	 (hfmt1 (concat
 		 (make-string sp2 ?-) "%s" (make-string sp1 ?-) "+"))
-	 emptystrings links dates emph narrow fmax f1 len c e)
+	 emptystrings links dates emph narrow falign falign1 fmax f1 len c e)
     (untabify beg end)
     (remove-text-properties beg end '(org-cwidth t org-dwidth t display t))
     ;; Check if we have links or dates
@@ -594,7 +594,9 @@ When nil, simply write \"#ERROR\" in corrupted fields.")
     ;; Check if we are narrowing any columns
     (goto-char beg)
     (setq narrow (and org-format-transports-properties-p
-		      (re-search-forward "<[0-9]+>" end t)))
+		      (re-search-forward "<[rl]?[0-9]+>" end t)))
+    (goto-char beg)
+    (setq falign (re-search-forward "<[rl][0-9]*>" end t))
     ;; Get the rows
     (setq lines (org-split-string
 		 (buffer-substring beg end) "\n"))
@@ -629,12 +631,14 @@ When nil, simply write \"#ERROR\" in corrupted fields.")
     (while (< (setq i (1+ i)) maxfields)   ;; Loop over all columns
       (setq column (mapcar (lambda (x) (or (nth i x) "")) fields))
       ;; Check if there is an explicit width specified
-      (when narrow
-	(setq c column fmax nil)
+      (when (or narrow falign)
+	(setq c column fmax nil falign1 nil)
 	(while c
 	  (setq e (pop c))
-	  (if (and (stringp e) (string-match "^<\\([0-9]+\\)>$" e))
-	      (setq fmax (string-to-number (match-string 1 e)) c nil)))
+	  (when (and (stringp e) (string-match "^<\\([rl]\\)?\\([0-9]+\\)?>$" e))
+	    (if (match-end 1) (setq falign1 (match-string 1 e)))
+	    (if (match-end 2)
+		(setq fmax (string-to-number (match-string 2 e)) c nil))))
 	;; Find fields that are wider than fmax, and shorten them
 	(when fmax
 	  (loop for xx in column do
@@ -654,14 +658,16 @@ When nil, simply write \"#ERROR\" in corrupted fields.")
       ;; Get the maximum width for each column
       (push (apply 'max 1 (mapcar 'org-string-width column)) lengths)
       ;; Get the fraction of numbers, to decide about alignment of the column
-      (setq cnt 0 frac 0.0)
-      (loop for x in column do
-	    (if (equal x "")
-		nil
-	      (setq frac ( / (+ (* frac cnt)
-				(if (string-match org-table-number-regexp x) 1 0))
-			     (setq cnt (1+ cnt))))))
-      (push (>= frac org-table-number-fraction) typenums))
+      (if falign1
+	  (push (equal (downcase falign1) "r") typenums)
+	(setq cnt 0 frac 0.0)
+	(loop for x in column do
+	      (if (equal x "")
+		  nil
+		(setq frac ( / (+ (* frac cnt)
+				  (if (string-match org-table-number-regexp x) 1 0))
+			       (setq cnt (1+ cnt))))))
+	(push (>= frac org-table-number-fraction) typenums)))
     (setq lengths (nreverse lengths) typenums (nreverse typenums))
 
     ;; Store the alignment of this table, for later editing of single fields
@@ -1813,11 +1819,12 @@ When NAMED is non-nil, look for a named equation."
   (setq alist (sort alist 'org-table-formula-less-p))
   (save-excursion
     (goto-char (org-table-end))
-    (if (looking-at "\\([ \t]*\n\\)*#\\+TBLFM:\\(.*\n?\\)")
+    (if (looking-at "\\([ \t]*\n\\)*[ \t]*#\\+TBLFM:\\(.*\n?\\)")
 	(progn
 	  ;; don't overwrite TBLFM, we might use text properties to store stuff
 	  (goto-char (match-beginning 2))
 	  (delete-region (match-beginning 2) (match-end 0)))
+      (org-indent-line-function)
       (insert "#+TBLFM:"))
     (insert " "
 	    (mapconcat (lambda (x)
@@ -1846,7 +1853,7 @@ When NAMED is non-nil, look for a named equation."
   (let (scol eq eq-alist strings string seen)
     (save-excursion
       (goto-char (org-table-end))
-      (when (looking-at "\\([ \t]*\n\\)*#\\+TBLFM: *\\(.*\\)")
+      (when (looking-at "\\([ \t]*\n\\)*[ \t]*#\\+TBLFM: *\\(.*\\)")
 	(setq strings (org-split-string (match-string 2) " *:: *"))
 	(while (setq string (pop strings))
 	  (when (string-match "\\`\\(@[0-9]+\\$[0-9]+\\|\\$\\([a-zA-Z0-9]+\\)\\) *= *\\(.*[^ \t]\\)" string)
@@ -1871,7 +1878,7 @@ KEY is \"@\" or \"$\".  REPLACE is an alist of numbers to replace.
 For all numbers larger than LIMIT, shift them by DELTA."
   (save-excursion
     (goto-char (org-table-end))
-    (when (looking-at "#\\+TBLFM:")
+    (when (looking-at "[ \t]*#\\+TBLFM:")
       (let ((re (concat key "\\([0-9]+\\)"))
 	    (re2
 	     (when remove
@@ -2658,7 +2665,7 @@ Parameters get priority."
 (defun org-table-edit-formulas ()
   "Edit the formulas of the current table in a separate buffer."
   (interactive)
-  (when (save-excursion (beginning-of-line 1) (looking-at "#\\+TBLFM"))
+  (when (save-excursion (beginning-of-line 1) (looking-at "[ \t]*#\\+TBLFM"))
     (beginning-of-line 0))
   (unless (org-at-table-p) (error "Not at a table"))
   (org-table-get-specials)
@@ -3451,6 +3458,16 @@ to execute outside of tables."
       (orgtbl-make-binding 'org-table-previous-field 104
 			   [(shift tab)] [(tab)] "\C-i"))
 
+    (org-defkey orgtbl-mode-map [S-iso-lefttab]
+      (orgtbl-make-binding 'org-table-previous-field 107
+			   [S-iso-lefttab] [backtab] [(shift tab)]
+			   [(tab)] "\C-i"))
+
+    (org-defkey orgtbl-mode-map [backtab]
+      (orgtbl-make-binding 'org-table-previous-field 108
+			   [backtab] [S-iso-lefttab] [(shift tab)]
+			   [(tab)] "\C-i"))
+
     (org-defkey orgtbl-mode-map "\M-\C-m"
       (orgtbl-make-binding 'org-table-wrap-region 105
 			   "\M-\C-m" [(meta return)]))
@@ -3531,15 +3548,15 @@ to execute outside of tables."
 
 (defun orgtbl-ctrl-c-ctrl-c (arg)
   "If the cursor is inside a table, realign the table.
-It it is a table to be sent away to a receiver, do it.
+If it is a table to be sent away to a receiver, do it.
 With prefix arg, also recompute table."
   (interactive "P")
   (let ((pos (point)) action)
     (save-excursion
       (beginning-of-line 1)
-      (setq action (cond ((looking-at "#\\+ORGTBL:.*\n[ \t]*|") (match-end 0))
+      (setq action (cond ((looking-at "[ \t]*#\\+ORGTBL:.*\n[ \t]*|") (match-end 0))
 			 ((looking-at "[ \t]*|") pos)
-			 ((looking-at "#\\+TBLFM:") 'recalc))))
+			 ((looking-at "[ \t]*#\\+TBLFM:") 'recalc))))
     (cond
      ((integerp action)
       (goto-char action)
@@ -3597,7 +3614,8 @@ overwritten, and the table is not marked as requiring realignment."
 			   orgtbl-hijacker-command-102
 			   orgtbl-hijacker-command-103
 			   orgtbl-hijacker-command-104
-			   orgtbl-hijacker-command-105))
+			   orgtbl-hijacker-command-105
+			   yas/expand))
 		 (org-table-blank-field))
 	    t)
 	   (eq N 1)
@@ -3665,7 +3683,7 @@ a radio table."
     (goto-char (org-table-begin))
     (let (rtn)
       (beginning-of-line 0)
-      (while (looking-at "#\\+ORGTBL[: \t][ \t]*SEND +\\([a-zA-Z0-9_]+\\) +\\([^ \t\r\n]+\\)\\( +.*\\)?")
+      (while (looking-at "[ \t]*#\\+ORGTBL[: \t][ \t]*SEND +\\([a-zA-Z0-9_]+\\) +\\([^ \t\r\n]+\\)\\( +.*\\)?")
 	(let ((name (org-no-properties (match-string 1)))
 	      (transform (intern (match-string 2)))
 	      (params (if (match-end 3)

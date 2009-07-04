@@ -6,7 +6,7 @@
 ;; Author: Carsten Dominik <carsten at orgmode dot org>
 ;; Keywords: outlines, hypermedia, calendar, wp
 ;; Homepage: http://orgmode.org
-;; Version: 6.27a
+;; Version: 6.28e
 ;;
 ;; This file is part of GNU Emacs.
 ;;
@@ -32,6 +32,12 @@
 ;; generally useful stuff.
 
 ;;; Code:
+
+(eval-and-compile
+  (unless (fboundp 'declare-function)
+    (defmacro declare-function (fn file &optional arglist fileonly))))
+
+(declare-function org-add-props "org-compat" (string plist &rest props))
 
 (defmacro org-bound-and-true-p (var)
   "Return the value of symbol VAR if it is bound, else nil."
@@ -72,10 +78,6 @@
 	   (if pc-mode (partial-completion-mode -1))
 	   ,@body)
        (if pc-mode (partial-completion-mode 1)))))
-
-(eval-and-compile
-  (unless (fboundp 'declare-function)
-    (defmacro declare-function (fn file &optional arglist fileonly))))
 
 (defmacro org-maybe-intangible (props)
   "Add '(intangible t) to PROPS if Emacs version is earlier than Emacs 22.
@@ -244,6 +246,15 @@ This is in contrast to merely setting it to 0."
 	  (setq p (plist-put p (car plist) (nth 1 plist))))
       (setq plist (cddr plist)))
     p))
+
+
+(defun org-replace-match-keep-properties (newtext &optional fixedcase
+						  literal string)
+  "Like `replace-match', but add the text properties found original text."
+  (setq newtext (org-add-props newtext (text-properties-at
+					(match-beginning 0) string)))
+  (replace-match newtext fixedcase literal string))
+
 
 (provide 'org-macs)
 

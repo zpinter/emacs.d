@@ -1,4 +1,10 @@
 (zconfig-add-lisp-path "lisp/lisp")
+(zconfig-add-lisp-path "lisp/contrib/lisp")
+
+(setq org-modules nil)
+(add-to-list 'org-modules 'org-mac-iCal)
+(add-to-list 'org-modules 'org-gnus)
+
 (require 'org-install)
 
 ;; (setq font-lock-maximum-decoration
@@ -65,13 +71,20 @@
 (setq org-completion-use-ido t)
 
 ; Targets include this file and any file contributing to the agenda - up to 5 levels deep
-(setq org-refile-targets (quote ((org-agenda-files :maxlevel . 5) (nil :maxlevel . 5))))
+;(setq org-refile-targets (quote ((org-agenda-files :maxlevel . 5) (nil :maxlevel . 5))))
+;(setq org-refile-use-outline-path (quote file))
+;(setq org-outline-path-complete-in-steps t)
 
-; Targets start with the file name - allows creating level 1 tasks
-(setq org-refile-use-outline-path (quote file))
-
-; Targets complete in steps so we start with filename, TAB shows the next level of targets etc
-(setq org-outline-path-complete-in-steps t)
+(setq org-refile-use-outline-path nil)
+(setq org-refile-targets '( (org-agenda-files :regexp . "Tasks") ))
+(setq org-outline-path-complete-in-steps nil)
 
 
+;ical integration
+(setq org-agenda-include-diary t)
 
+(setq org-agenda-custom-commands
+      '(("I" "Import diary from iCal" agenda ""
+         ((org-agenda-mode-hook
+           (lambda ()
+             (org-mac-iCal)))))))
