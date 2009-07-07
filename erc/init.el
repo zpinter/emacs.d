@@ -1,5 +1,7 @@
 (require 'erc-auto)
 
+(setq erc-echo-notices-in-minibuffer-flag t)
+
 ;; (eval-after-load "erc"
 ;;   '(progn
 ;;     (setq erc-auto-query t
