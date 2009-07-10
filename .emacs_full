@@ -3,7 +3,6 @@
 
 (zconfig-load-modules (list
                         "core"
-								"elscreen"
 								"customize"
                         "easypg"
                         "window-settings"
@@ -14,7 +13,7 @@
                         "nxml"
                         "ruby"
                         "js2-mode"
-                        "yasnippet"
+;;                         "yasnippet"
                         "magit"
                         "twitter"
                         "post-mode"
@@ -38,6 +37,10 @@
                         "flex"
                         "open-resource"
                         "breadcrumb"
+								"cedet"
+								"ecb"
+;; 								"jdee"
                         "tweaks"
                         "server"
+								"elscreen"
                         ))

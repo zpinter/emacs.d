@@ -9,10 +9,10 @@
 ;;
 ;; Bind the following commands:
 ;; smex, smex-major-mode-commands, smex-update-and-run
-;; 
+;;
 ;; For a detailed introduction see:
 ;; http://github.com/nonsequitur/smex/blob/master/README.markdown
-                     
+
 (require 'ido)
 ;; Needed for `union'.
 (require 'cl)
@@ -29,6 +29,11 @@ Must be set before initializing Smex."
 Smex should keep a record.
 Must be set before initializing Smex."
   :type 'integer
+  :group 'smex)
+
+(defcustom smex-prompt-string "smex "
+  "String to display in the Smex prompt."
+  :type 'string
   :group 'smex)
 
 (defvar smex-cache)
@@ -63,7 +68,7 @@ Must be set before initializing Smex."
         (ido-enable-prefix nil)
         (ido-enable-flex-matching t)
         (ido-max-prospects 10))
-    (ido-completing-read "smex " choices)))
+    (ido-completing-read smex-prompt-string choices)))
 
 (defun smex-prepare-ido-bindings ()
   (define-key ido-completion-map (kbd "C-h f") 'smex-describe-function)
