@@ -18,7 +18,7 @@
  '(jde-global-classpath (quote ("/Users/zpinter/repos/emacs.d/jdee/classes")))
  '(jde-jdk (quote ("1.6.0")))
  '(jde-jdk-registry (quote (("1.6.0" . "/System/Library/Frameworks/JavaVM.framework/Versions/1.6.0"))))
- '(org-agenda-files (quote ("~/org/gnus.txt" "~/org/emacs.txt" "~/org/inbox.txt" "~/org/simplesoon.txt" "~/org/zigimus.txt" "~/org/star.txt" "~/org/natgeo.txt" "~/org/eui.txt" "~/org/personal.txt"))))
+ '(org-agenda-files (quote ("~/org/gnus.txt" "~/org/emacs.txt" "~/org/inbox.txt" "~/org/simplesoon.txt" "~/org/zigimus.txt" "~/org/zebra.txt" "~/org/natgeo.txt" "~/org/eui.txt" "~/org/personal.txt"))))
 (custom-set-faces
   ;; custom-set-faces was added by Custom.
   ;; If you edit it by hand, you could mess it up, so be careful.

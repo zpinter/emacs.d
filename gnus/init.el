@@ -1,8 +1,14 @@
 (zconfig-add-lisp-path "gnus-cvs/lisp")
 (require 'gnus-load)
 
+(add-hook 'dired-mode-hook 'turn-on-gnus-dired-mode)
+
 (setq gnus-read-active-file nil)
 (setq mail-user-agent 'gnus-user-agent)
+
+(defun mm-substring-no-properties (file)
+  file)
+
 
 (require 'extract-ical)
 (extract-ical-gnus-insinuate)

@@ -16,18 +16,22 @@ determining the maximize number of columns to fit on a display"
   :type 'integer
   :group 'maxframe)
 
-(when (and (ismac) window-system)
-;;   (require 'maxframe)
-;;   (setq mf-max-width 1600)
-;;   (add-hook 'window-setup-hook 'maximize-frame t)
+;;; (when (and (ismac) window-system)
+;;; ;;   (require 'maxframe)
+;;; ;;   (setq mf-max-width 1600)
+;;; ;;   (add-hook 'window-setup-hook 'maximize-frame t)
 
-  (require 'carbon-font)
-  (fixed-width-set-default-fontset
-   "-apple-inconsolata-medium-r-normal--14-*-*-*-*-*-iso10646-1"))
+;;;   (require 'carbon-font)
+;;;   (fixed-width-set-default-fontset
+;;;    "-apple-inconsolata-medium-r-normal--14-*-*-*-*-*-iso10646-1"))
+
+
 
 
 (if (and (ismac) window-system)
     (progn
+
+		(set-frame-font "-apple-inconsolata-medium-r-normal--14-*-*-*-*-*-iso10646-1")
 
 		(require 'cua-base)
 		(cua-mode t)
@@ -35,7 +39,7 @@ determining the maximize number of columns to fit on a display"
       ;; fix a mac-specific problem with ptys
       (setq process-connection-type nil)
 
-		(mac-key-mode t)
+		;; (mac-key-mode t)
 
       ;; Mac-style cut/copy/paste
       (setq mac-command-key-is-meta nil)

@@ -3,6 +3,7 @@
 (yas/load-directory (concat zconfig-current-module-dir "/snippets"))
 (yas/load-directory (concat zconfig-current-module-dir "/rails-snippets"))
 
+
 ;; (if (boundp 'mumamo:version)
 ;;     ((setq mumamo-map
 ;;           (let ((map (make-sparse-keymap)))

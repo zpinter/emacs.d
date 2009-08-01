@@ -6,7 +6,7 @@
                         "easypg"
                         "window-settings"
                         "ido"
-                        "hippie-expand"
+;;                         "company-mode"
                         "shell-current-directory"
                         "open-resource"
                         "tweaks"

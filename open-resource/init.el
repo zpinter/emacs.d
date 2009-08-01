@@ -1,3 +1,5 @@
+(setq recentf-auto-cleanup 'never) ;; disable before we start recentf, prevents issues with emacs tramp
+
 (require 'open-resource)
 
 (defun dired-open-resource (filepattern)

@@ -1,5 +1,9 @@
-(load "elscreen" "ElScreen" t)
+
+(setq elscreen-display-tab nil)
+
+(load "elscreen"); "ElScreen" t)
 (require 'elscreen-server)
+(require 'elscreen-speedbar)
 
 ;; mac elscreen play nice with carbon emacs
 (defun create-new-tab-and-switch-to ()

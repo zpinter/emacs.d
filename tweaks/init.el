@@ -92,7 +92,7 @@
 
 (defun reload-file ()
   (interactive)
-  (find-file (buffer-name))
+  (find-file (buffer-file-name))
   )
 
 (defalias 'rlf 'reload-file)
@@ -177,7 +177,6 @@
 
 (setq ssl-certificate-directory "~/.certs")
 
-
 ;file encoding
 (prefer-coding-system 'utf-8)
 (modify-coding-system-alist 'file "\\.txt\\'" 'utf-8)
@@ -187,6 +186,11 @@
 (set-keyboard-coding-system 'utf-8)
 (setq default-buffer-file-coding-system 'utf-8)
 
+;; remember my place
+(setq save-place-file "~/.saveplace")
+(setq-default save-place t)                   ;; activate it for all buffers
+(require 'saveplace)                          ;; get the package
+
 ; save and close buffer
 (global-set-key [(control c) (k)]
 		'(lambda ()
@@ -195,7 +199,5 @@
 				 (progn
 					(save-buffer)
 					(kill-buffer (buffer-name (current-buffer)))))))
-
-(smex-initialize)
 
 
