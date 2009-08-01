@@ -7,6 +7,8 @@
 (setq w3m-safe-url-regexp nil)
 (setq mm-w3m-safe-url-regexp nil)
 
+;; (setq w3m-imitate-widget-button nil)
+
 (defun wicked/w3m-open-current-page-in-firefox ()
   "Open the current URL in in browser function (usually firefox)."
   (interactive)
@@ -20,10 +22,14 @@
 
 
 (defun zpinter-w3m-keys ()
+  ;; (define-key w3m-mode-map [(button2)] 'wicked/w3m-open-link-or-image-in-firefox)
+  ;; (define-key w3m-mode-map [mouse-2] 'wicked/w3m-open-link-or-image-in-firefox)
   (define-key w3m-mode-map "f" 'wicked/w3m-open-current-page-in-firefox)
   (define-key w3m-mode-map "F" 'wicked/w3m-open-link-or-image-in-firefox))
 
 (add-hook 'w3m-mode-hook 'zpinter-w3m-keys)
+
+(setq w3m-goto-article-function 'browse-url-default-macosx-browser)
 
 (defun zpinter-w3m-rename-buffer (url)
   "base buffer name on title"
