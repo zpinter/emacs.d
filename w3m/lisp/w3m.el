@@ -184,7 +184,7 @@
 
 (defconst emacs-w3m-version
   (eval-when-compile
-    (let ((rev "$Revision: 1.1446 $"))
+    (let ((rev "$Revision: 1.1450 $"))
       (and (string-match "\\.\\([0-9]+\\) \\$\\'" rev)
 	   (setq rev (- (string-to-number (match-string 1 rev)) 1136))
 	   (format "1.4.%d" (+ rev 50)))))
@@ -1317,20 +1317,20 @@ The term `shifting' means a fine level scrolling."
   :group 'w3m
   :type '(integer :size 0))
 
-(defcustom w3m-view-recenter '(t . 1)
-  "Argument passed to `recenter' that runs when visiting a link.
-Valid values include an integer, t and nil, and cons of them.
-T means run `recenter' with no argument.  Nil means don't perform it.
-If it is cons, the car is used for an ordinary link, and the cdr is
-used for a name link, i.e., the case where the url string ends up with
-\"#NAME\"."
+(defcustom w3m-view-recenter 1
+  "Recenter window contents when going to an anchor.
+An integer is passed to `recenter', for instance the default 1
+    means put the anchor on the second line of the screen.
+t means `recenter' with no arguments, which puts it in the middle
+    of the screen.
+nil means don't recenter, let the display follow point in the
+    usual way."
   :group 'w3m
-  :type (let ((val '((const :format "%t " t) (const :format "%t " nil)
-		     (integer :format "%{%t%}: %v\n" :value 1 :size 1))))
-	  `(radio ,@val
-		  (cons :format "%{Cons%}:\n%v"
-			(radio :format "%v" ,@val)
-			(radio :format "%v" ,@val)))))
+  ;; radio items in the same order as in the docstring, and `integer' first
+  ;; because it's the default
+  :type '(radio (integer :format "%{%t%}: %v\n" :value 1 :size 1)
+                (const :format "%t\n" t)
+                (const :format "%t\n" nil)))
 
 (defcustom w3m-use-form t
   "*Non-nil means make it possible to use form extensions. (EXPERIMENTAL)"
@@ -1781,9 +1781,6 @@ variable.  For example:
 
 \(setq w3m-local-find-file-regexps
       '(nil . \"\\\\.\\\\(?:[sx]?html?\\\\|dvi\\\\|ps\\\\|pdf\\\\)\\\\'\"))
-
-See also `w3m-use-doc-view-mode', which you will need to modify for
-such a case.
 
 It is effective only when the `w3m-local-find-file-function' variable
 is set properly."
@@ -2991,6 +2988,7 @@ is specified by `w3m-arrived-file'."
 (add-hook 'kill-emacs-hook 'w3m-cookie-shutdown)
 (add-hook 'w3m-arrived-shutdown-functions 'w3m-session-automatic-save)
 (add-hook 'w3m-arrived-shutdown-functions 'w3m-session-crash-recovery-remove)
+(add-hook 'w3m-arrived-shutdown-functions 'w3m-cleanup-temp-files)
 
 ;;; Generic macros and inline functions:
 (defun w3m-attributes (url &optional no-cache handler)
@@ -5521,10 +5519,16 @@ It will put the retrieved contents into the current buffer.  See
 	(set-buffer-multibyte nil)))
     "image/gif")
    ((string-match "\\`about://source/" url)
-    (w3m-process-do
-	(type (w3m-retrieve (substring url (match-end 0))
-			    no-uncompress no-cache post-data referer handler))
-      (when type "text/plain")))
+    (lexical-let ((url (substring url (match-end 0))))
+      (w3m-process-do
+	  (type (w3m-retrieve url
+			      no-uncompress no-cache post-data referer handler))
+	(cond
+	 (type "text/plain")
+	 ((w3m-cache-request-contents url)
+	  (w3m-decode-encoded-contents (w3m-content-encoding url))
+	  "text/plain")
+	 (t nil)))))
    ((string-match "\\`about:/*blank/?\\'" url)
     "text/plain")
    (t
@@ -6369,7 +6373,7 @@ when the URL of the retrieved page matches the REGEXP."
 			   (nthcdr (1+ (car w3m-name-anchor-from-hist))
 				   w3m-name-anchor-from-hist)))))
     (when found
-      (w3m-recenter t))
+      (w3m-recenter))
     found))
 
 (defun w3m-parent-page-available-p ()
@@ -6657,7 +6661,7 @@ compatibility which is described in Section 5.2 of RFC 2396.")
 	      (save-excursion
 		(goto-char pos)
 		(w3m-refontify-anchor)))))
-	(w3m-recenter (string-match "#.+\\'" url))))))
+	(w3m-recenter)))))
 
 (defun w3m-view-this-url (&optional arg new-session)
   "Display the page pointed to by the link under point.
@@ -7076,9 +7080,7 @@ Return t if highlighting is successful."
 	(setq arg (1- arg))
 	(if (member (w3m-anchor-sequence) w3m-goto-anchor-hist)
 	    (setq arg (1+ arg))
-	  (push (w3m-anchor-sequence) w3m-goto-anchor-hist)))
-      (if (/= st (point))
-	  (w3m-recenter)))
+	  (push (w3m-anchor-sequence) w3m-goto-anchor-hist))))
     (w3m-horizontal-on-screen)
     (w3m-print-this-url)))
 
@@ -7132,9 +7134,7 @@ Return t if highlighting is successful."
 	(setq arg (1- arg))
 	(if (member (w3m-anchor-sequence) w3m-goto-anchor-hist)
 	    (setq arg (1+ arg))
-	  (push (w3m-anchor-sequence) w3m-goto-anchor-hist)))
-      (if (/= st (point))
-	  (w3m-recenter)))
+	  (push (w3m-anchor-sequence) w3m-goto-anchor-hist))))
     (w3m-horizontal-on-screen)
     (w3m-print-this-url)))
 
@@ -7171,9 +7171,7 @@ Return t if highlighting is successful."
 	(setq arg (1- arg))
 	(if (member (w3m-action (point)) w3m-goto-anchor-hist)
 	    (setq arg (1+ arg))
-	  (push (w3m-action (point)) w3m-goto-anchor-hist)))
-      (if (/= st (point))
-	  (w3m-recenter)))
+	  (push (w3m-action (point)) w3m-goto-anchor-hist))))
     (w3m-horizontal-on-screen)
     (w3m-print-this-url)))
 
@@ -7212,9 +7210,7 @@ Return t if highlighting is successful."
 	(setq arg (1- arg))
 	(if (member (w3m-action (point)) w3m-goto-anchor-hist)
 	    (setq arg (1+ arg))
-	  (push (w3m-action (point)) w3m-goto-anchor-hist)))
-      (if (/= st (point))
-	  (w3m-recenter)))
+	  (push (w3m-action (point)) w3m-goto-anchor-hist))))
     (w3m-horizontal-on-screen)
     (w3m-print-this-url)))
 
@@ -7253,9 +7249,7 @@ Return t if highlighting is successful."
 	(setq arg (1- arg))
 	(if (member (w3m-image (point)) w3m-goto-anchor-hist)
 	    (setq arg (1+ arg))
-	  (push (w3m-image (point)) w3m-goto-anchor-hist)))
-      (if (/= st (point))
-	  (w3m-recenter)))
+	  (push (w3m-image (point)) w3m-goto-anchor-hist))))
     (w3m-horizontal-on-screen)
     (w3m-print-this-url)))
 
@@ -7294,9 +7288,7 @@ Return t if highlighting is successful."
 	(setq arg (1- arg))
 	(if (member (w3m-image (point)) w3m-goto-anchor-hist)
 	    (setq arg (1+ arg))
-	  (push (w3m-image (point)) w3m-goto-anchor-hist)))
-      (if (/= st (point))
-	  (w3m-recenter)))
+	  (push (w3m-image (point)) w3m-goto-anchor-hist))))
     (w3m-horizontal-on-screen)
     (w3m-print-this-url)))
 
@@ -8506,26 +8498,13 @@ window's hscroll."
 		0))))
     (set-window-hscroll (selected-window) 0)))
 
-(defun w3m-recenter (&optional name)
-  "Recenter the link according to `w3m-view-recenter'.
-Non-nil value for NAME means use the cdr of `w3m-view-recenter'."
-  (let ((val (if (consp w3m-view-recenter)
-		 (if name
-		     (cdr w3m-view-recenter)
-		   (car w3m-view-recenter))
-	       w3m-view-recenter)))
-    (when (and val (eq (window-buffer) (current-buffer)))
-      ;; A version of `recenter' that does not redisplay the frame.
-      (let ((height (w3m-static-if (featurep 'xemacs)
-			(1- (window-height))
-		      (- (window-height) 1 (if header-line-format 1 0)))))
-	(save-excursion
-	  (when (zerop (forward-line (if (integerp val)
-					 (if (< val 0)
-					     (- 0 height val)
-					   (- val))
-				       (- (/ height 2)))))
-	    (set-window-start nil (point))))))))
+(defun w3m-recenter ()
+  "Recenter according to `w3m-view-recenter'."
+  (when (and w3m-view-recenter
+             (eq (window-buffer) (current-buffer)))
+    (recenter (if (eq t w3m-view-recenter)
+                  '(4)  ;; per "C-u C-l" to recenter in middle
+                w3m-view-recenter)))) ;; otherwise an integer
 
 (defun w3m-beginning-of-line (&optional arg)
   "Make the beginning of the line visible and move the point to there."
@@ -10536,6 +10515,16 @@ FROM-COMMAND is defined in `w3m-minor-mode-map' with the same key in
 		(not w3m-minor-mode)))
     (run-hooks 'w3m-minor-mode-hook)))
 
+(defcustom w3m-do-cleanup-temp-files nil
+  "*Whether to clean up temporary files when emacs-w3m shutdown."
+  :group 'w3m
+  :type 'boolean)
+  
+(defun w3m-cleanup-temp-files ()
+  (when w3m-do-cleanup-temp-files
+    (dolist (f (directory-files w3m-profile-directory))
+      (when (string-match "^w3m\\(el\\|src\\)" f)
+	(delete-file (expand-file-name f w3m-profile-directory))))))
 
 (provide 'w3m)
 

@@ -14,9 +14,9 @@ This file documents emacs-w3m, an Emacs interface to w3m.
 $B$3$N%U%!%$%k$O(B Emacs $B$GF0$/(B w3m $B$N%$%s%?%U%'!<%9$G$"$k(B emacs-w3m $B$K4X$9(B
 $B$k@bL@=q$G$9!#(B
 
-This edition is for emacs-w3m version 1.4.360.
+This edition is for emacs-w3m version 1.4.364.
 
-$B$3$NHG$O(B emacs-w3m $B%P!<%8%g%s(B 1.4.360 $B$KBP1~$7$^$9!#(B
+$B$3$NHG$O(B emacs-w3m $B%P!<%8%g%s(B 1.4.364 $B$KBP1~$7$^$9!#(B
 
 
 
@@ -24,12 +24,12 @@ This edition is for emacs-w3m version 1.4.360.
 
 File: emacs-w3m-ja.info, Node: Top, Next: Introduction, Prev: (dir), Up: (dir)
 
-Emacs-w3m $B%f!<%6%^%K%e%"%k(B
+Emacs-w3m $A%f$B!<$A%6%^%K%e%"%k(B
 **************************
 
                                                   Emacs-w3m $B3+H/%A!<%`(B
 
-$B$3$NJ8=q$O(B emacs-w3m $B%P!<%8%g%s(B 1.4.360 $B$KBP1~$7$^$9!#(B
+$B$3$NJ8=q$O(B emacs-w3m $B%P!<%8%g%s(B 1.4.364 $B$KBP1~$7$^$9!#(B
 
 
 
@@ -41,30 +41,30 @@ Copyright (C) 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007,
      Version 2 or any later version published by the Free Software
      Foundation.
 
-     $B$3$NJ8=q$r!"%U%j!<%=%U%H%&%'%":bCD$K$h$C$FH/9T$5$l$?(B GNU $B0lHL8x=0(B
-     $BMxMQ5vBz7@Ls=qBh(B 2 $BHG$^$?$O$=$l0J9_$NHG$N$&$A$I$l$+$NDj$a$k>r7o$N(B
-     $B2<$GJ#@=!"G[I[!"$"$k$$$OJQ99$9$k$3$H$r5v2D$7$^$9!#(B
+     $A$3$NND$(GUs$A$r!"%U%j$B!<$A%=%U%H%&%'%"$(GXB$(I#>$A$K$h$C$F$BH/$APP$5$l$?(B GNU $AR;0c9+$(I>j(B
+     $A@{SC$(G]Br?$AFu$(GR|Us$A5Z(B 2 $A0f$^$?$O$=$lRT=5$N0f$N$&$A$I$l$+$N6($a$kLu<~$N(B
+     $AOB$G$(Gnoj{$A!"Ed2<!"$"$k$$$O$(I+y$A8|$9$k$3$H$r$(G]B$A?I$7$^$9!#(B
 
      This document is distributed in the hope that it will be useful,
      but WITHOUT ANY WARRANTY; without even the implied warranty of
      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
      General Public License for more details.
 
-     $B$3$NJ8=q$OM-MQ$G$"$k$3$H$r4j$C$FHRI[$5$l$^$9$,!"(B*$BA4$/$NL5J]>Z(B* $B$G(B
-     $B$9!#(B*$B>&6H2DG=@-(B* $B$NJ]>Z$d(B *$BFCDj$NL\E*$X$NE,9g@-(B* $B$O!"8@30$K<($5$l(B
-     $B$?$b$N$b4^$aA4$/B8:_$7$^$;$s!#>\$7$/$O(B GNU $B0lHL8x=0MxMQ5vBz7@Ls=q(B
-     $B$r$4Mw$/$@$5$$!#(B
+     $A$3$NND$(GUs$A$OSPSC$G$"$k$3$H$r$(GyL$A$C$F$(Ggc$A2<$5$l$^$9$,!"(B*$AH+$/$N$(G`R$A1#$(Gb%(B* $A$G(B
+     $A$9!#(B*$AIL$(GdF$A?ID\PT(B* $A$N1#$(Gb%$A$d(B *$ALX6($ND?5D$X$N$(GoK$A:OPT(B* $A$O!"QTMb$KJ>$5$l(B
+     $A$?$b$N$b:,$aH+$/4fTZ$7$^$;$s!#$(Gf[$A$7$/$O(B GNU $AR;0c9+$(I>j$A@{SC$(G]Br?$AFu$(GR|Us(B
+     $A$r$4$(IRf$A$/$@$5$$!#(B
 
      You should have received a copy of the GNU General Public License
      along with this document; see the file COPYING.  If not, write to
      the Free Software Foundation, Inc., 51 Franklin Street, Fifth
      Floor, Boston, MA 02110-1301, USA.
 
-     $B$"$J$?$O$3$NJ8=q$H6&$K!"(BGNU $B0lHL8x=0MxMQ5vBz7@Ls=q$NJ#@=J*$r0lIt<u(B
-     $B$1<h$C$?$O$:$G$9!#(BCOPYING $B%U%!%$%k$r;2>H$7$F$/$@$5$$!#$b$7<u$1<h$C(B
-     $B$F$$$J$1$l$P!"%U%j!<%=%U%H%&%'%":bCD$^$G@A5a$7$F$/$@$5$$(B ($B08@h$O(B
+     $A$"$J$?$O$3$NND$(GUs$A$H92$K!"(BGNU $AR;0c9+$(I>j$A@{SC$(G]Br?$AFu$(GR|Us$A$N$(Gnoj{$ANo$rR;2?J\(B
+     $A$1H!$C$?$O$:$G$9!#(BCOPYING $A%U%!%$%k$r2NUU$7$F$/$@$5$$!#$b$7J\$1H!$C(B
+     $A$F$$$J$1$l$P!"%U%j$B!<$A%=%U%H%&%'%"$(GXB$(I#>$A$^$G$(Gny$AGs$7$F$/$@$5$$(B ($AMpOH$O(B
      the Free Software Foundation, Inc., 59 Temple Place, Suite 330,
-     Boston, MA 02111-1307 USA)$B!#(B
+     Boston, MA 02111-1307 USA)$A!#(B
 
 
 
@@ -175,7 +175,7 @@ Emacs-w3m Functions
 
 File: emacs-w3m-ja.info, Node: Introduction, Next: Getting Started, Prev: Top, Up: Top
 
-$B$O$8$a$K(B
+$A$O$8$a$K(B
 ********
 
 Emacs/W3 (http://www.cs.indiana.edu/elisp/w3/docs.html) $B$O!"$+$D$F$O(B
@@ -191,14 +191,14 @@ Emacs $B>e$GF0:n$9$k:G$b%]%T%e%i!<$J(B web $B%V%i%&%6!<$G$7$?!#$7$+$7F0:n$,Hs
 $B;d$?$A(B (emacs-w3m $B3+H/%A!<%`(B) $B$K$"$j$^$9!#$b$C$H$b!"J]>Z$O$^$C$?$/$"$j(B
 $B$^$;$s$,!#(BEmacs-w3m $B$O(B 2000$BG/(B6$B7n$KEZ202mL-$K$h$C$FAO;O$5$l$^$7$?!#(B
 
-Emacs-w3m $B$N8x<0%Z!<%8(B (http://emacs-w3m.namazu.org/) $B$bJ;$;$F$4Mw$/$@(B
+Emacs-w3m $A$N9+J=%Z$B!<$A%8(B (http://emacs-w3m.namazu.org/) $B$bJ;$;$F$4Mw$/$@(B
 $B$5$$!#(B
 
 
 
 File: emacs-w3m-ja.info, Node: Getting Started, Next: Basic Usage, Prev: Introduction, Up: Top
 
-Emacs-w3m $B$r;H$$;O$a$k$N$O$H$C$F$b4JC1(B
+Emacs-w3m $A$rJ9$$J<$a$k$N$O$H$C$F$b$(Gv|$(I+J(B
 **************************************
 
 $B$R$g$C$H$9$k$H!"$"$J$?$N%7%9%F%`$K$O(B emacs-w3m $B$,$9$G$K%$%s%9%H!<%k$5$l(B
@@ -219,13 +219,13 @@ Emacs-w3m $B$r;H$$;O$a$k$N$O$H$C$F$b4JC1(B
 
 File: emacs-w3m-ja.info, Node: Required Emacs Version, Next: You Need w3m, Prev: Getting Started, Up: Getting Started
 
-$B$I$s$J%P!<%8%g%s$N(B Emacs $B$G;H$($k$N(B?
+$A$I$s$J%P$B!<$A%8%g%s$N(B Emacs $A$GJ9$($k$N(B?
 ====================================
 
 $B0J2<$K5s$2$?$$$m$$$m$J%P!<%8%g%s$N(B Emacsen $B$G(B emacs-w3m $B$rF0:n$5$;$k$3(B
 $B$H$,$G$-$^$9!#(B
 
-`Emacs 21.1 $B0J>e(B'
+`Emacs 21.1 $ARTIO(B'
      $BDI2C$N%Q%C%1!<%8$OITMW$G$9!#(B
 
 `XEmacs 21.x'
@@ -238,7 +238,7 @@ File: emacs-w3m-ja.info, Node: Required Emacs Version, Next: You Need w3m, Prev:
      `mailto' url $B$r2r@O$9$k$?$a$N(B `rfc2368.el' $B%b%8%e!<%k$r%$%s%9%H!<(B
      $B%k$7$F$*$$$?J}$,NI$$$G$7$g$&(B (*Note Other Requirements::)$B!#(B
 
-`Emacs 20.x, Emacs 19.34 ($B4^(B Mule 2.3)'
+`Emacs 20.x, Emacs 19.34 ($A:,(B Mule 2.3)'
      $B$3$l$i$N(B Emacs $B$r(B emacs-w3m $B$O%5%]!<%H$7$^$;$s!#(B
 
 GNU Emacs $B$N3+H/HG$r;H$C$F$$$k$N$G$"$l$P!"$*$=$i$/(B CVS $BHG$N(B emacs-w3m
@@ -249,7 +249,7 @@ GNU Emacs $B$N3+H/HG$r;H$C$F$$$k$N$G$"$l$P!"$*$=$i$/(B CVS $BHG$N(B emacs-w3
 
 File: emacs-w3m-ja.info, Node: You Need w3m, Next: Other Requirements, Prev: Required Emacs Version, Up: Getting Started
 
-w3m $B$r;H$$$^$9(B: emacs-w3m $B$,B.$$$o$1(B
+w3m $A$rJ9$$$^$9(B: emacs-w3m $A$,KY$$$o$1(B
 ====================================
 
 Emacs-w3m $B$O30It%3%^%s%I(B w3m $B$r!"%&%'%V%3%s%F%s%D$r<hF@$9$k$?$a$N%P%C%/(B
@@ -266,7 +266,7 @@ Emacs-w3m $B$O30It%3%^%s%I(B w3m $B$r!"%&%'%V%3%s%F%s%D$r<hF@$9$k$?$a$N%P%C%/
 
 File: emacs-w3m-ja.info, Node: Other Requirements, Next: Installing Emacs-w3m, Prev: You Need w3m, Up: Getting Started
 
-Emacs-w3m $B$rF0:n$5$;$k$N$KI,MW$J$b$N(B
+Emacs-w3m $A$r$(GY/$AWw$5$;$k$N$K1XR*$J$b$N(B
 ====================================
 
 $B;HMQ$7$F$$$k(B Emacs $B$N%P!<%8%g%s$K$h$C$F$O!"%5!<%I%Q!<%F%#$N%Q%C%1!<%8$,(B
@@ -343,7 +343,7 @@ Emacs-w3m $B$rF0:n$5$;$k$N$KI,MW$J$b$N(B
      (Mule-UCS $B$N8x<0%Z!<%8$O6a$$>-Mh(B `http://www.meadowy.org/' $B$G%*!<(B
      $B%W%s$7$^$9!#(B)
 
-     Emacs-21.2 $B$GMxMQ$9$k>l9g$O!"(BMule-UCS $B$K(B $B$3$N%Q%C%A(B
+     Emacs-21.2 $B$GMxMQ$9$k>l9g$O!"(BMule-UCS $B$K(B $A$3$N%Q%C%A(B
      (http://www.m17n.org/mlarchive/mule/200203/msg00000.html) $B$rE,MQ$7(B
      $B$?$[$&$,$$$$$G$7$g$&!#(B
 
@@ -381,7 +381,7 @@ Emacs-w3m $B$rF0:n$5$;$k$N$KI,MW$J$b$N(B
 
 File: emacs-w3m-ja.info, Node: Installing Emacs-w3m, Next: Non-UNIX-like systems, Prev: Other Requirements, Up: Getting Started
 
-Emacs-w3m $B$r%$%s%9%H!<%k$9$k(B
+Emacs-w3m $A$r%$%s%9%H$B!<$A%k$9$k(B
 ============================
 
 Emacs-w3m $B$N<hF@$K4X$7$F$O8x<0%Z!<%8(B `http://emacs-w3m.namazu.org/' $B$r(B
@@ -394,8 +394,8 @@ Emacs-w3m $B$N<hF@$K4X$7$F$O8x<0%Z!<%8(B `http://emacs-w3m.namazu.org/' $B$r
   1. $B:G=i$K!"G[I[$5$l$?(B emacs-w3m $B$N(B tarball $B$r0J2<$N$h$&$KE,Ev$J>l=j$G(B
      $BE83+$7$F!"@hF,$N%G%#%l%/%H%j$KF~$C$F$/$@$5$$(B:
 
-          % tar zxf emacs-w3m-1.4.360.tar.gz
-          % cd emacs-w3m-1.4.360
+          % tar zxf emacs-w3m-1.4.364.tar.gz
+          % cd emacs-w3m-1.4.364
 
      Emacs-w3m $B$r(B CVS $B$G<hF@$7$?$N$J$i$P!"(B`configure' $B%9%/%j%W%H$r@8@.(B
      $B$9$k$?$a$K(B ($B0z?tL5$7$G(B) `autoconf' $B$r<B9T$7$J$1$l$P$J$j$^$;$s!#(B
@@ -404,7 +404,7 @@ Emacs-w3m $B$N<hF@$K4X$7$F$O8x<0%Z!<%8(B `http://emacs-w3m.namazu.org/' $B$r
 
           % ./configure
 
-     *Gnus $B%f!<%6$X$N=EMW$J$*CN$i$;(B*:
+     *Gnus $A%f$B!<$A%6$X$NVXR*$J$*V*$i$;(B*:
 
      $BJ#?t$N%P!<%8%g%s$N(B Gnus $B$,%$%s%9%H!<%k$5$l$F$$$k>l9g(B ($B%j%j!<%9HG$H(B
      $B3+H/HG$N(B Gnus $B$,$"$k$+$b$7$l$^$;$s(B) $B$O!"(B`load-path' $B$K$"$J$?$,;H$&(B
@@ -480,7 +480,7 @@ Emacs-w3m $B$N<hF@$K4X$7$F$O8x<0%Z!<%8(B `http://emacs-w3m.namazu.org/' $B$r
 
 File: emacs-w3m-ja.info, Node: Non-UNIX-like systems, Next: Minimal Settings, Prev: Installing Emacs-w3m, Up: Getting Started
 
-$BHs(B UNIX $B7O4D6-$G$N%$%s%9%H!<%k(B
+$A7G(B UNIX $AO5$(Gt?$A>3$G$N%$%s%9%H$B!<$A%k(B
 ==============================
 
 $B$"$J$?$N%7%9%F%`$G(B `configure' $B%9%/%j%W%H$r<B9T$9$k$3$H$,$G$-$J$$$+!"(B
@@ -498,7 +498,7 @@ APEL$B!"(BFLIM ($B$^$?$OB>$N2?$+(B) $B$,IaDL$N>l=j$K%$%s%9%H!<%k$5$l$F$$$J$
 
 File: emacs-w3m-ja.info, Node: Minimal Settings, Prev: Non-UNIX-like systems, Up: Getting Started
 
-$B@_Dj$7$J$1$l$P$J$i$J$$:GDc8B$N$b$N(B
+$(G]C$A6($7$J$1$l$P$J$i$J$$Wn5MO^$N$b$N(B
 ==================================
 
 $B$3$N9`$G$O4pK\E*$J(B emacs-w3m $B$N@_Dj$N$$$/$D$+$r@bL@$7$^$9!#$-$a:Y$+$J@_(B
@@ -558,7 +558,7 @@ Customizable Variables:: $B$G8+$D$1$k$3$H$,$G$-$k$G$7$g$&!#(B
 
 File: emacs-w3m-ja.info, Node: Basic Usage, Next: Pretty Good Features, Prev: Getting Started, Up: Top
 
-$B4pK\E*$J;H$$J}(B
+$A;y1>5D$JJ9$$7=(B
 **************
 
 * Menu:
@@ -577,7 +577,7 @@ File: emacs-w3m-ja.info, Node: Basic Usage, Next: Pretty Good Features, Prev: Ge
 
 File: emacs-w3m-ja.info, Node: Browsing Web Pages, Next: Inline Images, Prev: Basic Usage, Up: Basic Usage
 
-$B%M%C%H%5!<%U%#%s$7$h$&(B!
+$A%M%C%H%5$B!<$A%U%#%s$7$h$&(B!
 =======================
 
 $B$9$Y$F$N%&%'%V!&%V%i%&%:$NA`:n$O!"%-!<$G9T$&$3$H$,$G$-$^$9!#(BEmacs-w3m
@@ -597,7 +597,7 @@ File: emacs-w3m-ja.info, Node: Browsing Web Pages, Next: Inline Images, Prev: Ba
 
 File: emacs-w3m-ja.info, Node: Key Binding, Next: Launching and Jumping, Prev: Browsing Web Pages, Up: Browsing Web Pages
 
-$BFs$D$N%-!<%P%$%s%I(B
+$A6~$D$N%-$B!<$A%P%$%s%I(B
 ------------------
 
 Emacs-w3m $B$O(B Emacs $B%&%'%V!&%V%i%&%6$NNr;K$NCf$G$O8eH/$N%V%i%&%6$J$N$G!"(B
@@ -629,7 +629,7 @@ Emacs-w3m $B$O(B Emacs $B%&%'%V!&%V%i%&%6$NNr;K$NCf$G$O8eH/$N%V%i%&%6$J$N$G!"
 
 File: emacs-w3m-ja.info, Node: Launching and Jumping, Next: Moving in a page, Prev: Key Binding, Up: Browsing Web Pages
 
-$B$H$K$+$/F0$+$7$F$_$h$&(B
+$A$H$K$+$/$(GY/$A$+$7$F$_$h$&(B
 ----------------------
 
 $B0J2<$K5s$2$k;0$D$N0c$&%3%^%s%I$r;H$C$F(B emacs-w3m $B$r5/F0$9$k$3$H$,$G$-$^(B
@@ -681,7 +681,7 @@ File: emacs-w3m-ja.info, Node: Launching and Jumping, Next: Moving in a page, Pr
 $B%9$K$h$C$F7h$^$j$^$9(B (*Note Customizable Variables::)$B!#(B
 
 `<RET>'
-`<right>' (Lynx-like $B%-!<%^%C%W$N$_(B)
+`<right>' (Lynx-like $A%-$B!<$A%^%C%W$N$_(B)
      $B8=:_0LCV$N%j%s%/$,;X$7<($9%Z!<%8$rI=<($7$^$9(B
      (`w3m-view-this-url')$B!#(B
 
@@ -716,13 +716,13 @@ File: emacs-w3m-ja.info, Node: Launching and Jumping, Next: Moving in a page, Pr
      $B$$%?%V$GI=<($9$k$3$H$r0UL#$7$^$9!#%?%V$K$D$$$F$N$b$C$H>\$7$$$3$H$O!"(B
      *Note Using Tabs:: $B$r;2>H$7$F$/$@$5$$(B (`w3m-goto-url-new-session')$B!#(B
 
-`c' (Lynx-like $B%-!<%^%C%W(B)
-`y' (Info-like $B%-!<%^%C%W(B)
+`c' (Lynx-like $A%-$B!<$A%^%C%W(B)
+`y' (Info-like $A%-$B!<$A%^%C%W(B)
      $BI=<($7$F$$$k%Z!<%8$N(B URL $B$r%(%3!<%(%j%"$KI=<($9$k$H$H$b$K!"(B
      `kill-ring' $B$K(B URL $B$rA^F~$7$^$9(B (`w3m-print-current-url')$B!#(B
 
-`u' (Lynx-like $B%-!<%^%C%W(B)
-`Y' (Info-like $B%-!<%^%C%W(B)
+`u' (Lynx-like $A%-$B!<$A%^%C%W(B)
+`Y' (Info-like $A%-$B!<$A%^%C%W(B)
      $B8=:_0LCV$N%j%s%/$,;X$7<($9BP>]$N(B URL $B$r%(%3!<%(%j%"$KI=<($9$k$H$H$b$K!"(B
      `kill-ring' $B$K(B URL $B$rA^F~$7$^$9(B (`w3m-print-this-url')$B!#(B
 
@@ -733,14 +733,14 @@ File: emacs-w3m-ja.info, Node: Launching and Jumping, Next: Moving in a page, Pr
 $B6/@)$5$;$k$?$a$K$bLrN)$F$k$3$H$,$G$-$^$9!#(B)
 
 `R'
-`C-S-l' (Info-like $B%-!<%^%C%W$N$_(B)
+`C-S-l' (Info-like $A%-$B!<$A%^%C%W$N$_(B)
      $B%Z!<%8$rFI$_9~$_D>$7$^$9(B (`w3m-reload-this-page')$B!#(B
 
 
 
 File: emacs-w3m-ja.info, Node: Moving in a page, Next: Moving over pages, Prev: Launching and Jumping, Up: Browsing Web Pages
 
-$B%Z!<%8Fb$rHt$S$^$o$k(B
+$A%Z$B!<$A%8DZ$r$(GSy$A$S$^$o$k(B
 --------------------
 
 Emacs $B$G0\F0MQ$K3d$jEv$F$i$l$F$$$kFk@w$_?<$$%-!<$,%&%'%V%Z!<%8$N1\MwCf(B
@@ -780,14 +780,14 @@ Submitting Forms::)$B!"$?$$$F$$$N%-!<$OFCJL$J0UL#$r;}$C$F$$$F!"$=$3$G$O(B
      `w3m-horizontal-scroll-columns' $B$GM?$(!"%G%U%)%k%HCM$O(B 10 $B$G$9(B
      (`w3m-scroll-right')$B!#(B
 
-`.' (Lynx-like $B%-!<%^%C%W(B)
-`S-<left>' (Info-like $B%-!<%^%C%W(B)
+`.' (Lynx-like $A%-$B!<$A%^%C%W(B)
+`S-<left>' (Info-like $A%-$B!<$A%^%C%W(B)
      $B:8$K%7%U%H$7$^$9(B ($B>.9o$_$J?eJ?%9%/%m!<%k(B)$B!#%7%U%H$NNL$O(B
      `w3m-horizontal-shift-columns' $B$GM?$(!"%G%U%)%k%HCM$O(B 2 $B$G$9(B
      (`w3m-shift-left')$B!#(B
 
-`,' (Lynx-like $B%-!<%^%C%W(B)
-`S-<right>' (Info-like $B%-!<%^%C%W(B)
+`,' (Lynx-like $A%-$B!<$A%^%C%W(B)
+`S-<right>' (Info-like $A%-$B!<$A%^%C%W(B)
      $B1&$K%7%U%H$7$^$9(B ($B>.9o$_$K?eJ?%9%/%m!<%k$G$9(B)$B!#%7%U%H$NNL$O(B
      `w3m-horizontal-shift-columns' $B$GM?$(!"%G%U%)%k%HCM$O(B 2 $B$G$9(B
      (`w3m-shift-right')$B!#(B
@@ -811,14 +811,14 @@ page-Footnotes::) $B%]%$%s%H$,%Z!<%8$N:G=i$NF~NO%U%)!<%`$K0\F0$7$^$7$?$M!#(B
 $B$H$@$C$?$G$7$g$&!#(B
 
 `<TAB>'
-`<down>' (Lynx-like $B%-!<%^%C%W$N$_(B)
+`<down>' (Lynx-like $A%-$B!<$A%^%C%W$N$_(B)
      $B<!$N%j%s%/(B (emacs-w3m $B$NMQ8l$G$O(B "$B%"%s%+!<(B") $B$X%]%$%s%H$r0\F0$7$^(B
      $B$9!#$h$j87L)$K$O!"=gJ}8~$G:G$b6a$$%"%s%+!<$X0\F0$7$^$9!#(B
 
 `M-<TAB>'
 `S-<TAB>'
 `<backtab>'
-`<up>' (Lynx-like $B%-!<%^%C%W$N$_(B)
+`<up>' (Lynx-like $A%-$B!<$A%^%C%W$N$_(B)
      $BA0$N%"%s%+!<$X%]%$%s%H$r0\F0$7$^$9!#$h$j87L)$K$O!"5UJ}8~$G:G$b6a$$(B
      $B%"%s%+!<$X0\F0$7$^$9(B (`w3m-previous-anchor')$B!#(B
 
@@ -841,14 +841,14 @@ page-Footnotes::) $B%]%$%s%H$,%Z!<%8$N:G=i$NF~NO%U%)!<%`$K0\F0$7$^$7$?$M!#(B
 
 File: emacs-w3m-ja.info  Node: Moving in a page-Footnotes, Up: Moving in a page
 
-(1) $BIaDL$=$s$J2;$O$7$J$$$1$l$I$M!#1Q8lHG$N(B Tadaa! $B$OL!2h$J$I$G;H$o$l$k(B
-$B5<2;$G!"$=$N>u67$K1~$8$F$$$m$$$m$KLu$5$l$^$9!#(B
+(1) $AFUM($=$s$JRt$O$7$J$$$1$l$I$M!#S"$(Gk#$A0f$N(B Tadaa! $A$OB~;-$J$I$GJ9$o$l$k(B
+$(Gsi$ARt$G!"$=$NW4$(GNS$A$K$(I%w$A$8$F$$$m$$$m$K$BLu$A$5$l$^$9!#(B
 
 
 
 File: emacs-w3m-ja.info, Node: Moving over pages, Next: Browsing With Mouse Operations, Prev: Moving in a page, Up: Browsing Web Pages
 
-$B%Z!<%84V$rEO$jJb$/(B
+$A%Z$B!<$A%8$(Gbf$A$r6I$j$(I)V$A$/(B
 ------------------
 
 $B$3$N9`$G$O%Z!<%8$+$i%Z!<%8$K0\F0$9$k$d$jJ}$r@bL@$7$^$9!#%j%s%/$r$?$I$C(B
@@ -861,16 +861,16 @@ Launching and Jumping:: $B$G@bL@$5$l$F$$$^$9(B)$B!#(B
 $B$9!#$"$i$+$8$a(B *Note Tracing History:: $B$N9`$rFI$s$G$*$$$?J}$,!"$?$V$sM}(B
 $B2r$7$d$9$$$G$7$g$&!#(B
 
-`B' (Lynx-like $B%-!<%^%C%W(B)
-`<left>' (Lynx-like $B%-!<%^%C%W(B)
-`l' (Info-like $B%-!<%^%C%W(B)
-`p' (Info-like $B%-!<%^%C%W(B)
+`B' (Lynx-like $A%-$B!<$A%^%C%W(B)
+`<left>' (Lynx-like $A%-$B!<$A%^%C%W(B)
+`l' (Info-like $A%-$B!<$A%^%C%W(B)
+`p' (Info-like $A%-$B!<$A%^%C%W(B)
      $B0JA0$KK,Ld$7$?%Z!<%8$NMzNr$r#1%Z!<%8La$j$^$9(B
      (`w3m-view-previous-page')$B!#?t$N0z?t(B N $B$,M?$($i$l$k$H(B N $B%Z!<%8La$j(B
      $B$^$9!#$3$l$O2a5n$KLa$k$?$a$N$*4+$a$NJ}K!$G$9!#(B
 
-`N' (Lynx-like $B%-!<%^%C%W(B)
-`n' (Info-like $B%-!<%^%C%W(B)
+`N' (Lynx-like $A%-$B!<$A%^%C%W(B)
+`n' (Info-like $A%-$B!<$A%^%C%W(B)
      $B0JA0$KK,Ld$7$?%Z!<%8$NMzNr$r#1%Z!<%8?J$_$^$9(B
      (`w3m-view-next-page')$B!#$b$A$m$s(B `B' (`Info-like' $B%-!<%^%C%W$N>l9g(B
      $B$O(B `l') $B$GMzNr$rLa$C$?8e$G$J$1$l$PF/$-$^$;$s!#?t$N0z?t(B N $B$,M?$($i(B
@@ -888,7 +888,7 @@ Launching and Jumping:: $B$G@bL@$5$l$F$$$^$9(B)$B!#(B
 $B$$$G$/$@$5$$$M!#$?$@$N>iCL$G$9$+$i!#(B)
 
 `^'
-`u' (Info-like $B%-!<%^%C%W$N$_(B)
+`u' (Info-like $A%-$B!<$A%^%C%W$N$_(B)
      $B8=:_I=<($5$l$F$$$k%Z!<%8$N?F%G%#%l%/%H%j$X$N0\F0$r;n$_$^$9!#Nc$($P!"(B
      http://foo/bar/baz" $B$,I=<($5$l$F$$$k>l9g$O(B "http://foo/bar/" $B$K0\(B
      $BF0$7$h$&$H$7$^$9!#$3$N5!G=$O<!$N4Q;!$K4p$E$$$F<BAu$5$l$^$7$?(B: $B%&%'(B
@@ -969,7 +969,7 @@ Launching and Jumping:: $B$G@bL@$5$l$F$$$^$9(B)$B!#(B
 
 File: emacs-w3m-ja.info, Node: Browsing With Mouse Operations, Next: Going back to daily hacking and/or daily writing, Prev: Moving over pages, Up: Browsing Web Pages
 
-$B%^%&%9$r;H$C$F%5!<%U%#%s(B
+$A%^%&%9$rJ9$C$F%5$B!<$A%U%#%s(B
 ------------------------
 
 Emacs-w3m $B$N3+H/<TC#$O!"(BEmacs $B%.!<%/(B (1) (*Note Browsing With Mouse
@@ -1009,13 +1009,13 @@ emacs-w3m $B$NMM!9$J5!G=$r8F$S=P$9$3$H$,$G$-$^$9!#<gMW$J5!G=$K$D$$$F$O%a(B
 
 File: emacs-w3m-ja.info  Node: Browsing With Mouse Operations-Footnotes, Up: Browsing With Mouse Operations
 
-(1) $B1Q8lHG$N(B Info $B$G$O(B Emacs otaku
+(1) $AS"$(Gk#$A0f$N(B Info $A$G$O(B Emacs otaku
 
 
 
 File: emacs-w3m-ja.info, Node: Going back to daily hacking and/or daily writing, Prev: Browsing With Mouse Operations, Up: Browsing Web Pages
 
-$BIaCJ$N@83h$KLa$k$K$O(B
+$AFU6N$NIz;n$K$(I&($A$k$K$O(B
 --------------------
 
 $B;W$$=P$7$F$/$@$5$$!#$*$=$i$/$"$J$?$O%&%'%V$r8+$k$?$a$K(B Emacs $B$r;O$a$?$N(B
@@ -1042,7 +1042,7 @@ Emacs $B$+$iN%$l$:$K%&%'%V$r8+$k$3$H$,$G$-$F$7$^$C$?$N$G$9!#(B
 
 File: emacs-w3m-ja.info, Node: Inline Images, Next: Tracing History, Prev: Browsing Web Pages, Up: Basic Usage
 
-$B2hA|I=<($r(B ON/OFF $B$9$k(B
+$A;-Oq1mJ>$r(B ON/OFF $A$9$k(B
 ======================
 
 $B$"$J$?$,;H$C$F$$$k%P!<%8%g%s$N(B Emacs $B$,%P%C%U%!$K2hA|$rI=<($9$k$3$H$,$G(B
@@ -1066,8 +1066,8 @@ emacs-w3m $B$O%&%'%V%Z!<%8$K$=$l$i$rI=<($9$k$3$H$,$G$-$^$9!#2<5-$N%3%^%s(B
 $B$5$i$K(B emacs-w3m $B$K$O!"2hA|$N3HBg=L>.!"%U%!%$%k$X$N%;!<%V!"$^$?$O30It(B
 $B%S%e!<%o$G8+$k!"$H$$$C$?5$$NMx$$$?5!G=$,IUB0$7$F$$$^$9!#(B
 
-`T' (Lynx-like $B%-!<%^%C%W(B)
-`I' (Info-like $B%-!<%^%C%W(B)
+`T' (Lynx-like $A%-$B!<$A%^%C%W(B)
+`I' (Info-like $A%-$B!<$A%^%C%W(B)
      $B8=:_$N%P%C%U%!$K$"$k$9$Y$F$N%$%s%i%$%s2hA|$NI=<($r%H%0%k$G@Z$jBX$((B
      $B$^$9(B (`w3m-toggle-inline-images')$B!#(B`transient-mark-mode' $B$,(B on $B$G!"(B
      $B$+$DNN0h$,@_Dj$5$l$F$$$k>l9g$K8B$C$F!"$=$NNN0hFb$K$"$k2hA|$@$1$,(B
@@ -1087,8 +1087,8 @@ emacs-w3m $B$O%&%'%V%Z!<%8$K$=$l$i$rI=<($9$k$3$H$,$G$-$^$9!#2<5-$N%3%^%s(B
      $B0h$K$"$k2hA|$@$1$rI=<($7$?$$$J$i$P!"$b$&0lEY$=$NNN0h$r@_Dj$7$J$1$l(B
      $B$P$J$j$^$;$s!#(B
 
-`t' (Lynx-like $B%-!<%^%C%W(B)
-`i' (Info-like $B%-!<%^%C%W(B)
+`t' (Lynx-like $A%-$B!<$A%^%C%W(B)
+`i' (Info-like $A%-$B!<$A%^%C%W(B)
      $B%+!<%=%k$N>l=j$K$"$kC10l$N2hA|$NI=<($r%H%0%k$G@Z$jBX$($^$9(B
      (`w3m-toggle-inline-image')$B!#(B`transient-mark-mode' $B$,(B on $B$G!"$+$D(B
      $BNN0h$,@_Dj$5$l$F$$$k>l9g$K8B$C$F!"$=$NNN0hFb$K$"$k2hA|$@$1$,(B on $B$K(B
@@ -1096,12 +1096,12 @@ emacs-w3m $B$O%&%'%V%Z!<%8$K$=$l$i$rI=<($9$k$3$H$,$G$-$^$9!#2<5-$N%3%^%s(B
      $B$r%5%]!<%H$7$J$$$J$i$P!"$3$N%-!<$O30It%S%e!<%o$r5/F0$9$k%3%^%s%I(B
      (`w3m-view-image') $B$K%P%$%s%I$5$l$^$9!#(B
 
-`M-S-t' (Lynx-like $B%-!<%^%C%W(B)
-`M-S-i' (Info-like $B%-!<%^%C%W(B)
+`M-S-t' (Lynx-like $A%-$B!<$A%^%C%W(B)
+`M-S-i' (Info-like $A%-$B!<$A%^%C%W(B)
      $B8=:_$N%P%C%U%!$K$"$k$9$Y$F$N%$%s%i%$%s2hA|$NI=<($r<h$j;_$a$^$9!#(B
      (`w3m-turnoff-inline-images')$B!#(B
 
-`I' (Lynx-like $B%-!<%^%C%W(B)
+`I' (Lynx-like $A%-$B!<$A%^%C%W(B)
      $B%]%$%s%H$N2<$K$"$k2hA|$r30It%S%e!<%o$G8+$^$9(B (`w3m-view-image')$B!#(B
 
 `M-i'
@@ -1122,7 +1122,7 @@ emacs-w3m $B$O%&%'%V%Z!<%8$K$=$l$i$rI=<($9$k$3$H$,$G$-$^$9!#2<5-$N%3%^%s(B
 
 File: emacs-w3m-ja.info, Node: Tracing History, Next: Managing Bookmarks, Prev: Inline Images, Up: Basic Usage
 
-$B;~6u$rAL$k(B
+$(GUk$A?U$r$(IJ&$A$k(B
 ==========
 
 Emacs-w3m $B$K$O!"0JA0$KK,Ld$7$?$9$Y$F$N%Z!<%8$N%j%9%H$rDs<($9$k$?$a$N!"(B
@@ -1164,10 +1164,10 @@ Emacs-w3m $B$OC1$K$"$J$?$,K,$l$?%Z!<%8$r5-O?$9$k$@$1$G$J$/!"$"$J$?$,%Z!<%8(B
 $BO?$5$l$^$9!#0JA0$K5-O?$7$?0LCV$X0\F0$9$k$K$O!"$=$N%Z!<%8$r3+$$(B
 $B$?(B emacs-w3m $B$N%P%C%U%!$G(B `C-c C-v' $B$r2!$7$F$/$@$5$$!#(B
 
-`s' (Lynx-like $B%-!<%^%C%W(B)
-`C-u s' (Lynx-like $B%-!<%^%C%W(B)
-`o' (Info-like $B%-!<%^%C%W(B)
-`C-u o' (Info-like $B%-!<%^%C%W(B)
+`s' (Lynx-like $A%-$B!<$A%^%C%W(B)
+`C-u s' (Lynx-like $A%-$B!<$A%^%C%W(B)
+`o' (Info-like $A%-$B!<$A%^%C%W(B)
+`C-u o' (Info-like $A%-$B!<$A%^%C%W(B)
      $B$3$N%;%C%7%g%s$K$*$$$FK,Ld$7$?(B URLs $B$N%j%9%H$rI=<($7$^$9!#@\F,0z?t(B
      $BIU$-$G8F$P$l$k$H(B ($B8e=R(B)$B!"Be$o$j$K(B arrived URLs $B$rI=<($7$^$9(B
      (`w3m-history')$B!#(B
@@ -1219,7 +1219,7 @@ URLs$B!W$G$9!#$3$l$O$"$J$?$,(B emacs-w3m $B$GK,Ld$7$?!":G8e$N(B 500$B8D(B!
 
 File: emacs-w3m-ja.info, Node: Managing Bookmarks, Next: Using Tabs, Prev: Tracing History, Up: Basic Usage
 
-$B$\$/$N(B/$B$o$?$7$N$*5$$KF~$j(B
+$A$\$/$N(B/$A$o$?$7$N$*$B5$$A$KHk$j(B
 =========================
 
 $B8=BeE*$J$"$^$?$N%V%i%&%6$NNc$KO3$l$:!"(Bemacs-w3m $B$K$O@h?J$N%V%C%/%^!<%/(B
@@ -1238,7 +1238,7 @@ File: emacs-w3m-ja.info, Node: Managing Bookmarks, Next: Using Tabs, Prev: Traci
 
 File: emacs-w3m-ja.info, Node: Adding Bookmarks, Next: Consulting Bookmarks, Prev: Managing Bookmarks, Up: Managing Bookmarks
 
-$B$*5$$KF~$j$K(B URL $B$r2C$($k(B
+$A$*$B5$$A$KHk$j$K(B URL $A$r<S$($k(B
 -------------------------
 
 $B%V%C%/%^!<%/$K(B URL $B$r2C$($k$K$O!"$$$/$D$+$N$d$jJ}$,$"$j$^$9!#:G=i$N0l$D(B
@@ -1272,7 +1272,7 @@ File: emacs-w3m-ja.info, Node: Adding Bookmarks, Next: Consulting Bookmarks, Pre
 
 File: emacs-w3m-ja.info, Node: Consulting Bookmarks, Next: Editing Bookmarks, Prev: Adding Bookmarks, Up: Managing Bookmarks
 
-$B%V%C%/%^!<%/$r1\Mw$9$k(B
+$A%V%C%/%^$B!<$A%/$r$(IOURf$A$9$k(B
 ----------------------
 
 $B%V%C%/%^!<%/$5$l$?%Z!<%8$r1\Mw$9$k:G$b4JC1$JJ}K!$O!"(Bemacs-w3m $B$N%P%C%U%!(B
@@ -1293,7 +1293,7 @@ Bookmarks::.
 
 File: emacs-w3m-ja.info, Node: Editing Bookmarks, Prev: Consulting Bookmarks, Up: Managing Bookmarks
 
-$B%V%C%/%^!<%/$rJQ99$9$k$K$O(B?
+$A%V%C%/%^$B!<$A%/$r$(I+y$A8|$9$k$K$O(B?
 ---------------------------
 
 Bookmark $B%^%$%J!<%b!<%I(B (*Note Consulting Bookmarks::) $B$O!"%V%C%/%^!<%/(B
@@ -1322,7 +1322,7 @@ Bookmark $B%^%$%J!<%b!<%I(B (*Note Consulting Bookmarks::) $B$O!"%V%C%/%^!<%/
 
 File: emacs-w3m-ja.info, Node: Using Tabs, Next: Working with buffers, Prev: Managing Bookmarks, Up: Basic Usage
 
-$B$_$s$J%?%V$,9%$-$@$h$M(B
+$A$_$s$J%?%V$,:C$-$@$h$M(B
 ======================
 
 $B$[$H$s$I$NB>$N%F%-%9%H%Y!<%9$N%V%i%&%6!<$H0[$J$j!"(Bemacs-w3m $B$O%?%V$K$h(B
@@ -1398,17 +1398,17 @@ Tabs-Footnotes::)$B!#Nc$($P%Y!<%8$r<h$j9~$s$G$$$k:GCf$O%F%-%9%H$O@V$/$J$C(B
 
 File: emacs-w3m-ja.info  Node: Using Tabs-Footnotes, Up: Using Tabs
 
-(1) XEmacs $B$O$9$Y$F$N%?%V$r$$$D$bF1$8?'$GI=<($7$^$9$,!"A*Br$5$l$?%?%V$H(B
-$BB>$N$b$N$r6hJL$7$?$j!"%b!<%I%i%$%s$G8=:_$N%Z!<%8$N>uBV$rCN$k$3$H$O4JC1(B
-$B$G$9!#(B
+(1) XEmacs $A$O$9$Y$F$N%?%V$r$$$D$bM,$8I+$G1mJ>$7$^$9$,!"$(GrY$(I&1$A$5$l$?%?%V$H(B
+$AK{$N$b$N$rGx$(GI1$A$7$?$j!"%b$B!<$A%I%i%$%s$G$(G\"$ATZ$N%Z$B!<$A%8$NW4$(Ghh$A$rV*$k$3$H$O$(Gv|$(I+J(B
+$A$G$9!#(B
 
-(2) XEmacs $B$G$O:#$N$H$3$m%?%V9T$K(B favicon $B$OI=<($5$l$^$;$s!#(B
+(2) XEmacs $A$G$O=q$N$H$3$m%?%VPP$K(B favicon $A$O1mJ>$5$l$^$;$s!#(B
 
 
 
 File: emacs-w3m-ja.info, Node: Working with buffers, Next: Downloading, Prev: Using Tabs, Up: Basic Usage
 
-$B%P%C%U%!$r:n$k(B/$B>C$9(B/$B0\F0$9$k(B
+$A%P%C%U%!$rWw$k(B/$AO{$9(B/$ARF$(GY/$A$9$k(B
 ============================
 
 $BCY$+$lAa$+$l$"$J$?$O(B emacs-w3m $BCfFG$K$J$C$F!"$9$Y$F$N%&%'%V$N1\Mw$r$=$l(B
@@ -1426,7 +1426,7 @@ File: emacs-w3m-ja.info, Node: Working with buffers, Next: Downloading, Prev: Us
 
 File: emacs-w3m-ja.info, Node: Creating and killing buffers, Next: Moving across buffers, Prev: Working with buffers, Up: Working with buffers
 
-$B%P%C%U%!$r:n$C$?$j>C$7$?$j(B
+$A%P%C%U%!$rWw$C$?$jO{$7$?$j(B
 --------------------------
 
 $B;~$K!"%&%'%V%Z!<%8$r3+$+$J$$$GC1$K?7$7$$%P%C%U%!$r:n$k$3$H$,Lr$KN)$D$3(B
@@ -1455,7 +1455,7 @@ File: emacs-w3m-ja.info, Node: Creating and killing buffers, Next: Moving across
 
 File: emacs-w3m-ja.info, Node: Moving across buffers, Next: Selecting buffers, Prev: Creating and killing buffers, Up: Working with buffers
 
-$B%P%C%U%!4V$N0\F0(B
+$A%P%C%U%!$(Gbf$A$NRF$(GY/(B
 ----------------
 
 $B:G$bIQHK$K;H$&%3%^%s%I$,$?$V$sNY$N%P%C%U%!$K9T$/$b$N$G$"$m$&$3$H$O!"@$4V(B
@@ -1506,22 +1506,22 @@ across buffers-Footnotes::)$B!#(B
 
 File: emacs-w3m-ja.info  Node: Moving across buffers-Footnotes, Up: Moving across buffers
 
-(1) $B$$$D$b$N$h$&$K!"(B`2 C-c C-n' $B$NBe$o$j$K(B `C-u 2 C-c
-C-n' $B$r;H$C$F$bNI$$$N$G$9$,!"(Bemacs-w3m $B$N%P%C%U%!$G$O$9$Y$F$N?t;z%-!<(B
-$B$H%^%$%J%95-9f$,?t$N@\F,0z?t$K3d$jEv$F$i$l$F$$$k$3$H$r3P$($F$*$$$F$/$@(B
-$B$5$$!#(B
+(1) $A$$$D$b$N$h$&$K!"(B`2 C-c C-n' $A$N4z$o$j$K(B `C-u 2 C-c
+C-n' $A$rJ9$C$F$bA<$$$N$G$9$,!"(Bemacs-w3m $A$N%P%C%U%!$G$O$9$Y$F$NJ}WV%-$B!<(B
+$A$H%^%$%J%9$(GX4$A:E$,J}$N=S$(Gs$$AR}J}$K8n$j51$F$i$l$F$$$k$3$H$r$(I>t$A$($F$*$$$F$/$@(B
+$A$5$$!#(B
 
 
 
 File: emacs-w3m-ja.info, Node: Selecting buffers, Prev: Moving across buffers, Up: Working with buffers
 
-$B%j%9%H$+$i%P%C%U%!$rA*$V(B
+$A%j%9%H$+$i%P%C%U%!$r$(GrY$A$V(B
 ------------------------
 
 $B%j%9%H$+$i(B emacs-w3m $B$N%P%C%U%!$rA*$V$?$a$NFs$D$N$d$jJ}$,$"$j$^$9!#0l$D(B
 $BL\$O!"(B`C-c C-a' $B$G8F$S=P$5$l$k%_%K%P%C%U%!!&%Y!<%9$N%$%s%?!<%U%'!<(B
 $B%9$G$9!#I=<($7$?$$%P%C%U%!$r!"(B`M-p' $B$H(B `M-n' $B%-!<(B ($B$^$?(B
-$B$O(B <$B",(B> $B$H(B <$B"-(B> $B%-!<(B) $B$r;H$C$FA*$V$3$H$,$G$-!"$=$l$i$O%j%9%H$NCf(B
+$B$O(B <$A!|(B> $B$H(B <$A!}(B> $B%-!<(B) $B$r;H$C$FA*$V$3$H$,$G$-!"$=$l$i$O%j%9%H$NCf(B
 $B$G=[4D$7$^$9!#$^$?!"%W%m%s%W%H$rJT=8$7$F!"(B`<TAB>' $B$NJd40$r;H$C$F(B
 $B4{B8$N%&%'%V%Z!<%8$N%?%$%H%k$r=q$-9~$`$3$H$b$G$-$^$9!#Nc$($P!"(B"Google
 Search" $B$N%Z!<%8$r3+$$$F$"$k$J$i$P!"(B"Goo" $B$KB3$1$F(B `<TAB>' $B$r(B
@@ -1567,7 +1567,7 @@ Search" $B$N%Z!<%8$r3+$$$F$"$k$J$i$P!"(B"Goo" $B$KB3$1$F(B `<TAB>' $B$r(B
 
 File: emacs-w3m-ja.info, Node: Downloading, Next: Submitting Forms, Prev: Working with buffers, Up: Basic Usage
 
-$B%U%!%$%k$r%@%&%s%m!<%I$9$k(B
+$A%U%!%$%k$r%@%&%s%m$B!<$A%I$9$k(B
 ==========================
 
 $B$I$s$J%&%'%V%Z!<%8$d%U%!%$%k$b(B emacs-w3m $B$G%@%&%s%m!<%I(B ($B$9$J$o$A<hF@!"(B
@@ -1583,13 +1583,13 @@ wget $B$r;H$&$3$H$b9MN8$7$F$_$F$/$@$5$$!#;d$?$A$N$*M'$@$A%W%m%8%'%/%H$G$"(B
 $B$k(B "emacs-wget" $B$rGA$$$F$_$^$7$g$&!#$=$N%[!<%`%Z!<%8$O$3$3(B
 `http://pop-club.hp.infoseek.co.jp/emacs/emacs-wget/' $B$G$9!#(B
 
-`d' (Lynx-like $B%-!<%^%C%W(B)
-`D' (Info-like $B%-!<%^%C%W(B)
+`d' (Lynx-like $A%-$B!<$A%^%C%W(B)
+`D' (Info-like $A%-$B!<$A%^%C%W(B)
      $B%]%$%s%H$N$H$3$m$K$"$k%j%s%/$,;X$7<($9%U%!%$%k$+%Z!<%8$r%@%&%s%m!<(B
      $B%I$7$^$9(B (`w3m-download-this-url')$B!#(B
 
-`M-d' (Lynx-like $B%-!<%^%C%W(B)
-`d' (Info-like $B%-!<%^%C%W(B)
+`M-d' (Lynx-like $A%-$B!<$A%^%C%W(B)
+`d' (Info-like $A%-$B!<$A%^%C%W(B)
      URL $B$NFbMF$r%m!<%+%k%U%!%$%k$K%@%&%s%m!<%I$7$^$9(B (`w3m-download')$B!#(B
      $B$=$N(B URL $B$H%m!<%+%k%U%!%$%k$NL>A0$NF~NO$r5a$a$i$l$^$9!#(B
 
@@ -1597,7 +1597,7 @@ wget $B$r;H$&$3$H$b9MN8$7$F$_$F$/$@$5$$!#;d$?$A$N$*M'$@$A%W%m%8%'%/%H$G$"(B
 
 File: emacs-w3m-ja.info, Node: Submitting Forms, Next: HTML File Information, Prev: Downloading, Up: Basic Usage
 
-HTML $B%U%)!<%`$K5-F~$9$k(B
+HTML $A%U%)$B!<$A%`$K$(GX4$AHk$9$k(B
 =======================
 
 $B$3$l$i$N(B emacs-w3m $B%3%^%s%I$O!"C1=c$J%-!<%P%$%s%I$H@lMQ$N(B Emacs $B$N%&%#(B
@@ -1646,7 +1646,7 @@ textarea $B$GF~NO$7$?%F%-%9%H$r8e$G:FMxMQ$G$-$k$h$&$K!"%P%C%/%"%C%W!&%U%!(B
 
 File: emacs-w3m-ja.info, Node: HTML File Information, Prev: Submitting Forms, Up: Basic Usage
 
-$B%&%'%V%Z!<%8:n$j$H%O%C%/$N$*<jEA$$(B
+$A%&%'%V%Z$B!<$A%8Ww$j$H%O%C%/$N$*JV$(H!s$A$$(B
 ==================================
 
 $B$$$D$b%I%-%e%a%s%H$N<9I.4D6-$H$7$F!"$"$k$$$O%=%U%H%&%'%"$N3+H/4D6-$H$7(B
@@ -1677,12 +1677,12 @@ HTML $B%U%!%$%k$r3+$$$F$$$k(B Emacs $B$N%P%C%U%!$NL>A0$rL@<(E*$K;XDj$7$F%P%C
      $BI=<(Cf$N%&%'%V%Z!<%8$N>pJs$rI=<($7$^$9!#>pJs$K$O!"%?%$%H%k!"(BURL$B!"(B
      $B%I%-%e%a%s%H%?%$%W!":G=*JQ99F|;~$,4^$^$l$^$9(B (`w3m-view-header')$B!#(B
 
-`E' (Lynx-like $B%-!<%^%C%W(B)
-`e' (Info-like $B%-!<%^%C%W(B)
+`E' (Lynx-like $A%-$B!<$A%^%C%W(B)
+`e' (Info-like $A%-$B!<$A%^%C%W(B)
      $B8=:_1\MwCf$N%m!<%+%k%U%!%$%k$rJT=8$7$^$9(B (`w3m-edit-current-url')$B!#(B
 
-`e' (Lynx-like $B%-!<%^%C%W(B)
-`E' (Info-like $B%-!<%^%C%W(B)
+`e' (Lynx-like $A%-$B!<$A%^%C%W(B)
+`E' (Info-like $A%-$B!<$A%^%C%W(B)
      $B8=:_%]%$%s%H$N2<$K$"$k%j%s%/@h$N%m!<%+%k%U%!%$%k$rJT=8$7$^$9(B
      (`w3m-edit-this-url')$B!#(B
 
@@ -1700,7 +1700,7 @@ emacs-w3m $B$rO"7H$5$;$kJ}K!$r(B *Note Tips:: $B$K$F>R2p$7$F$$$k$N$G!";29M$K
 
 File: emacs-w3m-ja.info, Node: Pretty Good Features, Next: Customizable Variables, Prev: Basic Usage, Up: Top
 
-$B$?$/$5$s$N$9$0$l$b$N(B
+$A$?$/$5$s$N$9$0$l$b$N(B
 ********************
 
 * Menu:
@@ -1720,7 +1720,7 @@ File: emacs-w3m-ja.info, Node: Pretty Good Features, Next: Customizable Variable
 
 File: emacs-w3m-ja.info, Node: Using Search Engines, Next: Grouping URLs, Prev: Pretty Good Features, Up: Pretty Good Features
 
-$B;H$$$d$9$$%&%'%V8!:w(B
+$AJ9$$$d$9$$%&%'%V$(I<D$AKw(B
 ====================
 
 Emacs-w3m $B$K$O8!:w%(%s%8%s$rMxMQ$9$k$?$a$N@h?J$N5!G=$,$"$j!";0$D$N%$%s(B
@@ -1753,7 +1753,7 @@ Emacs-w3m $B$K$O8!:w%(%s%8%s$rMxMQ$9$k$?$a$N@h?J$N5!G=$,$"$j!";0$D$N%$%s(B
 
 File: emacs-w3m-ja.info, Node: The Search Interface, Next: Quick Searching, Prev: Using Search Engines, Up: Using Search Engines
 
-Emacs-w3m $B$K$h$k8!:w$N$d$jJ}(B
+Emacs-w3m $A$K$h$k$(I<D$AKw$N$d$j7=(B
 ----------------------------
 
 Emacs-w3m $B$N%P%C%U%!$G(B `S' $B%-!<(B (`Info-like' $B%-!<%^%C%W$N>l9g$O(B `s'
@@ -1778,8 +1778,8 @@ Variables:: $B;2>H(B) $B$r%+%9%?%^%$%:$9$k$3$H$K$h$C$F!"$3$N?6$kIq$$$rJQ99$9
 $BBr$7$?$i(B `<RET>' $B%-!<$rC!$$$F$/$@$5$$!#$=$N8e$G8!:w8l$rF~NO$9$k(B
 $B$3$H$,$G$-!"(B`<RET>' $B$r%?%$%W$9$l$P8!:w7k2L$,8=$l$k$G$7$g$&!#(B
 
-`S' (Lynx-like $B%-!<%^%C%W(B)
-`s' (Info-like $B%-!<%^%C%W(B)
+`S' (Lynx-like $A%-$B!<$A%^%C%W(B)
+`s' (Info-like $A%-$B!<$A%^%C%W(B)
      $B?7$7$$8!:w$r;O$a$^$9!#@\F,0z?tIU$-$G8F$P$l$?>l9g$O!"$I$N%(%s%8%s$r(B
      $B;H$&$+$r?R$M$^$9(B (`w3m-search')$B!#(B
 
@@ -1787,7 +1787,7 @@ Variables:: $B;2>H(B) $B$r%+%9%?%^%$%:$9$k$3$H$K$h$C$F!"$3$N?6$kIq$$$rJQ99$9
 
 File: emacs-w3m-ja.info, Node: Quick Searching, Next: Adding New Search Engines, Prev: The Search Interface, Up: Using Search Engines
 
-$B$b$&0l$D$N(B ($B$=$7$FB.$$(B) $B%&%'%V8!:w(B
+$A$b$&R;$D$N(B ($A$=$7$FKY$$(B) $A%&%'%V$(I<D$AKw(B
 ----------------------------------
 
 $B%&%'%V!&%Q%o!<%f!<%6(B ($B$3$l$rFI$s$G$$$k$"$J$?(B) $B$K$O!"?WB.$G8zN(E*$J8!:w(B
@@ -1836,7 +1836,7 @@ Search Engines:: $B$r;2>H$7$F$/$@$5$$!#(B
 
 File: emacs-w3m-ja.info, Node: Adding New Search Engines, Prev: Quick Searching, Up: Using Search Engines
 
-$B$*5$$KF~$j$N%(%s%8%s$r;H$&$K$O(B?
+$A$*$B5$$A$KHk$j$N%(%s%8%s$rJ9$&$K$O(B?
 -------------------------------
 
 Emacs-w3m $B$OMxMQ2DG=$JB?$/$N8!:w%(%s%8%s$r;}$C$F$$$^$9!#$"$J$?$N$*5$$K(B
@@ -1892,7 +1892,7 @@ Emacs-w3m $B$OMxMQ2DG=$JB?$/$N8!:w%(%s%8%s$r;}$C$F$$$^$9!#$"$J$?$N$*5$$K(B
 
 File: emacs-w3m-ja.info, Node: Grouping URLs, Next: Weather Information, Prev: Using Search Engines, Up: Pretty Good Features
 
-$B0l$D$N(B URL $B$GJ#?t$N%&%'%V%Z!<%8$r8+$k(B
+$AR;$D$N(B URL $A$G$(Gno$AJ}$N%&%'%V%Z$B!<$A%8$r$(GKD$A$k(B
 =====================================
 
 Emacs-w3m $B$O(B "group URLs" $B$H$$$&!"J#?t$N<B:]$N(B URL $B$r0l$D$K$^$H$a$?FCJL(B
@@ -1917,7 +1917,7 @@ emacs-w3m $B$O0lEY$KJ#?t$N%Z!<%8$r3+$/$?$a$K!"$=$N%0%k!<%W$K4^$^$l$k$=$l(B
 
 File: emacs-w3m-ja.info, Node: Weather Information, Next: Using Antenna, Prev: Grouping URLs, Up: Pretty Good Features
 
-$BL@F|$NE75$$O@2$l$G$7$g$&(B
+$ACwHU$NLl$B5$$A$OGg$l$G$7$g$&(B
 ========================
 
 
@@ -1925,7 +1925,7 @@ File: emacs-w3m-ja.info, Node: Weather Information, Next: Using Antenna, Prev: G
 
 File: emacs-w3m-ja.info, Node: Using Antenna, Next: Showing Directory Tree, Prev: Weather Information, Up: Pretty Good Features
 
-$B%"%s%F%J$rD%$j=d$i$=$&(B
+$A%"%s%F%J$r$(GZ/$A$jQ2$i$=$&(B
 ======================
 
 $B%"%s%F%J$O%&%'%V%Z!<%8$NJQ2=$rDI@W$9$k$?$a$NF;6q$G$9!#%"%s%F%J$r;H$&$H!"(B
@@ -1945,7 +1945,7 @@ File: emacs-w3m-ja.info, Node: Using Antenna, Next: Showing Directory Tree, Prev
 
 File: emacs-w3m-ja.info, Node: Setting up Antenna, Next: Daily web tracking, Prev: Using Antenna, Up: Using Antenna
 
-$B%&%'%V%5%$%H$r%"%s%F%J$K2C$($k$K$O(B?
+$A%&%'%V%5%$%H$r%"%s%F%J$K<S$($k$K$O(B?
 -----------------------------------
 
 $B8=$KI=<(Cf$N%&%'%V%Z!<%8$r%"%s%F%J$K2C$($k$K$O!"C1=c$K(B `+' $B%-!<$r2!$7$F(B
@@ -1963,7 +1963,7 @@ File: emacs-w3m-ja.info, Node: Setting up Antenna, Next: Daily web tracking, Pre
 
 File: emacs-w3m-ja.info, Node: Daily web tracking, Prev: Setting up Antenna, Up: Using Antenna
 
-$B%"%s%F%J$GJQ2=$rDI@W$9$k(B
+$A%"%s%F%J$G$(I+y$A;/$rW7$(Gfx$A$9$k(B
 ------------------------
 
 $B%"%s%F%J!&%Z!<%8$K$OFs$D$N9`L\$,8=$l$^$9!#0l$D$O(B "Updated" $B$H8F$P$l!"$b(B
@@ -2001,7 +2001,7 @@ File: emacs-w3m-ja.info, Node: Daily web tracking, Prev: Setting up Antenna, Up:
 
 File: emacs-w3m-ja.info, Node: Showing Directory Tree, Next: Viewing Perl Documents, Prev: Using Antenna, Up: Pretty Good Features
 
-$B%G%#%l%/%H%j$NLZ9=B$$rI=<($9$k(B
+$A%G%#%l%/%H%j$ND>$(Gi,$ATl$r1mJ>$9$k(B
 ==============================
 
 `w3m-dtree' $B%3%^%s%I$r;H$&$H!"%m!<%+%k%G%#%l%/%H%j$N$9$Y$F$N%5%V%G%#%l(B
@@ -2045,8 +2045,8 @@ Emacs-w3m dtree $B$,$I$s$J$U$&$KF0:n$9$k$+$NNc$G$9(B:
       |-(f)README
       |-(f)README.ja
 
-`D' (Lynx-like $B%-!<%^%C%W(B)
-`T' (Info-like $B%-!<%^%C%W(B)
+`D' (Lynx-like $A%-$B!<$A%^%C%W(B)
+`T' (Info-like $A%-$B!<$A%^%C%W(B)
      $B%_%K%P%C%U%!$G%m!<%+%k%G%#%l%/%H%j$NF~NO$r5a$a!"$=$NLZ9=B$$rI=<($7$^$9!#(B
      $B@\F,0z?tIU$-$G8F$P$l$k$H(B ($BNc(B: `C-u D'$B!"$?$@(B
      $B$7(B `Info-like' $B%-!<%^%C%W$N>l9g$O(B `C-u T')$B!"$=$N%G%#%l%/%H(B
@@ -2056,7 +2056,7 @@ Emacs-w3m dtree $B$,$I$s$J$U$&$KF0:n$9$k$+$NNc$G$9(B:
 
 File: emacs-w3m-ja.info, Node: Viewing Perl Documents, Next: Using Namazu, Prev: Showing Directory Tree, Up: Pretty Good Features
 
-Perl $B$N%I%-%e%a%s%H$r8+$k(B
+Perl $A$N%I%-%e%a%s%H$r$(GKD$A$k(B
 =========================
 
 
@@ -2064,7 +2064,7 @@ Perl $B$N%I%-%e%a%s%H$r8+$k(B
 
 File: emacs-w3m-ja.info, Node: Using Namazu, Next: Octet, Prev: Viewing Perl Documents, Up: Pretty Good Features
 
-Namazu $B$G%U%!%$%k$r8!:w$9$k(B
+Namazu $A$G%U%!%$%k$r$(I<D$AKw$9$k(B
 ===========================
 
 emacs-w3m $B$O!"A4J88!:w%=%U%H(B Namazu $B$r;H$C$F%U%!%$%k$r8!:w$9$k$3$H$b$G(B
@@ -2113,7 +2113,7 @@ Namazu $B$r;H$&$?$a$K$O!"<B:]$K8!:w$r9T$&A0$K!"8!:wBP>]$H$J$k%U%!%$%k$K4^(B
 
 File: emacs-w3m-ja.info, Node: Octet, Next: Frame Local Buffers, Prev: Using Namazu, Up: Pretty Good Features
 
-application/octet-stream $B%G!<%?$r8+$k(B
+application/octet-stream $A%G$B!<$A%?$r$(GKD$A$k(B
 =====================================
 
 ($B:n@.Cf(B)
@@ -2128,7 +2128,7 @@ application/octet-stream $B%G!<%?$r8+$k(B
 
 File: emacs-w3m-ja.info, Node: Frame Local Buffers, Next: Session Manager, Prev: Octet, Up: Pretty Good Features
 
-$BB??t$N%;%C%7%g%s$r%U%l!<%`$G%0%k!<%WJ,$1$9$k(B
+$A6`J}$N%;%C%7%g%s$r%U%l$B!<$A%`$G%0%k$B!<$A%W7V$1$9$k(B
 ============================================
 
 $BB??t$N(B emacs-w3m $B$N%;%C%7%g%s$r%0%k!<%WKh$KJL!9$N%U%l!<%`$KJ,3d$9$k$3$H(B
@@ -2160,7 +2160,7 @@ Emacs-w3m $B$O$?$/$5$s$N%Z!<%8$rF1;~$K8+$k$?$a$N$$$/$D$+$N5!G=$rDs6!$7$^(B
 
 File: emacs-w3m-ja.info, Node: Session Manager, Prev: Frame Local Buffers, Up: Pretty Good Features
 
-$B%;%C%7%g%s$NJ]B8$HFI$_$3$_(B
+$A%;%C%7%g%s$N1#4f$H$BFI$A$_$3$_(B
 ==========================
 
 emacs-w3m $B$G$O%;%C%7%g%sAH$rJ]B8$7$?$jFI$_$3$s$@$j$9$k$3$H$,$G$-$^$9!#(B
@@ -2226,7 +2226,7 @@ emacs-w3m $B=*N;;~$K3+$$$F$$$?$9$Y$F$N%;%C%7%g%s$r<+F0E*$KJ]B8$7$^$9!#(B
 
 File: emacs-w3m-ja.info, Node: Customizable Variables, Next: Hooking into MUAs, Prev: Pretty Good Features, Up: Top
 
-$B%G%U%)%k%H$N$^$^$G$b7k9=NI$$$H;W$&$1$l$I(B
+$A%G%U%)%k%H$N$^$^$G$b$(Ga8i,$AA<$$$HK<$&$1$l$I(B
 ****************************************
 
 $B$?$/$5$s$N(B emacs-w3m $B$NJQ?t$,!"(BCustom $B$N;E3]$1$K$h$C$F%+%9%?%^%$%:$9$k$3(B
@@ -2286,7 +2286,7 @@ emacs-w3m $B=i4|@_Dj%U%!%$%k$K=q$-9~$`$3$H$,$G$-$^$9!#%G%U%)%k%H$N%U%!%$(B
 
 File: emacs-w3m-ja.info, Node: General Variables, Next: Image Variables, Prev: Customizable Variables, Up: Customizable Variables
 
-$B0lHLE*$JJQ?t(B
+$AR;0c5D$J$(I+y$AJ}(B
 ============
 
 `w3m-accept-languages'
@@ -2390,8 +2390,8 @@ File: emacs-w3m-ja.info, Node: General Variables, Next: Image Variables, Prev: C
 
 `w3m-confirm-leaving-secure-page'
      non-`nil' $B$J$i$P!"%;%-%e%"$J%Z!<%8$r5n$k;~$K(B emacs-w3m $B$O3NG'$r5a(B
-     $B$a$^$9!#$3$NJQ?t$K$O(B non-nil $B$NCM$r(B *$B6/$/(B* $B$*$9$9$a$7$^$9!#$3$N%*(B
-     $B%W%7%g%s$r@Z$kA0$K(B *$BI,$:(B* $B$I$&$$$&$3$H$r$7$?$$$N$+$r40A4$KM}2r$7$F(B
+     $B$a$^$9!#$3$NJQ?t$K$O(B non-nil $B$NCM$r(B *$(GZ0$A$/(B* $B$*$9$9$a$7$^$9!#$3$N%*(B
+     $B%W%7%g%s$r@Z$kA0$K(B *$A1X$:(B* $B$I$&$$$&$3$H$r$7$?$$$N$+$r40A4$KM}2r$7$F(B
      $B$/$@$5$$!#%G%U%)%k%H$G$O!"(B`t' $B$K$J$C$F$$$^$9!#(B
 
 `w3m-content-type-alist'
@@ -2413,7 +2413,7 @@ File: emacs-w3m-ja.info, Node: General Variables, Next: Image Variables, Prev: C
                $B1\Mw$9$k(B URL $B$H$KCV49$($i$l$k!#(B
             c. `nil' $B$J$i$P!"(BURL $B$r%m!<%+%k$N%U%!%$%k$K%@%&%s%m!<%I$7$^$9!#(B
 
-       4. `1. $B%3%s%F%s%H%?%$%W(B' $B$G;XDj$5$l$?$b$N$r>e=q$-$9$k%3%s%F%s%H(B
+       4. `1. $A%3%s%F%s%H%?%$%W(B' $B$G;XDj$5$l$?$b$N$r>e=q$-$9$k%3%s%F%s%H(B
           $B%?%$%W!#0J2<$NCM$bM-8z$G$9!#(B
 
             a. URL $B$H(B CONTENT-TYPE $B$H(B CHARSET $B$N(B 3$B$D$N0z?t$r$H$j!"%3%s(B
@@ -2602,9 +2602,6 @@ File: emacs-w3m-ja.info, Node: General Variables, Next: Image Variables, Prev: C
 
           (setq w3m-local-find-file-regexps
                 '(nil . "\\.\\(?:[sx]?html?\\|dvi\\|ps\\|pdf\\)\\'"))
-
-     See also `w3m-use-doc-view-mode', which you will need to modify
-     for such a case.
 
      It is effective only when the `w3m-local-find-file-function'
      variable is set properly.
@@ -2913,11 +2910,15 @@ File: emacs-w3m-ja.info, Node: General Variables, Next: Image Variables, Prev: C
      Say whether not to focus on a new tab or a new session in target.
      It influences only when a new emacs-w3m buffer is created.
 
+`w3m-do-cleanup-temp-files'
+     $BHs(B`nil' $B$J$i$P!"(B emacs-w3m $B$O<+F0E*$K:o=|$7$=$3$J$C$?0l;~%U%!%$%k(B
+     $B$r:o=|$7$^$9!#(B $B%G%U%)%k%H$O(B `nil' $B$G$9!#(B
+
 
 
 File: emacs-w3m-ja.info, Node: Image Variables, Next: Form Variables, Prev: General Variables, Up: Customizable Variables
 
-$B2hA|$K4XO"$7$?JQ?t(B
+$A;-Oq$K$(IJ=$(G]Y$A$7$?$(I+y$AJ}(B
 ==================
 
 `w3m-default-display-inline-images'
@@ -3026,7 +3027,7 @@ File: emacs-w3m-ja.info, Node: Image Variables, Next: Form Variables, Prev: Gene
 
 File: emacs-w3m-ja.info, Node: Form Variables, Next: Cookie Variables, Prev: Image Variables, Up: Customizable Variables
 
-$B%U%)!<%`$K4XO"$7$?JQ?t(B
+$A%U%)$B!<$A%`$K$(IJ=$(G]Y$A$7$?$(I+y$AJ}(B
 ======================
 
 `w3m-form-input-map-buffer-lines'
@@ -3057,7 +3058,7 @@ File: emacs-w3m-ja.info, Node: Form Variables, Next: Cookie Variables, Prev: Ima
 
 File: emacs-w3m-ja.info, Node: Cookie Variables, Next: Bookmark Variables, Prev: Form Variables, Up: Customizable Variables
 
-$B%/%C%-!<$K4XO"$7$?JQ?t(B
+$A%/%C%-$B!<$A$K$(IJ=$(G]Y$A$7$?$(I+y$AJ}(B
 ======================
 
 `w3m-cookie-accept-bad-cookies'
@@ -3081,7 +3082,7 @@ File: emacs-w3m-ja.info, Node: Cookie Variables, Next: Bookmark Variables, Prev:
 
 File: emacs-w3m-ja.info, Node: Bookmark Variables, Next: Search Variables, Prev: Cookie Variables, Up: Customizable Variables
 
-$B%V%C%/%^!<%/$K4XO"$7$?JQ?t(B
+$A%V%C%/%^$B!<$A%/$K$(IJ=$(G]Y$A$7$?$(I+y$AJ}(B
 ==========================
 
 `w3m-bookmark-file'
@@ -3105,7 +3106,7 @@ File: emacs-w3m-ja.info, Node: Bookmark Variables, Next: Search Variables, Prev:
 
 File: emacs-w3m-ja.info, Node: Search Variables, Next: Weather Variables, Prev: Bookmark Variables, Up: Customizable Variables
 
-$B%&%'%V8!:w$K4XO"$7$?JQ?t(B
+$A%&%'%V$(I<D$AKw$K$(IJ=$(G]Y$A$7$?$(I+y$AJ}(B
 ========================
 
 `w3m-search-default-engine'
@@ -3126,11 +3127,15 @@ File: emacs-w3m-ja.info, Node: Search Variables, Next: Weather Variables, Prev: 
      string.  If `transient-mark-mode', this option is ignored and the
      region is used as an initial string.  The default is `t'.
 
+`w3m-search-thing-at-point-arg'
+     `w3m-search-read-query' $B$G;H$o$l$k(B `thing-at-point' $B$X$N0z?t!#%G%U%)(B
+     $B%k%H$O(B `word'.
+
 
 
 File: emacs-w3m-ja.info, Node: Weather Variables, Next: Dtree Variables, Prev: Search Variables, Up: Customizable Variables
 
-$BE75$M=Js$K4XO"$7$?JQ?t(B
+$ALl$B5$$ASh$(G^^$A$K$(IJ=$(G]Y$A$7$?$(I+y$AJ}(B
 ======================
 
 `w3m-weather-default-area'
@@ -3148,7 +3153,7 @@ File: emacs-w3m-ja.info, Node: Weather Variables, Next: Dtree Variables, Prev: S
 
 File: emacs-w3m-ja.info, Node: Dtree Variables, Next: Antenna Variables, Prev: Weather Variables, Up: Customizable Variables
 
-dtree $B$K4XO"$7$?JQ?t(B
+dtree $A$K$(IJ=$(G]Y$A$7$?$(I+y$AJ}(B
 ====================
 
 `w3m-dtree-default-allfiles'
@@ -3175,7 +3180,7 @@ dtree $B$K4XO"$7$?JQ?t(B
 
 File: emacs-w3m-ja.info, Node: Antenna Variables, Next: Perldoc Variables, Prev: Dtree Variables, Up: Customizable Variables
 
-$B%"%s%F%J$K4XO"$7$?JQ?t(B
+$A%"%s%F%J$K$(IJ=$(G]Y$A$7$?$(I+y$AJ}(B
 ======================
 
 `w3m-antenna-file'
@@ -3209,7 +3214,7 @@ File: emacs-w3m-ja.info, Node: Antenna Variables, Next: Perldoc Variables, Prev:
 
 File: emacs-w3m-ja.info, Node: Perldoc Variables, Next: Namazu Variables, Prev: Antenna Variables, Up: Customizable Variables
 
-Perldoc $B$K4XO"$7$?JQ?t(B
+Perldoc $A$K$(IJ=$(G]Y$A$7$?$(I+y$AJ}(B
 ======================
 
 `w3m-perldoc-command'
@@ -3238,7 +3243,7 @@ Perldoc $B$K4XO"$7$?JQ?t(B
 
 File: emacs-w3m-ja.info, Node: Namazu Variables, Next: Octet Variables, Prev: Perldoc Variables, Up: Customizable Variables
 
-Namazu $B$K4XO"$7$?JQ?t(B
+Namazu $A$K$(IJ=$(G]Y$A$7$?$(I+y$AJ}(B
 =====================
 
 `w3m-namazu-command'
@@ -3281,7 +3286,7 @@ Namazu $B$K4XO"$7$?JQ?t(B
 
 File: emacs-w3m-ja.info, Node: Octet Variables, Next: Session Manager Variables, Prev: Namazu Variables, Up: Customizable Variables
 
-Octet $B$K4XO"$7$?JQ?t(B
+Octet $A$K$(IJ=$(G]Y$A$7$?$(I+y$AJ}(B
 ====================
 
 There is no user option for the moment.
@@ -3291,7 +3296,7 @@ There is no user option for the moment.
 
 File: emacs-w3m-ja.info, Node: Session Manager Variables, Next: Hooks, Prev: Octet Variables, Up: Customizable Variables
 
-$B%;%C%7%g%s%^%M!<%8%c$K4XO"$7$?JQ?t(B
+$A%;%C%7%g%s%^%M$B!<$A%8%c$K$(IJ=$(G]Y$A$7$?$(I+y$AJ}(B
 ==================================
 
 `w3m-session-file'
@@ -3322,7 +3327,7 @@ File: emacs-w3m-ja.info, Node: Session Manager Variables, Next: Hooks, Prev: Oct
 
 File: emacs-w3m-ja.info, Node: Hooks, Next: Other Variables, Prev: Session Manager Variables, Up: Customizable Variables
 
-$B%U%C%/(B
+$A%U%C%/(B
 ======
 
 `w3m-after-cursor-move-hook'
@@ -3381,7 +3386,7 @@ File: emacs-w3m-ja.info, Node: Hooks, Next: Other Variables, Prev: Session Manag
 
 File: emacs-w3m-ja.info, Node: Other Variables, Prev: Hooks, Up: Customizable Variables
 
-$B$=$NB>$NJQ?t(B
+$A$=$NK{$N$(I+y$AJ}(B
 ============
 
 `w3m-async-exec'
@@ -3441,7 +3446,7 @@ File: emacs-w3m-ja.info, Node: Other Variables, Prev: Hooks, Up: Customizable Va
 
 File: emacs-w3m-ja.info, Node: Hooking into MUAs, Next: Frequently Asked Questions, Prev: Customizable Variables, Up: Top
 
-$B%a!<%k(B/$B%K%e!<%9%j!<%@!<$G;H$&(B
+$A%a$B!<$A%k(B/$A%K%e$B!<$A%9%j$B!<$A%@$B!<$A$GJ9$&(B
 *****************************
 
 $B$3$3$G$O;0<oN`$N(B MUA (Message User Agent) $B$r>R2p$7$^$9!#$=$l$i$N(B MUA $B$O(B
@@ -3467,7 +3472,7 @@ File: emacs-w3m-ja.info, Node: Hooking into MUAs, Next: Frequently Asked Questio
 
 File: emacs-w3m-ja.info, Node: Gnus, Next: Mew, Prev: Hooking into MUAs, Up: Hooking into MUAs
 
-Gnus $B$G(B HTML $B%a!<%k$rFI$`(B
+Gnus $A$G(B HTML $A%a$B!<$A%k$r$BFI$A$`(B
 =========================
 
 Gnus (Emacs $B$N%K%e!<%:%j!<%@!<(B) $B$,(B emacs-w3m $B$r%5%]!<%H$7$F$$$k$C$F!"CN$C(B
@@ -3571,7 +3576,7 @@ Gnus $B$O(B emacs-w3m $B$r%5%]!<%H$9$k$s$G$9!#$b$7$"$J$?$N(B Emacs $B$,$$$/
 
 File: emacs-w3m-ja.info, Node: Mew, Next: SEMI MUAs, Prev: Gnus, Up: Hooking into MUAs
 
-Mew $B$G(B HTML $B%a!<%k$rFI$`(B
+Mew $A$G(B HTML $A%a$B!<$A%k$r$BFI$A$`(B
 ========================
 
 Emacs-w3m $B$r;H$&$3$H$K$h$C$F!"(BText/Html $B$r(B Message $B%b!<%I$KI=<($G$-$k$h(B
@@ -3630,7 +3635,7 @@ Mew $B$K4XO"$9$k$$$/$D$+$N%+%9%?%^%$%:2DG=$JJQ?t$,$"$j$^$9(B:
 
 File: emacs-w3m-ja.info, Node: SEMI MUAs, Next: VM, Prev: Mew, Up: Hooking into MUAs
 
-SEMI MUA $B$G(B HTML $B%a!<%k$rFI$`(B
+SEMI MUA $A$G(B HTML $A%a$B!<$A%k$r$BFI$A$`(B
 =============================
 
 Emacs-w3m $B$H(B SEMI MUA$B!"Nc$($P(B Wanderlust $B$r;H$&$3$H$K$h$C$F!"(BHTML $B%a!<(B
@@ -3695,19 +3700,19 @@ emacs-w3m $B$N$HF1$8<gMW$J%-!<$r;H$&$3$H$,$G$-$^$9!#Nc$($P(B `<RET>' $B$O!"8=
 
 File: emacs-w3m-ja.info, Node: VM, Prev: SEMI MUAs, Up: Hooking into MUAs
 
-VM (vieW maiL) $B$O(B Wanderlust $B$K$"$i$:(B
+VM (vieW maiL) $A$O(B Wanderlust $A$K$"$i$:(B
 =====================================
 
 VM $B$G(B html $B%a!<%k$rI=<($9$k5!G=$rDs6!$9$k(B vm-w3m.el $B%b%8%e!<%k$H%Q%C%A(B
 $B$O(B VM $B$N?7$7$$%a%$%s%F%$%J!<$K0z$-7Q$,$l$^$7$?$,!"$^$@(B VM $B$N0BDjHG$K8=(B
-$B$l$F$$$^$;$s!#(BVM $B%[!<%`%Z!<%8(B (http://www.nongnu.org/viewmail/) $B$rK,$M(B
+$B$l$F$$$^$;$s!#(BVM $A%[$B!<$A%`%Z$B!<$A%8(B (http://www.nongnu.org/viewmail/) $B$rK,$M(B
 $B$F$_$F$/$@$5$$!#(B
 
 
 
 File: emacs-w3m-ja.info, Node: Frequently Asked Questions, Next: Known Problems, Prev: Hooking into MUAs, Up: Top
 
-$BI,$:Ez$,$"$k$H$O8B$i$J$$(B
+$A1X$:4p$,$"$k$H$OO^$i$J$$(B
 ************************
 
 * Menu:
@@ -3720,7 +3725,7 @@ File: emacs-w3m-ja.info, Node: Frequently Asked Questions, Next: Known Problems,
 
 File: emacs-w3m-ja.info, Node: General FAQ, Next: Trouble FAQ, Prev: Frequently Asked Questions, Up: Frequently Asked Questions
 
-$B0lHLE*$J<ALd(B
+$AR;0c5D$J$(Go3YB(B
 ============
 
    * Q. emacs-w3m $B$C$F2?$G$9$+(B?
@@ -3776,7 +3781,7 @@ File: emacs-w3m-ja.info, Node: General FAQ, Next: Trouble FAQ, Prev: Frequently 
 
 File: emacs-w3m-ja.info, Node: Trouble FAQ, Next: Shimbun FAQ, Prev: General FAQ, Up: Frequently Asked Questions
 
-$B%H%i%V%k(B
+$A%H%i%V%k(B
 ========
 
    * Q. $BG'>Z$NI,MW$J%Z!<%8$N%Q%9%o!<%I$,F~NO$G$-$^$;$s!#(B
@@ -4011,7 +4016,7 @@ File: emacs-w3m-ja.info  Node: Trouble FAQ-Footnotes, Up: Trouble FAQ
 
 File: emacs-w3m-ja.info, Node: Shimbun FAQ, Prev: Trouble FAQ, Up: Frequently Asked Questions
 
-Shimbun $B$K4X$9$k<ALd(B
+Shimbun $A$K$(IJ=$A$9$k$(Go3YB(B
 ====================
 
    * Q. $B$J$<(B `shimbun' $B%b%8%e!<%k$,%$%s%9%H!<%k$5$l$J$$$N$G$9$+(B?
@@ -4032,7 +4037,7 @@ Shimbun $B$K4X$9$k<ALd(B
 
 File: emacs-w3m-ja.info, Node: Known Problems, Next: Shimbun Library, Prev: Frequently Asked Questions, Up: Top
 
-$B$"$J$?$J$i$-$C$H2r7h$G$-$k(B
+$A$"$J$?$J$i$-$C$H=b$(GJn$A$G$-$k(B
 **************************
 
 
@@ -4040,7 +4045,7 @@ File: emacs-w3m-ja.info, Node: Known Problems, Next: Shimbun Library, Prev: Freq
 
 File: emacs-w3m-ja.info, Node: Shimbun Library, Next: Tips, Prev: Known Problems, Up: Top
 
-$B%&%'%V>e$N?7J9$rFI$`$?$a$NF;6q(B
+$A%&%'%VIO$NPB$(GjL$A$r$BFI$A$`$?$a$N5@>_(B
 ******************************
 
 $B%&%'%V$G$O!"$^$9$^$9B?$/$N?7J9!"%a!<%j%s%0%j%9%H$N%"!<%+%$%V!"7G<(HD!"(B
@@ -4099,7 +4104,7 @@ APEL $B%Q%C%1!<%8$,I,MW$G$9!#$"$J$?$O(B *Note Other Requirements:: $B$b8+$k$Y
 
 File: emacs-w3m-ja.info, Node: Nnshimbun, Next: Mew Shimbun, Prev: Shimbun Library, Up: Shimbun Library
 
-Gnus $B$r%&%'%V%V%i%&%6$K$9$k(B!
+Gnus $A$r%&%'%V%V%i%&%6$K$9$k(B!
 ============================
 
 `Nnshimbun' $B$O(B Gnus $B$N%P%C%/%(%s%I$G$9!#$7$+$7$J$,$i!"Nc30E*$K(B Gnus $B$G(B
@@ -4133,7 +4138,7 @@ emacs-w3m $B$r;H$o$J$1$l$P$$$1$J$$$3$H$KCm0U$7$F$/$@$5$$!#(B
 $B$9$k$H!"(B`M-x gnus-group-make-shimbun-group' $B$NBe$o$j(B
 $B$K(B `G n' $B$r;H$&$3$H$,$G$-$^$9!#(B
 
-*$BC/$+$3$N%-!<$r(B Gnus $B%?%o!<$KM=Ls$7$F$/$l$^$;$s$+(B?*
+*$(Go!$A$+$3$N%-$B!<$A$r(B Gnus $A%?%o$B!<$A$KSh$(GR|$A$7$F$/$l$^$;$s$+(B?*
 
 
 $B$3$NB>$K!"(B`gnus-group-make-shimbun-groups' $B%3%^%s%I$r;H$C$F!";XDj$7$?%5!<(B
@@ -4153,7 +4158,7 @@ emacs-w3m $B$r;H$o$J$1$l$P$$$1$J$$$3$H$KCm0U$7$F$/$@$5$$!#(B
      Article Backlog: (gnus)Article Backlog.) $B$r>e=q$-$7$^$9!#$b$7(B
      `nnshimbun-keep-backlog' $B$r?t;z(B N $B$K@_Dj$9$k$H!"(B`nnshimbun' $B$O:GBg(B
      $B$G(B N $B$N8E$$5-;v$r8e$N:F<hF@$N$?$a$K%P%C%U%!$KN/$a$F$*$-$^$9!#$3$N(B
-     $BJQ?t$,(B `nil' $B$G$O$J$/!"?t;z$G$b$J$$>l9g!"(B`nnshimbun' $B$O(B *$B$9$Y$F(B*
+     $BJQ?t$,(B `nil' $B$G$O$J$/!"?t;z$G$b$J$$>l9g!"(B`nnshimbun' $B$O(B *$A$9$Y$F(B*
      $B$N4{FI5-;v$rC_$($^$9(B ($B$3$l$ONI$$9M$($G$O$"$j$^$;$s(B)$B!#%G%U%)%k%HCM(B
      $B$O(B 300 $B$G$9!#(B
 
@@ -4338,38 +4343,38 @@ Nnshimbun-Footnotes::) $B$K2C$($F!"(B`nnshimbun' $B@lMQ$K@_$1$i$l$?%0%k!<(B
 
 File: emacs-w3m-ja.info  Node: Nnshimbun-Footnotes, Up: Nnshimbun
 
-(1) $B%0%k!<%W%Q%i%a!<%?$r@_Dj$9$k$?$a$N:G$b<j7Z$JJ}K!$O!"%0%k!<%W%P%C%U%!(B
-$B$G!"@_Dj$7$?$$%0%k!<%W$N>l=j$K0\F0$7$F$+$i(B `G c' $B$r%?%$%W$9$k$3(B
-$B$H$G$9(B (*Note Group Parameters: (gnus)Group Parameters.)$B!#(B
+(1) $A%0%k$B!<$A%W%Q%i%a$B!<$A%?$r$(G]C$A6($9$k$?$a$NWn$bJV$(I?I$A$J7=7($O!"%0%k$B!<$A%W%P%C%U%!(B
+$A$G!"$(G]C$A6($7$?$$%0%k$B!<$A%W$N$(G^[$AKy$KRF$(GY/$A$7$F$+$i(B `G c' $A$r%?%$%W$9$k$3(B
+$A$H$G$9(B (*Note Group Parameters: (gnus)Group Parameters.)$A!#(B
 
-(2) `Nnshimbun' $B%0%k!<%W$G<+F04|8B@Z$l>C5n$r9T$J$&J}K!$O<g$KFs$D$"(B
-$B$j$^$9!#0l$D$O%0%k!<%WL>$N@55,I=8=(B ("^nnshimbun\\+" $B$G;O$^$i$J$1$l$P$J(B
-$B$j$^$;$s(B) $B$rJQ?t(B `gnus-auto-expirable-newsgroups' $B$KDI2C$7$F!">C5n(B
-$B$9$k$^$G$NF|?t$r3F%0%k!<%WKh$K(B `nnmail-expiry-wait-function' $B$G;X(B
-$BDj$9$k$3$H$G$9!#$b$&0l$D$O!"<+F04|8B@Z$l>C5n$r9T$J$o$;$?$$$?$$$9$Y$F$N(B
-`nnshimbun' $B%0%k!<%W$G!"%0%k!<%W%Q%i%a!<%?(B `auto-expire' $B$r(B
-`t' $B$K@_Dj$7$F!"%0%k!<%W%Q%i%a!<%?(B `expiry-wait' $B$G>C5n$9$k$^(B
-$B$G$N4|8B$r;XDj$9$k$d$jJ}$G$9!#>\$7$$$3$H$O(B *Note $B%a!<%k(B $B$N4|8B@Z$l>C5n(B: (gnus-ja)Expiring Mail, $B$r;2>H$7$F$/$@$5$$!#(B
-`expiry-wait' $B%0%k!<%W%Q%i%a!<%?$,@_Dj$5$l$F$$$J$$%0%k!<%W$G$O!"%G(B
-$B%U%)%k%H$NCM$,E,MQ$5$l$^$9!#(B
+(2) `Nnshimbun' $A%0%k$B!<$A%W$GWT$(GY/$AFZO^GP$lO{H%$rPP$J$&7=7($OVw$K6~$D$"(B
+$A$j$^$9!#R;$D$O%0%k$B!<$A%WC{$NU}$(G]=$A1m$(G\"(B ("^nnshimbun\\+" $A$GJ<$^$i$J$1$l$P$J(B
+$A$j$^$;$s(B) $A$r$(I+y$AJ}(B `gnus-auto-expirable-newsgroups' $A$KW7<S$7$F!"O{H%(B
+$A$9$k$^$G$NHUJ}$r8w%0%k$B!<$A%W$(I#z$A$K(B `nnmail-expiry-wait-function' $A$GV8(B
+$A6($9$k$3$H$G$9!#$b$&R;$D$O!"WT$(GY/$AFZO^GP$lO{H%$rPP$J$o$;$?$$$?$$$9$Y$F$N(B
+`nnshimbun' $A%0%k$B!<$A%W$G!"%0%k$B!<$A%W%Q%i%a$B!<$A%?(B `auto-expire' $A$r(B
+`t' $A$K$(G]C$A6($7$F!"%0%k$B!<$A%W%Q%i%a$B!<$A%?(B `expiry-wait' $A$GO{H%$9$k$^(B
+$A$G$NFZO^$rV86($9$k$d$j7=$G$9!#$(Gf[$A$7$$$3$H$O(B *Note $A%a$B!<$A%k(B $A$NFZO^GP$lO{H%(B: (gnus-ja)Expiring Mail, $A$r2NUU$7$F$/$@$5$$!#(B
+`expiry-wait' $A%0%k$B!<$A%W%Q%i%a$B!<$A%?$,$(G]C$A6($5$l$F$$$J$$%0%k$B!<$A%W$G$O!"%G(B
+$A%U%)%k%H$N$(I/N$A$,$(GoK$ASC$5$l$^$9!#(B
 
-(3) `Nnshimbun' $BMQ$N(B NOV $B%U%!%$%k(B
-$B$O(B~/News/shimbun/asahi/national/.overview" $B$N$h$&$JL>A0$G$9!#(B
+(3) `Nnshimbun'$ASC$N(B NOV $A%U%!%$%k(B
+$A$O(B~/News/shimbun/asahi/national/.overview" $A$N$h$&$JC{G0$G$9!#(B
 
-(4) $B$J$<(B `auto-expire' $B$J$I$,(B `nnshimbun' $B@lMQ$N%0%k!<%W(B
-$B%Q%i%a!<%?$K4^$^$l$J$$$N(B? $B$H$$$&Ld$$$KBP$9$kEz$($r$9$G$KMQ0U$7$F$$(B
-$B$^$9!#$=$NEz$($H$O!"(B`expiry-wait' $B$,(B `nnshimbun' $B%P%C%/(B
-$B%(%s%I$K$h$C$F<h$j07$o$l$k$N$KBP$7$F!"(B`auto-expire' $B$O(B Gnus
-$B$NCf?u$,<h$j07$$$^$9!#$7$?$,$C$F!"(BGnus $B$,0l$D$NFCDj$N%P%C%/%(%s%I(B
-$B$N$?$a$KF/$/(B ($B$9$J$o$A!"(B`nnshimbun' $B@lMQ$N%0%k!<%W%Q%i%a!<%?(B
-$B$+$iCM$rFI$`(B) $B$h$&$K(B Gnus $B$NCf?u5!G=$r3HD%$9$k$3$H$O!"(BGnus $B$N@_7W(B
-$B%]%j%7!<$KH?$9$k$N$G$9!#(B
+(4) $A$J$<(B `auto-expire' $A$J$I$,(B `nnshimbun' $B@l$ASC$N%0%k$B!<$A%W(B
+$A%Q%i%a$B!<$A%?$K:,$^$l$J$$$N(B? $A$H$$$&$(GYB$A$$$K$(I%\$A$9$k4p$($r$9$G$KSCRb$7$F$$(B
+$A$^$9!#$=$N4p$($H$O!"(B`expiry-wait' $A$,(B `nnshimbun' $A%P%C%/(B
+$A%(%s%I$K$h$C$FH!$j$(H$/$A$o$l$k$N$K$(I%\$A$7$F!"(B`auto-expire' $A$O(B Gnus
+$A$NVPJ`$,H!$j$(H$/$A$$$^$9!#$7$?$,$C$F!"(BGnus $A$,R;$D$NLX6($N%P%C%/%(%s%I(B
+$A$N$?$a$K$(I@>$A$/(B ($A$9$J$o$A!"(B`nnshimbun' $B@l$ASC$N%0%k$B!<$A%W%Q%i%a$B!<$A%?(B
+$A$+$i$(I/N$A$r$BFI$A$`(B) $A$h$&$K(B Gnus $A$NVPJ`$(Gq"$AD\$r$(I)/$(GZ/$A$9$k$3$H$O!"(BGnus $A$N$(G]CSS(B
+$A%]%j%7$B!<$A$K74$9$k$N$G$9!#(B
 
 
 
 File: emacs-w3m-ja.info, Node: Mew Shimbun, Next: Shimbun with Wanderlust, Prev: Nnshimbun, Up: Shimbun Library
 
-Mew $B$G?7J9$rFI$`(B
+Mew $A$GPB$(GjL$A$r$BFI$A$`(B
 ================
 
 Mew Shimbun $B$O(B `shimbun' $B$H(B Mew (version 2.1 $B0J9_(B) $B$H$H$b$K;H$&$3$H$r0U(B
@@ -4486,10 +4491,10 @@ Mew Shimbun $B$O(B `shimbun' $B$H(B Mew (version 2.1 $B0J9_(B) $B$H$H$b$K
 
      Mew $B$N=*N;;~$d(B folder $B$N(B kill $B;~(B (`C-c C-q' $B$r;H$C$?$H$-(B) $B$K(B
      `shimbun' folder $B$O<+F0E*$K(B `.mew-cache' $B%U%!%$%k$rJ]B8$9$k$h$&$K(B
-     $B$J$j$^$9!#$?$@$7!"3N<B(B (2) (*Note Mew Shimbun-Footnotes::) $B$KJ]B8(B
-     $B$9$k$o$1$G$O$"$j$^$;$s!#4{FI$K$J$C$?>pJs$r3N<B$K(B cache $B$KJ]B8$9$k(B
-     $B$K$O!"$=$N(B folder $B$rFI$_=*$o$C$?$H$-$K(B `scan update' $B$r$9$k=,(B
-     $B47$r$D$1$k$HNI$$$G$7$g$&!#(B
+     $B$J$j$^$9!#$?$@$7!"3N<B(B (2) (*Note Mew Shimbun-Footnotes::)$B$KJ]B8$9(B
+     $B$k$o$1$G$O$"$j$^$;$s!#4{FI$K$J$C$?>pJs$r3N<B$K(B cache $B$KJ]B8$9$k$K(B
+     $B$O!"$=$N(B folder $B$rFI$_=*$o$C$?$H$-$K(B `scan update' $B$r$9$k=,47(B
+     $B$r$D$1$k$HNI$$$G$7$g$&!#(B
 
      $BL$FI$K;H$&%^!<%/$,(B `*' $B$8$c%@%a!"$H$$$&J}$O!"JQ(B
      $B?t(B `mew-shimbun-mark-unseen' $B$r%+%9%?%^%$%:$7$F$/$@$5$$(B ($B>e=R(B)$B!#(B
@@ -4572,18 +4577,18 @@ Mew Shimbun $B$O(B `shimbun' $B$H(B Mew (version 2.1 $B0J9_(B) $B$H$H$b$K
 
 File: emacs-w3m-ja.info  Node: Mew Shimbun-Footnotes, Up: Mew Shimbun
 
-(1) $BL$FI4IM}$r$9$k$H$-$O%3%a%s%H$r30$7$F$/$@$5$$!#$3$NJQ?t$OI,$:(B
-`(require 'mew-shimbun)' $B$NA0$G@_Dj$7$J$$$H$$$1$^$;$s!#(B
+(1) $AN4$BFI$A9\@m$r$9$k$H$-$O%3%a%s%H$rMb$7$F$/$@$5$$!#$3$N$(I+y$AJ}$O1X$:(B
+`(require 'mew-shimbun)' $A$NG0$G$(G]C$A6($7$J$$$H$$$1$^$;$s!#(B
 
-(2) `mew-touch-folder-p' $B$,(B `t' $B$N?M$O$[$\(B 100% $BJ]B8$G$-(B
-$B$^$9$,!"(B`nil' $B$N?M$,J]B8$G$-$k2DG=@-$O$[$H$s$I(B 0% $B$@$H;W$o$l(B
-$B$^$9!#(B
+(2) `mew-touch-folder-p' $A$,(B `t' $A$NHK$O$[$\(B 100% $A1#4f$G$-(B
+$A$^$9$,!"(B`nil' $A$NHK$,1#4f$G$-$k?ID\PT$O$[$H$s$I(B 0% $A$@$HK<$o$l(B
+$A$^$9!#(B
 
 
 
 File: emacs-w3m-ja.info, Node: Shimbun with Wanderlust, Next: Shimbun local mode, Prev: Mew Shimbun, Up: Shimbun Library
 
-Wanderlust $B$G?7J9$rFI$`(B
+Wanderlust $A$GPB$(GjL$A$r$BFI$A$`(B
 =======================
 
 Wanderlust $B$K$O(B ELMO $B%b%8%e!<%k$N0l$D$H$7$F(B `elmo-shimbun' $B$,4^$^$l$F$$(B
@@ -4594,7 +4599,7 @@ Wanderlust $B$K$O(B ELMO $B%b%8%e!<%k$N0l$D$H$7$F(B `elmo-shimbun' $B$,4^$^
 
 File: emacs-w3m-ja.info, Node: Shimbun local mode, Next: Shimbun Sites, Prev: Shimbun with Wanderlust, Up: Shimbun Library
 
-$B?7J9$N<hF@$K%7%'%k%9%/%j%W%H$r;H$&(B
+$APB$(GjL$A$NH!5C$K%7%'%k%9%/%j%W%H$rJ9$&(B
 ==================================
 
 $B$?$/$5$s$N?7J9$rFI$s$G$$$k$H!"?7$7$$5-;v$r%A%'%C%/$9$k$N$K$$$/$i$+;~4V(B
@@ -4635,7 +4640,7 @@ w3m $B8F$S=P$7$K(B `&' $B$rIU$1$^$9!#(B
 
 File: emacs-w3m-ja.info, Node: Shimbun Sites, Next: Shimbun Basics, Prev: Shimbun local mode, Up: Shimbun Library
 
-$B?7J9$,FI$a$k%5%$%H(B
+$APB$(GjL$A$,$BFI$A$a$k%5%$%H(B
 ==================
 
 `Shimbun' $B%i%$%V%i%j$,BP1~$7$F$$$k%5%$%H$N0lMwI=$G$9!#(B
@@ -4652,12 +4657,12 @@ File: emacs-w3m-ja.info, Node: Shimbun Sites, Next: Shimbun Basics, Prev: Shimbu
 
 File: emacs-w3m-ja.info, Node: Newspapers Supported by Shimbun, Next: News Sites Supported by Shimbun, Prev: Shimbun Sites, Up: Shimbun Sites
 
-$B?7J9<R(B
+$APB$(GjL$AIg(B
 ------
 
 `Shimbun' $B%i%$%V%i%j$,BP1~$7$F$$$k?7J9<R$G$9!#(B
 
-$BD+F|?7J9(B (http://www.asahi.com/)
+$A3/HUPB$(GjL(B (http://www.asahi.com/)
      asahi.book asahi.book.column asahi.book.news asahi.book.paperback
      asahi.book.review asahi.book.special asahi.business asahi.car
      asahi.culture asahi.digital asahi.editorial asahi.edu
@@ -4685,7 +4690,7 @@ File: emacs-w3m-ja.info, Node: Newspapers Supported by Shimbun, Next: News Sites
      `asahi.business' $B$NBe$o$j$K(B `asahi-html.business' $B$r;XDj$7$F$/$@$5(B
      $B$$!#(B
 
-$BD+F|?7J9(B (http://mytown.asahi.com/)
+$A3/HUPB$(GjL(B (http://mytown.asahi.com/)
      asahi-mytown.(hokkaido...okinawa)
 
      $BF|K\$NA4ETF;I\8)$rLVMe$9$kD+F|?7J9$NCOJ}HG$G$9!#(B
@@ -4693,23 +4698,23 @@ File: emacs-w3m-ja.info, Node: Newspapers Supported by Shimbun, Next: News Sites
 BBC (http://www.bbc.co.uk/)
      bbc.news
 
-$B%G%#!<!&%t%'%k%H(B (http://www.welt.de/)
+$A%G%#$B!<$A!$%t%'%k%H(B (http://www.welt.de/)
      welt-de.news
 
-$B%G%#!<!&%D%!%$%H(B (http://www.zeit.de/)
+$A%G%#$B!<$A!$%D%!%$%H(B (http://www.zeit.de/)
      zeit-de.auto zeit-de.computer zeit-de.deutschland
      zeit-de.feuilleton zeit-de.gesundheit zeit-de.international
      zeit-de.leben zeit-de.literatur zeit-de.musik zeit-de.news
      zeit-de.reisen zeit-de.schule zeit-de.sport zeit-de.studium
      zeit-de.wirtschaft zeit-de.wissen zeit-de.zuender
 
-$B%2%s%@%$%M%C%H(B (http://gendai.net/)
+$A%2%s%@%$%M%C%H(B (http://gendai.net/)
      gendai-net.today gendai-net.syakai gendai-net.sports
      gendai-net.geino gendai-net.wadai gendai-net.kenko
      gendai-net.syoku gendai-net.book
 
-$BKhF|(Bjp (http://mainichi.jp/)
-(2007$BG/(B10$B7n$K(B MSN $B$+$i<+<R%5%$%H$K0\9T(B)
+$(I#z$AHU(Bjp (http://mainichi.jp/)
+(2007$ADj(B10$ATB$K(B MSN $A$+$iWTIg%5%$%H$KRFPP(B)
      mainichi.flash mainichi.sports mainichi.entertainment
      mainichi.entertainment.art mainichi.mantan mainichi.electronics
      mainichi.weekly mainichi.opinion.editorial
@@ -4724,7 +4729,7 @@ BBC (http://www.bbc.co.uk/)
 
           (setq shimbun-mainichi-prefer-text-plain t)
 
-$B%K%e!<%h!<%/%?%$%`%:(B (http://www.nytimes.com/)
+$A%K%e$B!<$A%h$B!<$A%/%?%$%`%:(B (http://www.nytimes.com/)
      nytimes.homepage nytimes.news.business
      nytimes.news.business.media&advertising
      nytimes.news.business.worldbusiness
@@ -4768,7 +4773,7 @@ BBC (http://www.bbc.co.uk/)
      `windows-1252' coding system $B$,$"$l$P!"(B`shimbun' $B$O(B ($B$=$7$F(B
      emacs-w3m $B$b(B) $B$=$N$h$&$J>l9g$G$bF0:n$7$^$9!#(B
 
-$BF|4)%9%]!<%D(B (http://www.nikkansports.com/)
+$AHU?/%9%]$B!<$A%D(B (http://www.nikkansports.com/)
      nikkansports.flash nikkansports.baseball
      nikkansports.baseball.highschool nikkansports.baseball.amateur
      nikkansports.baseball.mlb nikkansports.soccer
@@ -4780,7 +4785,7 @@ BBC (http://www.bbc.co.uk/)
      nikkansports.entertainment nikkansports.cinema
      nikkansports.general
 
-$BF|K\7P:Q?7J9(B (http://www.nikkei.co.jp/)
+$AHU1>$(I8+6v$APB$(GjL(B (http://www.nikkei.co.jp/)
      nikkei.top nikkei.main nikkei.keizai nikkei.sangyo nikkei.tento
      nikkei.kansai nikkei.it.business nikkei.it.busi_gyoukai
      nikkei.it.biz-system nikkei.it.sox nikkei.it.data
@@ -4822,8 +4827,8 @@ BBC (http://www.bbc.co.uk/)
      nikkei.release.const.const nikkei.release.const.house
      nikkei.release.const.etc nikkei.shasetsu
 
-MSN $B;:7P%K%e!<%9(B (http://sankei.jp.msn.com/)
-(2007$BG/(B10$B7n$+$i(B MSN $B$K0\9T(B)
+MSN $(I7E8+$A%K%e$B!<$A%9(B (http://sankei.jp.msn.com/)
+(2007$ADj(B10$ATB$+$i(B MSN $A$KRFPP(B)
      sankei.points sankei.affairs sankei.politics sankei.economy
      sankei.world sankei.sports sankei.entertainments sankei.life
      sankei.culture sankei.release sankei.region sankei.usatoday
@@ -4833,11 +4838,11 @@ MSN $B;:7P%K%e!<%9(B (http://sankei.jp.msn.com/)
 Spiegel Online (http://www.spiegel.de/)
      spiegel.news
 
-$B%9%]%K%A(B (http://www.sponichi.co.jp/)
+$A%9%]%K%A(B (http://www.sponichi.co.jp/)
      sponichi.baseball sponichi.soccer sponichi.usa sponichi.others
      sponichi.society sponichi.entertainment sponichi.horseracing
 
-$BFn%I%$%D?7J9(B (http://www.sueddeutsche.de/)
+$ADO%I%$%DPB$(GjL(B (http://www.sueddeutsche.de/)
      sueddeutsche-de.alles sueddeutsche-de.nachrichten
      sueddeutsche-de.politik sueddeutsche-de.wirtschaft
      sueddeutsche-de.finanzen sueddeutsche-de.kino
@@ -4846,7 +4851,7 @@ Spiegel Online (http://www.spiegel.de/)
      sueddeutsche-de.leben sueddeutsche-de.gesundheit
      sueddeutsche-de.computer
 
-$Bl&Gd?7J9(B (http://www.yomiuri.co.jp/)
+$(G{t$(I%D$APB$(GjL(B (http://www.yomiuri.co.jp/)
      yomiuri.atmoney yomiuri.editorial yomiuri.entertainment
      yomiuri.iryou yomiuri.kyoiku yomiuri.kyoiku.children
      yomiuri.kyoiku.english yomiuri.kyoiku.qanda
@@ -4869,7 +4874,7 @@ Spiegel Online (http://www.spiegel.de/)
 
 File: emacs-w3m-ja.info, Node: News Sites Supported by Shimbun, Next: Mailing Lists Supported by Shimbun, Prev: Newspapers Supported by Shimbun, Up: Shimbun Sites
 
-$B%K%e!<%9%5%$%H(B
+$A%K%e$B!<$A%9%5%$%H(B
 --------------
 
 `Shimbun' $B%i%$%V%i%j$,BP1~$7$F$$$k%K%e!<%9%5%$%H$G$9!#(B
@@ -4907,19 +4912,19 @@ De-Bug Magazine (http://www.de-bug.de/)
 Engadget Japanese (http://japanese.engadget.com/)
      engadget-ja.top
 
-$B%(%-%5%$%H(B $B%K%e!<%9(B (http://www.excite.co.jp/)
+$A%(%-%5%$%H(B $A%K%e$B!<$A%9(B (http://www.excite.co.jp/)
      excite.bit-koneta excite.world-odd
 
-$B<+M3O+F/<TF1LA%I%$%D(B (http://www.fau.org/)
+$AWTSI$(I$b@>$AU_M,CK%I%$%D(B (http://www.fau.org/)
      fau.news
 
-$B%O%$%<!&%*%s%i%$%s(B (http://www.heise.de/)
+$A%O%$%<!$%*%s%i%$%s(B (http://www.heise.de/)
      heise.news heise.telepolis
 
 Infoshop News (http://news.infoshop.org/)
      infoshop.news
 
-$B%$%s%W%l%9(B (http://www.watch.impress.co.jp/)
+$A%$%s%W%l%9(B (http://www.watch.impress.co.jp/)
      impress.enterprise impress.pc impress.dc impress.akiba impress.av
      impress.game impress.k-tai impress.internet impress.bb
      impress.forest impress.robot impress.kaden
@@ -4958,7 +4963,7 @@ Open Tech Press (http://opentechpress.jp/)
      opentechpress-jp.opensource opentechpress-jp.security
      opentechpress-jp.news opentechpress-jp.pr
 
-Perlentaucher ($B??<n:N$j(B) (http://www.perlentaucher.de/)
+Perlentaucher ($AUfVi$(GZh$A$j(B) (http://www.perlentaucher.de/)
      perlentaucher-de.aktuell
 
 Rediff.com (http://www.rediff.com/)
@@ -5001,7 +5006,7 @@ Slashdot Japan (http://slashdot.jp/)
      $BJQ?t(B `shimbun-slashdot-jp-group-alist' $B$KE,@Z$J@_Dj$r2C$($k$H!"$=(B
      $B$NB>$N%f!<%6!<$NF|5-$b1\Mw$G$-$^$9!#(B
 
-Tech-On! $BF|7P(BBP$B<R(B (http://techon.nikkeibp.co.jp/)
+Tech-On! $AHU$(I8+(BBP$AIg(B (http://techon.nikkeibp.co.jp/)
      tech-on.latestnews tech-on.mobile tech-on.bbint tech-on.d-ce
      tech-on.AT tech-on.edaonline tech-on.device tech-on.lsi
      tech-on.silicon tech-on.observer tech-on.fpd tech-on.mono
@@ -5012,7 +5017,7 @@ Tech-On! $BF|7P(BBP$B<R(B (http://techon.nikkeibp.co.jp/)
      Tech-On! $B$OF|7P(BBP$B<R$,Ds6!$9$k5;=Q%K%e!<%9%5%$%H$G$9!#0JA0$O5-;v$N(B
      $BFbMF$rA4ItFI$`$?$a$K%m%0%$%s!&%"%+%&%s%H(B ($BL5NA(B) $B$,I,MW$G$7$?$,!">/(B
      $B$J$/$H$b(B 2007$BG/$N=)$K$*$$$F$OMW$i$J$$$h$&$K8+$($^$9!#>-Mh$b$7:F$S(B
-     $BI,MW$K$J$C$?$i(B $BEPO?%Z!<%8(B
+     $BI,MW$K$J$C$?$i(B $A5G$(IS:$A%Z$B!<$A%8(B
      (http://techon.nikkeibp.co.jp/guide/inf_regi.html) $B$K9T$C$F<hF@$7(B
      $B$F$/$@$5$$!#<!$NFs$D$NJQ?t$G!"$I$&$d$C$F%m%0%$%s$9$k$+$r@)8f$7$^$9(B:
 
@@ -5081,7 +5086,7 @@ The Onion (http://www.theonion.com/)
 
 File: emacs-w3m-ja.info, Node: Mailing Lists Supported by Shimbun, Next: Sport Sites Supported by Shimbun, Prev: News Sites Supported by Shimbun, Up: Shimbun Sites
 
-$B%a!<%j%s%0%j%9%H(B
+$A%a$B!<$A%j%s%0%j%9%H(B
 ----------------
 
 $B:G6a$G$O!"%a!<%j%s%0%j%9%H$KEj9F$5$l$?2a5n5-;v$N%"!<%+%$%V$,(B WEB $B>e$K4v(B
@@ -5117,7 +5122,7 @@ GNOME Mailing List (http://mail.gnome.org/archives/)
      gnome.orbit-list gnome.vote gnome.wm-spec-list gnome.xml
      gnome.xslt
 
-Java $B%+%s%U%!%l%s%9(B Mailing List (http://www.java-conf.gr.jp/archives/)
+Java $A%+%s%U%!%l%s%9(B Mailing List (http://www.java-conf.gr.jp/archives/)
      javaconf.servlet-ml javaconf.business-ml
      javaconf.duke-in-the-box-ml javaconf.jfriends-ml javaconf.JGT-ml
      javaconf.jini-ml javaconf.ejb-ml javaconf.cm-ml javaconf.horb-ml
@@ -5173,7 +5178,7 @@ XEmacs Mailing List (http://list-archive.xemacs.org/)
      xemacs.xemacs-design xemacs.xemacs-mule xemacs.xemacs-nt
      xemacs.xemacs-patches xemacs.xemacs-users-ja xemacs.xemacs
 
-$B%;%-%e%j%F%#!<(BMEMO Mailing List (http://memo.st.ryukoku.ac.jp/archive/)
+$A%;%-%e%j%F%#$B!<(BMEMO Mailing List (http://memo.st.ryukoku.ac.jp/archive/)
      security-memo.memo security-memo.free-memo
      security-memo.social-memo
 
@@ -5377,7 +5382,7 @@ www.SciPy.net Mailing Lists (http://www.scipy.net/mailman/listinfo)
 
 File: emacs-w3m-ja.info, Node: Sport Sites Supported by Shimbun, Next: Misc Sites Supported by Shimbun, Prev: Mailing Lists Supported by Shimbun, Up: Shimbun Sites
 
-$B%9%]!<%D(B
+$A%9%]$B!<$A%D(B
 --------
 
 `Shimbun' $B%i%$%V%i%j$,BP1~$7$F$$$k%9%]!<%D4X78$N%5%$%H$G$9!#(B
@@ -5385,14 +5390,14 @@ File: emacs-w3m-ja.info, Node: Sport Sites Supported by Shimbun, Next: Misc Site
 makanai (http://www.makanai.com/)
      makanai.f1news
 
-F1 $B%U%!%s(B (http://www.ksky.ne.jp/~tahara/f1/)
+F1 $A%U%!%s(B (http://www.ksky.ne.jp/~tahara/f1/)
      f1fan.news
 
-@nifty:$B%b!<%?!<%9%]!<%D(B (http://forum.nifty.com/fmotor/)
+@nifty:$A%b$B!<$A%?$B!<$A%9%]$B!<$A%D(B (http://forum.nifty.com/fmotor/)
      msports-nifty.F1 msports-nifty.IRL msports-nifty.WRC
      msports-nifty.Europe msports-nifty.USA
 
-Yahoo!$B%9%]!<%D(B (http://sports.yahoo.co.jp/)
+Yahoo!$A%9%]$B!<$A%D(B (http://sports.yahoo.co.jp/)
      yahoo-sports.F1 yahoo-sports.baseball yahoo-sports.keiba
      yahoo-sports.NBA yahoo-sports.NFL yahoo-sports.rugby
 
@@ -5403,24 +5408,24 @@ Yahoo!$B%9%]!<%D(B (http://sports.yahoo.co.jp/)
 
 File: emacs-w3m-ja.info, Node: Misc Sites Supported by Shimbun, Prev: Sport Sites Supported by Shimbun, Up: Shimbun Sites
 
-$B$=$NB>(B
+$A$=$NK{(B
 ------
 
 `Shimbun' $B%i%$%V%i%j$NBP1~$7$F$$$k$=$NB>$N%5%$%H$G$9!#7G<(HD$d!"O":\5-(B
 $B;v$r<gBN$H$9$k$h$&$J%5%$%H$,4^$^$l$F$$$^$9!#(B
 
-Tea Cup $B7G<(HD(B (http://www.tcup.com/)
+Tea Cup $(I6-$AJ>0e(B (http://www.tcup.com/)
      Tea Cup Communication $B$K$h$C$FDs6!$5$l$k!"MM!9$J7G<(HD$r9VFI$9$k$3(B
      $B$H$,$G$-$^$9!#%G%U%)%k%H$G$O!"0J2<$N;0$D$N7G<(HD$,MQ0U$5$l$F$$$^$9!#(B
 
      tcup.meadow
-          Meadow $B7G<(HD(B (http://www66.tcup.com/6629/yutopia.html)
+          Meadow $(I6-$AJ>0e(B (http://www66.tcup.com/6629/yutopia.html)
 
      tcup.skk
-          SKK $B7G<(HD(B (http://www67.tcup.com/6718/yutopia.html)
+          SKK $(I6-$AJ>0e(B (http://www67.tcup.com/6718/yutopia.html)
 
      tcup.yutopia
-          $B$f$&&S&O&P&I&A7G<(HD(B (http://www61.tcup.com/6116/yutopia.html)
+          $A$f$&,Ftopia$(I6-$AJ>0e(B (http://www61.tcup.com/6116/yutopia.html)
 
      $B?7$?$K7G<(HD$r%j%9%H$KDI2C$9$k$K$O!"$=$l$i$NL>A0$H(B URL $B$rD4$Y$F!"(B
      `shimbun-tcup-group-alist' $B$rJQ99$7$F$/$@$5$$!#Fs$D$N7G<(HD(B `foo'
@@ -5442,12 +5447,12 @@ Tea Cup $B7G<(HD(B (http://www.tcup.com/)
                   ("emacs-w3m" .
                    "http://pc.2ch.net/test/read.cgi/unix/1013710106")))
 
-CGI_Board $B$r;H$C$F$$$k7G<(HD(B (http://www.math.tohoku.ac.jp/~kuroki/support/)
+CGI_Board $A$rJ9$C$F$$$k$(I6-$AJ>0e(B (http://www.math.tohoku.ac.jp/~kuroki/support/)
 
      CGI_Board $B$r;H$C$F$$$k7G<(HD$N(B URL $B$rD4$Y$F!"(B
      `shimbun-cgi-board-group-alist' $B$KE,@Z$J@_Dj$r2C$($F;H$$$^$9!#(B
 
-HNS $B$K$h$kF|5-(B
+HNS $A$K$h$kHU$(GX4(B
      $B1\Mw$7$?$$F|5-$N(B URL $B$rD4$Y$F!"0J2<$N$h$&$K@_Dj$7$F;H$$$^$9!#(B
 
           (setq shimbun-hns-group-alist
@@ -5458,7 +5463,7 @@ HNS $B$K$h$kF|5-(B
                    "http://www.be.wakwak.com/cgi-bin/sbox/~miyoshi/hns/"
                    "miyoshi@meadowy.org")))
 
-tDiary $B$K$h$kF|5-(B
+tDiary $A$K$h$kHU$(GX4(B
      $B1\Mw$7$?$$F|5-$N(B URL $B$rD4$Y$F!"0J2<$N$h$&$K@_Dj$7$F;H$$$^$9!#(B
 
           (setq shimbun-tdiary-group-alist
@@ -5467,7 +5472,7 @@ tDiary $B$K$h$kF|5-(B
                   ("yoichi"
                    "http://yoichi.geiin.org/d/")))
 
-$B3ZE79->l(B (http://plaza.rakuten.co.jp/) $B$NF|5-(B
+$(IA{$ALl$(I"H$(G^[(B (http://plaza.rakuten.co.jp/) $A$NHU$(GX4(B
      $B1\Mw$7$?$$F|5-$r3+@_$7$F$$$k?M$N3ZE7(B ID $B$H%a!<%k%"%I%l%9$rD4$Y$F!"(B
      $B0J2<$N$h$&$K@_Dj$7$F;H$$$^$9!#(B
 
@@ -5477,7 +5482,7 @@ tDiary $B$K$h$kF|5-(B
 EmacsWiKi (http://www.emacswiki.org/)
      emacswiki.changes emacswiki.diff
 
-$B%3%s%F%s%D$r4^$`(B RSS $B%U%#!<%I(B
+$A%3%s%F%s%D$r:,$`(B RSS $A%U%#$B!<$A%I(B
      $B1\Mw$7$?$$7G:\%3%s%F%s%D$,4^$^$l$k$h$&$J(B RSS $B%U%#!<%I$rD4$Y$F!"(B
      `shimbun-rss-hash-group-path-alist' $BJQ?t$r0J2<$N$h$&$K@_Dj$7$F;H$$(B
      $B$^$9!#%P%C%/%(%s%IL>$O(B `rss-hash' $B$G$9!#<g$K8D?M$N%V%m%0$J$I$,BP>](B
@@ -5497,7 +5502,7 @@ EmacsWiKi (http://www.emacswiki.org/)
                   ("sampleblog2" "http://www.example.com/index2.rss"
                    t "</title>" "<!-- start ads")))
 
-$B%3%s%F%s%D$r4^$`(B Atom $B%U%#!<%I(B
+$A%3%s%F%s%D$r:,$`(B Atom $A%U%#$B!<$A%I(B
      $BA09`(B ($B%3%s%F%s%D$r4^$`(B RSS $B%U%#!<%I(B) $B$HF1MM$K!"7G:\$5$l$?%3%s%F%s(B
      $B%D$r4^$`(B Atom $B%U%#!<%I$b1\Mw$9$k$3$H$,$G$-$^$9!#$=$l$r9T$J$&$K$O!"(B
      shimbun-rss-hash-* $B$HF1MM$N$d$jJ}$GJQ?t(B
@@ -5505,7 +5510,7 @@ EmacsWiKi (http://www.emacswiki.org/)
      `shimbun-atom-hash-x-face-alist' $B$J$I$b(B) $B$r@_Dj$7$F$/$@$5$$!#%P%C(B
      $B%/%(%s%IL>$O(B `atom-hash' $B$G$9!#(B
 
-$B%3%s%F%s%D$N$J$$(B RSS $B%U%#!<%I(B
+$A%3%s%F%s%D$N$J$$(B RSS $A%U%#$B!<$A%I(B
      $BB?$/$N%U%#!<%I$K$O5-;v$N40A4$J%3%s%F%s%D$,L5$$$+!"$^$?$O$$$B$o$k$K(B
      $B>.=P$7$K$7$^$9!#%5%$%H$,$A$c$s$H5-;v$r=q$+$:$K!"$=$N$h$&$J%U%#!<%I(B
      $B$7$+Ds6!$7$J$$>l9g$G$b!"B?$/$N>l9g(B `rss-blogs' $B$r;H$C$F@Z$jH4$1$k(B
@@ -5530,7 +5535,7 @@ EmacsWiKi (http://www.emacswiki.org/)
      $B%0$rD/$a$l$P$o$+$j$^$9(B)$B!"C1$KG$0U$N%Q%i%a!<%?$r>JN,$9$k$@$1$G!"<+(B
      $BF0E*$K%3%s%F%s%D$r@Z$j=P$=$&$H$9$k$G$7$g$&!#(B
 
-Wiki $B%3%s%F%s%D(B
+Wiki $A%3%s%F%s%D(B
      $B1\Mw$7$?$$(B Wiki $B$N(B URL $B$rD4$Y$F!"0J2<$N$h$&$K@_Dj$7$F;H$$$^$9!#(B
      PukiWiki $B$H(B Hiki $B$KBP1~$7$F$$$^$9!#$b$7!"3FFbB&$N%j%9%H$N(B 4 $BHVL\!"(B
      5 $BHVL\$NMWAG$N@55,I=8=$K2?$r;XDj$7$FNI$$$+J,$+$i$J$$$H$-$O!"(B`nil'
@@ -5558,7 +5563,7 @@ Wiki $B%3%s%F%s%D(B
                    "<div class=\"sidebar\">")
                   ))
 
-Yahoo!$B%*!<%/%7%g%s(B (http://auctions.yahoo.co.jp/)
+Yahoo!$A%*$B!<$A%/%7%g%s(B (http://auctions.yahoo.co.jp/)
      $B1\Mw$7$?$$%+%F%4%j$d8!:w7k2L$N(B URL $B$rD4$Y$F!"0J2<$N$h$&$K@_Dj$7$F(B
      $B;H$$$^$9!#(B
 
@@ -5573,7 +5578,7 @@ VineLinux Errata (http://www.vinelinux.org/)
      vinelinux.errata.2x.ppc vinelinux.errata.2x.sparc
      vinelinux.errata.2x.alpha vinelinux.errata.1x
 
-$BKc@8Fb3U%a!<%k%^%,%8%s(B (http://www.mmz.kantei.go.jp/)
+$ABiIzDZ$(Gk^$A%a$B!<$A%k%^%,%8%s(B (http://www.mmz.kantei.go.jp/)
      kantei.m-magazine-en kantei.m-magazine-ja
      kantei.m-magazine-en.fukuda kantei.m-magazine-ja.fukuda
      kantei.m-magazine-en.abe kantei.m-magazine-ja.abe
@@ -5581,7 +5586,7 @@ VineLinux Errata (http://www.vinelinux.org/)
 
      $B8eJ}8_49@-$N$?$a!"(B`kantei.m-magazine' $B$bMxMQ2DG=$K$J$C$F$$$^$9!#(B
 
-$BFC5vD#(B (http://www.jpo.go.jp/)
+$ALX$(G]B$(I"G(B (http://www.jpo.go.jp/)
      jpo.news jpo.revision jpo.lawguide jpo.details
 
 IBM developerWorks (http://www-6.ibm.com/jp/developerworks/)
@@ -5597,7 +5602,7 @@ Wincefan (http://www.wince.ne.jp/)
 PalmFan (http://www.palmfan.com/)
      palmfan.news
 
-$BEEG>39$N8=>l%l%]!<%H(B (http://homepage1.nifty.com/akiba/plat.html)
+$(GgY$BG>$A=V$N$(G\"^[$A%l%]$B!<$A%H(B (http://homepage1.nifty.com/akiba/plat.html)
      dennou.report
 
 PCWEB COLUMN Square (http://pcweb.mycom.co.jp/column/)
@@ -5623,18 +5628,18 @@ PCWEB COLUMN Square (http://pcweb.mycom.co.jp/column/)
      pcweb-column.interview pcweb-column.ityougo pcweb-column.kimeuchi
      pcweb-column.stratesys pcweb-column.toyagain
 
-$B%N!<%DDDNs4[(B (http://tsuruo.dominohosting.biz/members/tsuruo/)
+$A%N$B!<$A%D$(G]s$AAP$(Gs((B (http://tsuruo.dominohosting.biz/members/tsuruo/)
      lotusex.news lotusex.library lotusex.operation lotusex.primer
      lotusex.tips lotusex.practical lotusex.qanda lotusex.lounge
      lotusex.bbs
 
-$B!w(BIT$B%U%)!<%i%`(B (http://www.atmarkit.co.jp)
+$A#@(BIT$A%U%)$B!<$A%i%`(B (http://www.atmarkit.co.jp)
      atmarkit.news atmarkit.fwin2k atmarkit.fdotnet atmarkit.fsys
      atmarkit.fxml atmarkit.fdb atmarkit.flinux atmarkit.fnetwork
      atmarkit.fjava atmarkit.fsecurity atmarkit.farc atmarkit.fbiz
      atmarkit.fwcr atmarkit.jibun
 
-TeX Q&A $B7G<(HD(B (http://www.matsusaka-u.ac.jp/~okumura/texfaq/qa/)
+TeX Q&A $(I6-$AJ>0e(B (http://www.matsusaka-u.ac.jp/~okumura/texfaq/qa/)
      texfaq.qanda
 
 X51.org (http://x51.org/)
@@ -5670,7 +5675,7 @@ Foundation for a Free Information Infrastructure (http://www.ffii.org/)
 
 File: emacs-w3m-ja.info, Node: Shimbun Basics, Prev: Shimbun Sites, Up: Shimbun Library
 
-$B?7J9%b%8%e!<%k$N:n$jJ}(B
+$APB$(GjL$A%b%8%e$B!<$A%k$NWw$j7=(B
 ======================
 
 `Shimbun' $B$O(B emacs-w3m $B$NIUB0%i%$%V%i%j$G!"(BGnus $B$d(B Wanderlust$B!"(BMew $B$J$I(B
@@ -5692,7 +5697,7 @@ File: emacs-w3m-ja.info, Node: Shimbun Basics, Prev: Shimbun Sites, Up: Shimbun 
 
 File: emacs-w3m-ja.info, Node: Overview, Next: Getting web page and header information, Prev: Shimbun Basics, Up: Shimbun Basics
 
-$B35N,(B
+$A8EBT(B
 ----
 
 `http://www.foobar.net' $B$N%3%s%F%s%D$r1\Mw$9$k?7$?$J(B `shimbun' $B%b%8%e!<(B
@@ -5762,13 +5767,13 @@ Overview-Footnotes::) $B$rMxMQ$7$F=q$+$l$F$$$^$9!#(B
 
 File: emacs-w3m-ja.info  Node: Overview-Footnotes, Up: Overview
 
-(1) FLIM $B$K4^$^$l$F$$$^$9!#(B
+(1) FLIM $A$K:,$^$l$F$$$^$9!#(B
 
 
 
 File: emacs-w3m-ja.info, Node: Getting web page and header information, Next: Displaying an article, Prev: Overview, Up: Shimbun Basics
 
-$B%&%'%V%Z!<%8$N%=!<%95Z$S%X%C%@>pJs$r<hF@$9$k(B
+$A%&%'%V%Z$B!<$A%8$N%=$B!<$A%9<0$S%X%C%@Gi$(G^^$A$rH!5C$9$k(B
 --------------------------------------------
 
 $B$^$:5-;v8+=P$7$r<hF@$9$kBP>]$H$J$k%&%'%V%Z!<%8$r7h$a$k$3$H$+$i;O$a$^$9!#(B
@@ -5898,18 +5903,18 @@ File: emacs-w3m-ja.info, Node: Getting web page and header information, Next: Di
 
 File: emacs-w3m-ja.info  Node: Getting web page and header information-Footnotes, Up: Getting web page and header information
 
-(1) `Shimbun' $B%b%8%e!<%k0l$D$K$D$-!":GDc$G$b0l$D$N%0%k!<%W$,I,MW$G(B
-$B$9!#(B
+(1) `Shimbun' $A%b%8%e$B!<$A%kR;$D$K$D$-!"Wn5M$G$bR;$D$N%0%k$B!<$A%W$,1XR*$G(B
+$A$9!#(B
 
-(2) shimbun $B$N0lIt$N5-;v$,FI$a$J$$$@$1$J$i$^$@$7$b!"2<<j$K(B
-`message-id' $B$r:n@.$9$k$H!"5.J}$,<uNN$9$kBg;v$J%a!<%k$N$=$l$H$+$A(B
-$B9g$C$F$7$^$$!"$=$N%a!<%k$,FI$a$J$/$J$k2DG=@-$9$i$"$j$^$9!#(B
+(2) shimbun $A$NR;2?$N$(GX4$AJB$,$BFI$A$a$J$$$@$1$J$i$^$@$7$b!"OBJV$K(B
+`message-id' $A$rWw3I$9$k$H!"$(Gb8$A7=$,J\$(Gkk$A$9$k4sJB$J%a$B!<$A%k$N$=$l$H$+$A(B
+$A:O$C$F$7$^$$!"$=$N%a$B!<$A%k$,$BFI$A$a$J$/$J$k?ID\PT$9$i$"$j$^$9!#(B
 
 
 
 File: emacs-w3m-ja.info, Node: Displaying an article, Next: Inheriting shimbun module, Prev: Getting web page and header information, Up: Shimbun Basics
 
-$B5-;v$NI=<((B
+$(GX4$AJB$N1mJ>(B
 ----------
 
 `shimbun.el' $B$KDj5A$5$l$?(B `shimbun-article' $B%a%=%C%I$O!"%X%C%@>pJs$+$i(B
@@ -5968,7 +5973,7 @@ web page $B$N<hF@$OI,MW$K$J$j$^$;$s$N$G!"$?$@(B Emacs $B$N%a%b%j$+$i<h$j=P$7
 
 File: emacs-w3m-ja.info, Node: Inheriting shimbun module, Next: Making text/plain articles, Prev: Displaying an article, Up: Shimbun Basics
 
-Shimbun $B%b%8%e!<%k$N7Q>5(B
+Shimbun $A%b%8%e$B!<$A%k$N$(ICc$A3P(B
 ------------------------
 
 $B%a!<%j%s%0%j%9%H%^%M!<%8%c(B ($B%"!<%+%$%P(B) $B$H$7$FM-L>$J$b$N$,$$$/$D$+$"$j(B
@@ -5978,13 +5983,13 @@ Shimbun $B%b%8%e!<%k$N7Q>5(B
      $B$F$$$^$7$?!#>\:Y$O(B
      `http://www.gnu.org/software/mailman/index.html' $B$r$4Mw$/$@$5$$!#(B
 
-   * MHonArc $B>\:Y$O(B `http://www.oac.uci.edu/indiv/ehood/mhonarc.html'
-     $B$r$4Mw$/$@$5$$!#(B
+   * MHonArc$B>\:Y$O(B `http://www.oac.uci.edu/indiv/ehood/mhonarc.html' $B$r(B
+     $B$4Mw$/$@$5$$!#(B
 
    * fml fml mailing list server/manager.  $B>\:Y$O(B
      `http://www.fml.org/software/fml/' $B$r$4Mw$/$@$5$$!#(B
 
-   * mailarc $B>\:Y$O(B `http://cvs.namazu.org/mailarc/' $B$r$4Mw$/$@$5$$!#(B
+   * mailarc$B>\:Y$O(B `http://cvs.namazu.org/mailarc/' $B$r$4Mw$/$@$5$$!#(B
 
 $B5.J}$,(B *Note Getting web page and header information:: $B$N%9%F%C%W$G<hF@(B
 $B$7$?%&%'%V%Z!<%8$N%=!<%9$rJ,@O$7$F$$$k$H$-$K!"$=$N%=!<%9$NCf$K$3$l$i%a!<(B
@@ -6020,16 +6025,16 @@ module-Footnotes::)$B!"(B`shimbun-foobar' $B$NCf$G$O!"(B`sb-mailman.el' $B$
 
 File: emacs-w3m-ja.info  Node: Inheriting shimbun module-Footnotes, Up: Inheriting shimbun module
 
-(1) $B%&%'%V%Z!<%8$N%=!<%9$NCf$K$3$l$i%a!<%j%s%0%j%9%H%^%M!<%8%c$NL>A0$,(B
-$BI=<($5$l$F$$$k$3$H$,B?$$$G$9!#(B
+(1) $A%&%'%V%Z$B!<$A%8$N%=$B!<$A%9$NVP$K$3$l$i%a$B!<$A%j%s%0%j%9%H%^%M$B!<$A%8%c$NC{G0$,(B
+$A1mJ>$5$l$F$$$k$3$H$,6`$$$G$9!#(B
 
-(2) $B$D$^$j(B `shimbun-mailman' $B%/%i%9$,?F%/%i%9$K$J$j$^$9!#(B
+(2) $A$D$^$j(B `shimbun-mailman' $A%/%i%9$,$(Gr5$A%/%i%9$K$J$j$^$9!#(B
 
 
 
 File: emacs-w3m-ja.info, Node: Making text/plain articles, Next: Zenkaku to hankaku conversion, Prev: Inheriting shimbun module, Up: Shimbun Basics
 
-text/plain $B$N5-;v$r:n$k$K$O(B
+text/plain $A$N$(GX4$AJB$rWw$k$K$O(B
 ---------------------------
 
 $B$?$H$((B MUA $B$,(B HTML $B$N5-;v$rFI$`$3$H$,$G$-$k$h$&$K(B emacs-w3m $B$K$h$C$F6/(B
@@ -6077,7 +6082,7 @@ text/plain $B$N5-;v$r:n$k$K$O(B
 
 File: emacs-w3m-ja.info, Node: Zenkaku to hankaku conversion, Next: Coding convention of Shimbun, Prev: Making text/plain articles, Up: Shimbun Basics
 
-$BA43QJ8;z$rH>3QJ8;z$KJQ49$9$k(B
+$AH+=GNDWV$r0k=GNDWV$K$(I+y$(G_P$A$9$k(B
 ----------------------------
 
 $B!VA43Q!W$^$?$O!VA43QJ8;z!W$O!"I}$,9-$$F|K\8l$NJ8;z$r8F$V$?$a$NB/>N$G$9!#(B
@@ -6099,10 +6104,10 @@ File: emacs-w3m-ja.info, Node: Zenkaku to hankaku conversion, Next: Coding conve
 
 File: emacs-w3m-ja.info, Node: Coding convention of Shimbun, Prev: Zenkaku to hankaku conversion, Up: Shimbun Basics
 
-Shimbun $B%i%$%V%i%j$N%3!<%G%#%s%05,Ls(B
+Shimbun $A%i%$%V%i%j$N%3$B!<$A%G%#%s%0$(G]=R|(B
 ------------------------------------
 
-   * `shimbun.el' $B$G$O!"(Bemacs-w3m $B$N4X?t$r(B*$B<+M3$K(B*$B;H$C$FNI$$!#(B
+   * `shimbun.el' $B$G$O!"(Bemacs-w3m $B$N4X?t$r(B*$AWTSI$K(B*$B;H$C$FNI$$!#(B
 
    * `sb-*.el' $B$G$O!"$3$l$^$G$HF1MM$K(B emacs-w3m $B$N4X?t$rD>@\8F$S=P$9$3(B
      $B$H$O$7$J$$!#(B`sb-*.el' $B$GI,MW$K$J$k(B emacs-w3m $B$N4X?t$K$D$$$F$O(B
@@ -6127,7 +6132,7 @@ Shimbun $B%i%$%V%i%j$N%3!<%G%#%s%05,Ls(B
 
 File: emacs-w3m-ja.info, Node: Tips, Next: Mailing List, Prev: Shimbun Library, Up: Top
 
-Emacs-w3m $B$r;H$&^/Mn$?>.J*$?$A(B
+Emacs-w3m $A$rJ9$&HwBd$?P!No$?$A(B
 ******************************
 
 $BB>$N(B Emacs $B$N1~MQ5!G=$H$H$b$K(B emacs-w3m $B$rJXMx$K;H$&$?$a$N%R%s%H=8$G$9!#(B
@@ -6251,7 +6256,7 @@ Emacs-w3m $B$r;H$&^/Mn$?>.J*$?$A(B
 
 File: emacs-w3m-ja.info, Node: Mailing List, Next: Emacs-w3m Functions, Prev: Tips, Up: Top
 
-$B%a!<%j%s%0%j%9%H!"%P%0%j%]!<%H(B
+$A%a$B!<$A%j%s%0%j%9%H!"%P%0%j%]$B!<$A%H(B
 ******************************
 
 Emacs-w3m $B$K4X$9$k$9$Y$F$N$3$H$,$i$rOC$79g$&$?$a$N%a!<%j%s%0%j%9%H$,MQ(B
@@ -6288,7 +6293,7 @@ Emacs-w3m $B$K4X$9$k$9$Y$F$N$3$H$,$i$rOC$79g$&$?$a$N%a!<%j%s%0%j%9%H$,MQ(B
 
 File: emacs-w3m-ja.info, Node: Emacs-w3m Functions, Next: External Packages, Prev: Mailing List, Up: Top
 
-Emacs-w3m $B$N4X?t$N>\$7$$@bL@(B
+Emacs-w3m $A$N$(IJ=$AJ}$N$(Gf[$A$7$$$(IIf$ACw(B
 ****************************
 
 
@@ -6296,7 +6301,7 @@ Emacs-w3m $B$N4X?t$N>\$7$$@bL@(B
 
 File: emacs-w3m-ja.info, Node: External Packages, Next: Authors, Prev: Emacs-w3m Functions, Up: Top
 
-$B$*Cg4V$N%Q%C%1!<%8$?$A(B
+$A$*VY$(Gbf$A$N%Q%C%1$B!<$A%8$?$A(B
 **********************
 
 Emacs-w3m $B$O=aBt$J5!G=$rDs6!$7$^$9$,!"$5$i$KJXMx$K$9$k$?$a$K0J2<$N30It(B
@@ -6329,7 +6334,7 @@ Emacs-w3m $B$O=aBt$J5!G=$rDs6!$7$^$9$,!"$5$i$KJXMx$K$9$k$?$a$K0J2<$N30It(B
 
 File: emacs-w3m-ja.info, Node: Authors, Next: Index, Prev: External Packages, Up: Top
 
-$B$3$N%^%K%e%"%k$r=q$$$??M$?$A(B
+$A$3$N%^%K%e%"%k$r$(GUs$A$$$?HK$?$A(B
 ****************************
 
    * $BGr0f(B $B=(9T(B
@@ -6345,7 +6350,7 @@ File: emacs-w3m-ja.info, Node: Authors, Next: Index, Prev: External Packages, Up
 
 File: emacs-w3m-ja.info, Node: Index, Prev: Authors, Up: Top
 
-$B:w0z(B
+$AKwR}(B
 ****
 
 * Menu:
@@ -6359,29 +6364,29 @@ File: emacs-w3m-ja.info, Node: Index, Prev: Authors, Up: Top
 
 File: emacs-w3m-ja.info, Node: Concept Index, Next: Key Index, Prev: Index, Up: Index
 
-$B35G0:w0z(B
+$A8EDnKwR}(B
 ========
 
 * Menu:
 
 * about://antenna/:             Using Antenna.          (line   5)
+* $A%/%C%-$B!<$A$K$(IJ=$(G]Y$A$7$?$(I+y$AJ}(B:       Cookie Variables.       (line   5)
 * Adding a bookmark:            Adding Bookmarks.       (line   5)
 * Adding autoload settings:     Minimal Settings.       (line  12)
 * Adding new search engines:    Adding New Search Engines.  (line   5)
+* $A$=$NK{$N$(I+y$AJ}(B:                 Other Variables.        (line   5)
 * Antenna:                      Using Antenna.          (line   5)
+* $A;-Oq$K$(IJ=$(G]Y$A$7$?$(I+y$AJ}(B:           Image Variables.        (line   5)
 * APEL package:                 Other Requirements.     (line   5)
+* $AR;0c5D$J$(I+y$AJ}(B:                 General Variables.      (line   5)
 * Arrived URLs:                 Tracing History.        (line   5)
 * article expiry:               Nnshimbun.              (line 153)
+* $A%U%)$B!<$A%`$K$(IJ=$(G]Y$A$7$?$(I+y$AJ}(B:       Form Variables.         (line   5)
+* $A%U%C%/(B:                       Hooks.                  (line   5)
 * auto-expire:                  Nnshimbun.              (line 153)
-* $B0lHLE*$JJQ?t(B:                 General Variables.      (line   5)
-* $B2hA|$K4XO"$7$?JQ?t(B:           Image Variables.        (line   5)
-* $B%/%C%-!<$K4XO"$7$?JQ?t(B:       Cookie Variables.       (line   5)
-* $B$=$NB>$NJQ?t(B:                 Other Variables.        (line   5)
+* $A%V%C%/%^$B!<$A%/$K$(IJ=$(G]Y$A$7$?$(I+y$AJ}(B:   Bookmark Variables.     (line   5)
 * Bookmarks:                    Managing Bookmarks.     (line   5)
 * Browsing history:             Tracing History.        (line   5)
-* $B%U%C%/(B:                       Hooks.                  (line   5)
-* $B%U%)!<%`$K4XO"$7$?JQ?t(B:       Form Variables.         (line   5)
-* $B%V%C%/%^!<%/$K4XO"$7$?JQ?t(B:   Bookmark Variables.     (line   5)
 * codepage-ex:                  Other Requirements.     (line   5)
 * Consulting bookmarks:         Consulting Bookmarks.   (line   5)
 * Creating new buffers:         Creating and killing buffers.  (line   5)
@@ -6449,7 +6454,7 @@ File: emacs-w3m-ja.info, Node: Concept Index, Next: Key Index, Prev: Index, Up: 
 
 File: emacs-w3m-ja.info, Node: Key Index, Next: Variable Index, Prev: Concept Index, Up: Index
 
-$B%-!<%P%$%s%I:w0z(B
+$A%-$B!<$A%P%$%s%IKwR}(B
 ================
 
 * Menu:
@@ -6464,19 +6469,19 @@ File: emacs-w3m-ja.info, Node: Key Index, Next: Variable Index, Prev: Concept In
 * {:                            Moving in a page.       (line 108)
 * ^:                            Moving over pages.      (line  46)
 * +:                            Setting up Antenna.     (line  14)
-* . (Lynx-like $B%-!<%^%C%W(B):     Moving in a page.       (line  55)
-* , (Lynx-like $B%-!<%^%C%W(B):     Moving in a page.       (line  63)
+* . (Lynx-like $A%-$B!<$A%^%C%W(B):     Moving in a page.       (line  55)
+* , (Lynx-like $A%-$B!<$A%^%C%W(B):     Moving in a page.       (line  63)
 * a:                            Adding Bookmarks.       (line   5)
 * A:                            Daily web tracking.     (line  35)
 * b:                            Moving in a page.       (line  35)
 * b:                            Moving over pages.      (line 118)
-* B (Lynx-like $B%-!<%^%C%W(B):     Moving over pages.      (line  24)
+* B (Lynx-like $A%-$B!<$A%^%C%W(B):     Moving over pages.      (line  24)
 * <backspace>:                  Moving in a page.       (line  35)
 * <backspace>:                  Moving over pages.      (line 118)
 * <backtab>:                    Moving in a page.       (line  88)
 * C-?:                          Moving in a page.       (line  35)
 * C-?:                          Moving over pages.      (line 118)
-* c (Lynx-like $B%-!<%^%C%W(B):     Launching and Jumping.  (line  97)
+* c (Lynx-like $A%-$B!<$A%^%C%W(B):     Launching and Jumping.  (line  97)
 * C-c C-@:                      Tracing History.        (line  61)
 * C-c C-a:                      Selecting buffers.      (line  41)
 * C-c C-n:                      Moving across buffers.  (line  28)
@@ -6487,80 +6492,80 @@ File: emacs-w3m-ja.info, Node: Key Index, Next: Variable Index, Prev: Concept In
 * C-c C-v:                      Tracing History.        (line  65)
 * C-c C-w:                      Creating and killing buffers.  (line  25)
 * C-c M-w:                      Creating and killing buffers.  (line  29)
-* C-S-l (Info-like $B%-!<%^%C%W(B): Launching and Jumping.  (line 110)
+* C-S-l (Info-like $A%-$B!<$A%^%C%W(B): Launching and Jumping.  (line 110)
 * C-u a:                        Adding Bookmarks.       (line   5)
-* C-u o (Info-like $B%-!<%^%C%W(B): Tracing History.        (line  53)
-* C-u s (Lynx-like $B%-!<%^%C%W(B): Tracing History.        (line  53)
-* D (Info-like $B%-!<%^%C%W(B):     Downloading.            (line  23)
-* d (Info-like $B%-!<%^%C%W(B):     Downloading.            (line  30)
-* d (Lynx-like $B%-!<%^%C%W(B):     Downloading.            (line  23)
-* D (Lynx-like $B%-!<%^%C%W(B):     Showing Directory Tree.  (line  51)
+* C-u o (Info-like $A%-$B!<$A%^%C%W(B): Tracing History.        (line  53)
+* C-u s (Lynx-like $A%-$B!<$A%^%C%W(B): Tracing History.        (line  53)
+* D (Info-like $A%-$B!<$A%^%C%W(B):     Downloading.            (line  23)
+* d (Info-like $A%-$B!<$A%^%C%W(B):     Downloading.            (line  30)
+* d (Lynx-like $A%-$B!<$A%^%C%W(B):     Downloading.            (line  23)
+* D (Lynx-like $A%-$B!<$A%^%C%W(B):     Showing Directory Tree.  (line  51)
 * <DEL>:                        Moving in a page.       (line  35)
 * <DEL>:                        Moving over pages.      (line 118)
-* <down> (Lynx-like $B%-!<%^%C%W(B): Moving in a page.      (line  77)
-* e (Info-like $B%-!<%^%C%W(B):     HTML File Information.  (line  40)
-* E (Info-like $B%-!<%^%C%W(B):     HTML File Information.  (line  46)
-* E (Lynx-like $B%-!<%^%C%W(B):     HTML File Information.  (line  40)
-* e (Lynx-like $B%-!<%^%C%W(B):     HTML File Information.  (line  46)
+* <down> (Lynx-like $A%-$B!<$A%^%C%W(B): Moving in a page.      (line  77)
+* e (Info-like $A%-$B!<$A%^%C%W(B):     HTML File Information.  (line  40)
+* E (Info-like $A%-$B!<$A%^%C%W(B):     HTML File Information.  (line  46)
+* E (Lynx-like $A%-$B!<$A%^%C%W(B):     HTML File Information.  (line  40)
+* e (Lynx-like $A%-$B!<$A%^%C%W(B):     HTML File Information.  (line  46)
 * g:                            Launching and Jumping.  (line  79)
 * G:                            Launching and Jumping.  (line  86)
 * H:                            Moving over pages.      (line  40)
-* I (Info-like $B%-!<%^%C%W(B):     Inline Images.          (line  31)
-* i (Info-like $B%-!<%^%C%W(B):     Inline Images.          (line  54)
-* I (Lynx-like $B%-!<%^%C%W(B):     Inline Images.          (line  70)
-* l (Info-like $B%-!<%^%C%W(B):     Moving over pages.      (line  24)
-* <left> (Lynx-like $B%-!<%^%C%W(B): Moving over pages.     (line  24)
+* I (Info-like $A%-$B!<$A%^%C%W(B):     Inline Images.          (line  31)
+* i (Info-like $A%-$B!<$A%^%C%W(B):     Inline Images.          (line  54)
+* I (Lynx-like $A%-$B!<$A%^%C%W(B):     Inline Images.          (line  70)
+* l (Info-like $A%-$B!<$A%^%C%W(B):     Moving over pages.      (line  24)
+* <left> (Lynx-like $A%-$B!<$A%^%C%W(B): Moving over pages.     (line  24)
 * M:                            HTML File Information.  (line  51)
 * M-[:                          Inline Images.          (line  81)
 * M-]:                          Inline Images.          (line  86)
 * M-a:                          Adding Bookmarks.       (line   5)
-* M-d (Lynx-like $B%-!<%^%C%W(B):   Downloading.            (line  30)
+* M-d (Lynx-like $A%-$B!<$A%^%C%W(B):   Downloading.            (line  30)
 * M-i:                          Inline Images.          (line  74)
-* M-I (Info-like $B%-!<%^%C%W(B):   Inline Images.          (line  65)
+* M-I (Info-like $A%-$B!<$A%^%C%W(B):   Inline Images.          (line  65)
 * M-l:                          Moving in a page.       (line  69)
 * M-n:                          Creating and killing buffers.  (line  19)
 * mouse-2:                      Browsing With Mouse Operations.  (line  20)
 * `M-S':                        Session Manager.        (line   8)
 * `M-s':                        Session Manager.        (line  11)
-* M-T (Lynx-like $B%-!<%^%C%W(B):   Inline Images.          (line  65)
+* M-T (Lynx-like $A%-$B!<$A%^%C%W(B):   Inline Images.          (line  65)
 * M-<TAB>:                      Moving in a page.       (line  88)
-* n (Info-like $B%-!<%^%C%W(B):     Moving over pages.      (line  32)
-* N (Lynx-like $B%-!<%^%C%W(B):     Moving over pages.      (line  32)
-* o (Info-like $B%-!<%^%C%W(B):     Tracing History.        (line  53)
-* p (Info-like $B%-!<%^%C%W(B):     Moving over pages.      (line  24)
+* n (Info-like $A%-$B!<$A%^%C%W(B):     Moving over pages.      (line  32)
+* N (Lynx-like $A%-$B!<$A%^%C%W(B):     Moving over pages.      (line  32)
+* o (Info-like $A%-$B!<$A%^%C%W(B):     Tracing History.        (line  53)
+* p (Info-like $A%-$B!<$A%^%C%W(B):     Moving over pages.      (line  24)
 * q:                            Going back to daily hacking and/or daily writing.  (line  19)
 * Q:                            Going back to daily hacking and/or daily writing.  (line  24)
 * R:                            Launching and Jumping.  (line 110)
 * <RET>:                        Launching and Jumping.  (line  58)
 * <RET>:                        Launching and Jumping.  (line  70)
-* <right> (Lynx-like $B%-!<%^%C%W(B): Launching and Jumping.  (line  58)
-* s (Info-like $B%-!<%^%C%W(B):     The Search Interface.   (line  32)
-* S (Lynx-like $B%-!<%^%C%W(B):     The Search Interface.   (line  32)
-* s (Lynx-like $B%-!<%^%C%W(B):     Tracing History.        (line  53)
-* S-<left> (Info-like $B%-!<%^%C%W(B): Moving in a page.    (line  55)
+* <right> (Lynx-like $A%-$B!<$A%^%C%W(B): Launching and Jumping.  (line  58)
+* s (Info-like $A%-$B!<$A%^%C%W(B):     The Search Interface.   (line  32)
+* S (Lynx-like $A%-$B!<$A%^%C%W(B):     The Search Interface.   (line  32)
+* s (Lynx-like $A%-$B!<$A%^%C%W(B):     Tracing History.        (line  53)
+* S-<left> (Info-like $A%-$B!<$A%^%C%W(B): Moving in a page.    (line  55)
 * S-<mouse-2>:                  Browsing With Mouse Operations.  (line  25)
 * <SPC>:                        Moving in a page.       (line  21)
 * <SPC>:                        Moving over pages.      (line  63)
-* S-<right> (Info-like $B%-!<%^%C%W(B): Moving in a page.   (line  63)
+* S-<right> (Info-like $A%-$B!<$A%^%C%W(B): Moving in a page.   (line  63)
 * S-<SPC>:                      Moving in a page.       (line  35)
 * S-<SPC>:                      Moving over pages.      (line 118)
 * S-<TAB>:                      Moving in a page.       (line  88)
-* T (Info-like $B%-!<%^%C%W(B):     Showing Directory Tree.  (line  51)
-* T (Lynx-like $B%-!<%^%C%W(B):     Inline Images.          (line  31)
-* t (Lynx-like $B%-!<%^%C%W(B):     Inline Images.          (line  54)
+* T (Info-like $A%-$B!<$A%^%C%W(B):     Showing Directory Tree.  (line  51)
+* T (Lynx-like $A%-$B!<$A%^%C%W(B):     Inline Images.          (line  31)
+* t (Lynx-like $A%-$B!<$A%^%C%W(B):     Inline Images.          (line  54)
 * <TAB>:                        Moving in a page.       (line  77)
-* u (Info-like $B%-!<%^%C%W(B):     Moving over pages.      (line  46)
-* u (Lynx-like $B%-!<%^%C%W(B):     Launching and Jumping.  (line 104)
-* <up> (Lynx-like $B%-!<%^%C%W(B):  Moving in a page.       (line  88)
+* u (Info-like $A%-$B!<$A%^%C%W(B):     Moving over pages.      (line  46)
+* u (Lynx-like $A%-$B!<$A%^%C%W(B):     Launching and Jumping.  (line 104)
+* <up> (Lynx-like $A%-$B!<$A%^%C%W(B):  Moving in a page.       (line  88)
 * v:                            Consulting Bookmarks.   (line   5)
-* y (Info-like $B%-!<%^%C%W(B):     Launching and Jumping.  (line  97)
-* Y (Info-like $B%-!<%^%C%W(B):     Launching and Jumping.  (line 104)
+* y (Info-like $A%-$B!<$A%^%C%W(B):     Launching and Jumping.  (line  97)
+* Y (Info-like $A%-$B!<$A%^%C%W(B):     Launching and Jumping.  (line 104)
 
 
 
 File: emacs-w3m-ja.info, Node: Variable Index, Next: Function Index, Prev: Key Index, Up: Index
 
-$BJQ?t:w0z(B
+$(I+y$AJ}KwR}(B
 ========
 
 * Menu:
@@ -6631,6 +6636,7 @@ File: emacs-w3m-ja.info, Node: Variable Index, Next: Function Index, Prev: Key I
 * w3m-delete-duplicated-empty-lines: General Variables.  (line 193)
 * w3m-dirlist-cgi-program:      General Variables.      (line 197)
 * w3m-display-hook:             Hooks.                  (line  18)
+* w3m-do-cleanup-temp-files:    General Variables.      (line 718)
 * w3m-doc-view-content-types:   General Variables.      (line 202)
 * w3m-dtree-default-allfiles:   Dtree Variables.        (line   8)
 * w3m-dtree-directory-depth:    Dtree Variables.        (line  15)
@@ -6688,11 +6694,11 @@ File: emacs-w3m-ja.info, Node: Variable Index, Next: Function Index, Prev: Key I
 * w3m-local-directory-view-method: General Variables.   (line 327)
 * w3m-local-find-file-function: General Variables.      (line 334)
 * w3m-local-find-file-regexps:  General Variables.      (line 346)
-* w3m-mailto-url-function:      General Variables.      (line 374)
-* w3m-mailto-url-popup-function-alist: General Variables.  (line 381)
-* w3m-make-new-session:         General Variables.      (line 392)
-* w3m-mbconv-command:           General Variables.      (line 402)
-* w3m-menu-on-forefront:        General Variables.      (line 686)
+* w3m-mailto-url-function:      General Variables.      (line 371)
+* w3m-mailto-url-popup-function-alist: General Variables.  (line 378)
+* w3m-make-new-session:         General Variables.      (line 389)
+* w3m-mbconv-command:           General Variables.      (line 399)
+* w3m-menu-on-forefront:        General Variables.      (line 683)
 * w3m-minor-mode:               Gnus.                   (line   5)
 * w3m-minor-mode-command-alist: Gnus.                   (line   5)
 * w3m-minor-mode-hook:          Hooks.                  (line  58)
@@ -6706,9 +6712,9 @@ File: emacs-w3m-ja.info, Node: Variable Index, Next: Function Index, Prev: Key I
 * w3m-namazu-input-coding-system: Namazu Variables.     (line  34)
 * w3m-namazu-output-coding-system: Namazu Variables.    (line  40)
 * w3m-namazu-page-max:          Namazu Variables.       (line  46)
-* w3m-new-session-in-background: General Variables.     (line 716)
+* w3m-new-session-in-background: General Variables.     (line 713)
 * w3m-no-proxy-domains:         Minimal Settings.       (line  33)
-* w3m-output-coding-system:     General Variables.      (line 414)
+* w3m-output-coding-system:     General Variables.      (line 411)
 * w3m-perldoc-command:          Perldoc Variables.      (line   8)
 * w3m-perldoc-input-coding-system: Perldoc Variables.   (line  13)
 * w3m-perldoc-output-coding-system: Perldoc Variables.  (line  20)
@@ -6716,26 +6722,27 @@ File: emacs-w3m-ja.info, Node: Variable Index, Next: Function Index, Prev: Key I
 * w3m-perldoc-pod2html-command: Perldoc Variables.      (line  25)
 * w3m-pixels-per-character:     Image Variables.        (line  66)
 * w3m-pixels-per-line:          Image Variables.        (line  75)
-* w3m-popup-frame-parameters:   General Variables.      (line 437)
-* w3m-pop-up-frames:            General Variables.      (line 418)
-* w3m-pop-up-windows:           General Variables.      (line 427)
-* w3m-prefer-cache:             General Variables.      (line 443)
+* w3m-popup-frame-parameters:   General Variables.      (line 434)
+* w3m-pop-up-frames:            General Variables.      (line 415)
+* w3m-pop-up-windows:           General Variables.      (line 424)
+* w3m-prefer-cache:             General Variables.      (line 440)
 * w3m-process-connection-type:  Other Variables.        (line  52)
 * w3m-process-modeline-format:  Other Variables.        (line  57)
-* w3m-profile-directory:        General Variables.      (line 448)
+* w3m-profile-directory:        General Variables.      (line 445)
 * w3m-quick-start:              Launching and Jumping.  (line  20)
 * w3m-quick-start:              Moving over pages.      (line  40)
-* w3m-redirect-with-get:        General Variables.      (line 462)
-* w3m-refresh-minimum-interval: General Variables.      (line 675)
-* w3m-relationship-estimate-rules: General Variables.   (line 474)
+* w3m-redirect-with-get:        General Variables.      (line 459)
+* w3m-refresh-minimum-interval: General Variables.      (line 672)
+* w3m-relationship-estimate-rules: General Variables.   (line 471)
 * w3m-resize-images:            Image Variables.        (line  89)
 * w3m-resize-image-scale:       Image Variables.        (line  85)
 * w3m-search-default-engine:    The Search Interface.   (line  32)
 * w3m-search-engine-alist:      Quick Searching.        (line   5)
+* w3m-search-thing-at-point-arg: Search Variables.      (line  29)
 * w3m-search-word-at-point:     Search Variables.       (line  23)
 * w3m-select-buffer-hook:       Hooks.                  (line  67)
-* w3m-select-buffer-horizontal-window: General Variables.  (line 479)
-* w3m-select-buffer-window-ratio: General Variables.    (line 484)
+* w3m-select-buffer-horizontal-window: General Variables.  (line 476)
+* w3m-select-buffer-window-ratio: General Variables.    (line 481)
 * w3m-session-automatic-keep-number: Session Manager Variables.  (line  32)
 * w3m-session-automatic-save:   Session Manager.        (line  40)
 * w3m-session-automatic-title:  Session Manager Variables.  (line  16)
@@ -6750,38 +6757,38 @@ File: emacs-w3m-ja.info, Node: Variable Index, Next: Function Index, Prev: Key I
 * w3m-session-time-format:      Session Manager Variables.  (line  12)
 * w3m-session-unknown-title:    Session Manager Variables.  (line  36)
 * w3m-show-current-title-in-buffer-tab: Other Variables.  (line  63)
-* w3m-show-decoded-url:         General Variables.      (line 490)
-* w3m-show-error-information:   General Variables.      (line 530)
+* w3m-show-decoded-url:         General Variables.      (line 487)
+* w3m-show-error-information:   General Variables.      (line 527)
 * w3m-show-graphic-icons-in-header-line: Image Variables.  (line  93)
 * w3m-show-graphic-icons-in-mode-line: Image Variables.  (line 100)
-* w3m-space-before-favicon:     General Variables.      (line 536)
-* w3m-space-before-modeline-icon: General Variables.    (line 542)
-* w3m-submit-form-safety-check: General Variables.      (line 650)
+* w3m-space-before-favicon:     General Variables.      (line 533)
+* w3m-space-before-modeline-icon: General Variables.    (line 539)
+* w3m-submit-form-safety-check: General Variables.      (line 647)
 * w3m-tab-mouse-position-adjuster: Using Tabs.          (line  63)
 * w3m-tab-track-mouse:          Using Tabs.             (line  56)
-* w3m-terminal-coding-system:   General Variables.      (line 548)
+* w3m-terminal-coding-system:   General Variables.      (line 545)
 * w3m-toggle-inline-images-permanently: Image Variables.  (line 106)
-* w3m-touch-command:            General Variables.      (line 556)
-* w3m-track-mouse:              General Variables.      (line 562)
+* w3m-touch-command:            General Variables.      (line 553)
+* w3m-track-mouse:              General Variables.      (line 559)
 * w3m-treat-image-size:         Image Variables.        (line  53)
 * w3m-uri-replace-alist:        Quick Searching.        (line   5)
-* w3m-url-local-directory-alist: General Variables.     (line 618)
-* w3m-use-ange-ftp:             General Variables.      (line 627)
+* w3m-url-local-directory-alist: General Variables.     (line 615)
+* w3m-use-ange-ftp:             General Variables.      (line 624)
 * w3m-use-cookies:              Cookie Variables.       (line  25)
-* w3m-use-cygdrive:             General Variables.      (line 632)
+* w3m-use-cygdrive:             General Variables.      (line 629)
 * w3m-use-favicon:              Image Variables.        (line 117)
-* w3m-use-filter:               General Variables.      (line 637)
-* w3m-use-form:                 General Variables.      (line 645)
-* w3m-use-header-line:          General Variables.      (line 655)
-* w3m-use-header-line-title:    General Variables.      (line 659)
-* w3m-use-mule-ucs:             General Variables.      (line 665)
-* w3m-user-agent:               General Variables.      (line 711)
-* w3m-use-refresh:              General Variables.      (line 669)
-* w3m-use-symbol:               General Variables.      (line 680)
+* w3m-use-filter:               General Variables.      (line 634)
+* w3m-use-form:                 General Variables.      (line 642)
+* w3m-use-header-line:          General Variables.      (line 652)
+* w3m-use-header-line-title:    General Variables.      (line 656)
+* w3m-use-mule-ucs:             General Variables.      (line 662)
+* w3m-user-agent:               General Variables.      (line 708)
+* w3m-use-refresh:              General Variables.      (line 666)
+* w3m-use-symbol:               General Variables.      (line 677)
 * w3m-use-tab:                  Using Tabs.             (line  47)
-* w3m-use-tab-menubar:          General Variables.      (line 698)
-* w3m-use-title-buffer-name:    General Variables.      (line 526)
-* w3m-use-toolbar:              General Variables.      (line 707)
+* w3m-use-tab-menubar:          General Variables.      (line 695)
+* w3m-use-title-buffer-name:    General Variables.      (line 523)
+* w3m-use-toolbar:              General Variables.      (line 704)
 * w3m-weather-default-area:     Weather Variables.      (line   8)
 * w3m-weather-filter-functions: Weather Variables.      (line  13)
 
@@ -6789,7 +6796,7 @@ File: emacs-w3m-ja.info, Node: Variable Index, Next: Function Index, Prev: Key I
 
 File: emacs-w3m-ja.info, Node: Function Index, Prev: Variable Index, Up: Index
 
-$B4X?t:w0z(B
+$(IJ=$AJ}KwR}(B
 ========
 
 * Menu:
@@ -6832,7 +6839,7 @@ File: emacs-w3m-ja.info, Node: Function Index, Prev: Variable Index, Up: Index
 * w3m-next-buffer:              Moving across buffers.  (line  28)
 * w3m-next-form:                Moving in a page.       (line  93)
 * w3m-next-image:               Moving in a page.       (line 103)
-* w3m-pattern-uri-replace:      General Variables.      (line 604)
+* w3m-pattern-uri-replace:      General Variables.      (line 601)
 * w3m-previous-anchor:          Moving in a page.       (line  88)
 * w3m-previous-buffer:          Moving across buffers.  (line  22)
 * w3m-previous-form:            Moving in a page.       (line  98)
@@ -6849,7 +6856,7 @@ File: emacs-w3m-ja.info, Node: Function Index, Prev: Variable Index, Up: Index
 * w3m-scroll-up-or-next-url:    Moving in a page.       (line  21)
 * w3m-scroll-up-or-next-url:    Moving over pages.      (line  63)
 * w3m-search:                   The Search Interface.   (line  32)
-* w3m-search-uri-replace:       General Variables.      (line 610)
+* w3m-search-uri-replace:       General Variables.      (line 607)
 * w3m-select-buffer:            Selecting buffers.      (line  46)
 * w3m-session-select:           Session Manager.        (line  11)
 * w3m-session-select-delete:    Session Manager.        (line  26)
@@ -6930,58 +6937,58 @@ Node: Frame Local Buffers60436
 Node: Session Manager61472
 Node: Customizable Variables63081
 Node: General Variables65137
-Node: Image Variables87360
-Node: Form Variables91267
-Node: Cookie Variables92161
-Node: Bookmark Variables92782
-Node: Search Variables93578
-Node: Weather Variables94615
-Node: Dtree Variables95199
-Node: Antenna Variables96156
-Node: Perldoc Variables97435
-Node: Namazu Variables98347
-Node: Octet Variables100051
-Node: Session Manager Variables100294
-Node: Hooks100951
-Node: Other Variables102748
-Node: Hooking into MUAs105229
-Node: Gnus106027
-Node: Mew109495
-Node: SEMI MUAs111142
-Node: VM113106
-Node: Frequently Asked Questions113407
-Node: General FAQ113697
-Node: Trouble FAQ115098
-Node: Shimbun FAQ122103
-Node: Known Problems122661
-Node: Shimbun Library122820
-Node: Nnshimbun124590
-Node: Mew Shimbun132947
-Node: Shimbun with Wanderlust140421
-Node: Shimbun local mode140744
-Node: Shimbun Sites141935
-Node: Newspapers Supported by Shimbun142357
-Node: News Sites Supported by Shimbun152041
-Node: Mailing Lists Supported by Shimbun160407
-Node: Sport Sites Supported by Shimbun173397
-Node: Misc Sites Supported by Shimbun174142
-Node: Shimbun Basics184167
-Node: Overview184790
-Node: Getting web page and header information187068
-Node: Displaying an article191740
-Node: Inheriting shimbun module193755
-Node: Making text/plain articles195644
-Node: Zenkaku to hankaku conversion197311
-Node: Coding convention of Shimbun197954
-Node: Tips198798
-Node: Mailing List202904
-Node: Emacs-w3m Functions203794
-Node: External Packages203954
-Node: Authors204821
-Node: Index205056
-Node: Concept Index205292
-Node: Key Index210912
-Node: Variable Index218171
-Node: Function Index233111
+Node: Image Variables87374
+Node: Form Variables91281
+Node: Cookie Variables92175
+Node: Bookmark Variables92796
+Node: Search Variables93592
+Node: Weather Variables94740
+Node: Dtree Variables95324
+Node: Antenna Variables96281
+Node: Perldoc Variables97560
+Node: Namazu Variables98472
+Node: Octet Variables100176
+Node: Session Manager Variables100419
+Node: Hooks101076
+Node: Other Variables102873
+Node: Hooking into MUAs105354
+Node: Gnus106152
+Node: Mew109620
+Node: SEMI MUAs111267
+Node: VM113231
+Node: Frequently Asked Questions113532
+Node: General FAQ113822
+Node: Trouble FAQ115223
+Node: Shimbun FAQ122228
+Node: Known Problems122786
+Node: Shimbun Library122945
+Node: Nnshimbun124715
+Node: Mew Shimbun133071
+Node: Shimbun with Wanderlust140544
+Node: Shimbun local mode140867
+Node: Shimbun Sites142058
+Node: Newspapers Supported by Shimbun142480
+Node: News Sites Supported by Shimbun152164
+Node: Mailing Lists Supported by Shimbun160530
+Node: Sport Sites Supported by Shimbun173520
+Node: Misc Sites Supported by Shimbun174265
+Node: Shimbun Basics184290
+Node: Overview184913
+Node: Getting web page and header information187191
+Node: Displaying an article191863
+Node: Inheriting shimbun module193878
+Node: Making text/plain articles195766
+Node: Zenkaku to hankaku conversion197433
+Node: Coding convention of Shimbun198076
+Node: Tips198920
+Node: Mailing List203026
+Node: Emacs-w3m Functions203916
+Node: External Packages204076
+Node: Authors204943
+Node: Index205178
+Node: Concept Index205414
+Node: Key Index211138
+Node: Variable Index218649
+Node: Function Index233723
 
 End tag table

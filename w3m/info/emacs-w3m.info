@@ -26,7 +26,7 @@ END-INFO-DIR-ENTRY
 
    This file documents emacs-w3m, an Emacs interface to w3m.
 
-   This edition is for emacs-w3m version 1.4.360.
+   This edition is for emacs-w3m version 1.4.364.
 
 
 File: emacs-w3m.info,  Node: Top,  Next: Introduction,  Up: (dir)
@@ -36,7 +36,7 @@ Emacs-w3m User's Manual
 
                                          The emacs-w3m development team
 
-   This manual corresponds to emacs-w3m version 1.4.360.
+   This manual corresponds to emacs-w3m version 1.4.364.
 
    Copyright (C) 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008,
 2009 TSUCHIYA Masatoshi
@@ -373,8 +373,8 @@ Non-UNIX-like systems::.
   1. First, extract a tarball of the emacs-w3m distribution and enter
      the top directory as follows:
 
-          % tar zxf emacs-w3m-1.4.360.tar.gz
-          % cd emacs-w3m-1.4.360
+          % tar zxf emacs-w3m-1.4.364.tar.gz
+          % cd emacs-w3m-1.4.364
 
      If you've checked out emacs-w3m from CVS, you have to run
      `autoconf' with no argument to generate the `configure' script.
@@ -2502,9 +2502,6 @@ File: emacs-w3m.info,  Node: General Variables,  Next: Image Variables,  Up: Cus
           (setq w3m-local-find-file-regexps
                 '(nil . "\\.\\(?:[sx]?html?\\|dvi\\|ps\\|pdf\\)\\'"))
 
-     See also `w3m-use-doc-view-mode', which you will need to modify for
-     such a case.
-
      It is effective only when the `w3m-local-find-file-function'
      variable is set properly.
 
@@ -2809,6 +2806,10 @@ File: emacs-w3m.info,  Node: General Variables,  Next: Image Variables,  Up: Cus
      Say whether not to focus on a new tab or a new session in target.
      It influences only when a new emacs-w3m buffer is created.
 
+`w3m-do-cleanup-temp-files'
+     Non-`nil' enables emacs-w3m's auto cleanig forgotten temporary
+     files feature. The default is `nil'.
+
 
 File: emacs-w3m.info,  Node: Image Variables,  Next: Form Variables,  Prev: General Variables,  Up: Customizable Variables
 
@@ -3020,6 +3021,10 @@ File: emacs-w3m.info,  Node: Search Variables,  Next: Weather Variables,  Prev: 
      Non-`nil' means that the word at point is used as an initial
      string.  If `transient-mark-mode', this option is ignored and the
      region is used as an initial string.  The default is `t'.
+
+`w3m-search-thing-at-point-arg'
+     Argument for `thing-at-point' used in `w3m-search-read-query'. The
+     default is `word'.
 
 
 File: emacs-w3m.info,  Node: Weather Variables,  Next: Dtree Variables,  Prev: Search Variables,  Up: Customizable Variables
@@ -6571,6 +6576,7 @@ Variable Index
 * w3m-delete-duplicated-empty-lines:     General Variables.   (line 181)
 * w3m-dirlist-cgi-program:               General Variables.   (line 185)
 * w3m-display-hook:                      Hooks.               (line  15)
+* w3m-do-cleanup-temp-files:             General Variables.   (line 642)
 * w3m-doc-view-content-types:            General Variables.   (line 189)
 * w3m-dtree-default-allfiles:            Dtree Variables.     (line   7)
 * w3m-dtree-directory-depth:             Dtree Variables.     (line  13)
@@ -6628,11 +6634,11 @@ Variable Index
 * w3m-local-directory-view-method:       General Variables.   (line 300)
 * w3m-local-find-file-function:          General Variables.   (line 306)
 * w3m-local-find-file-regexps:           General Variables.   (line 317)
-* w3m-mailto-url-function:               General Variables.   (line 344)
-* w3m-mailto-url-popup-function-alist:   General Variables.   (line 350)
-* w3m-make-new-session:                  General Variables.   (line 360)
-* w3m-mbconv-command:                    General Variables.   (line 368)
-* w3m-menu-on-forefront:                 General Variables.   (line 616)
+* w3m-mailto-url-function:               General Variables.   (line 341)
+* w3m-mailto-url-popup-function-alist:   General Variables.   (line 347)
+* w3m-make-new-session:                  General Variables.   (line 357)
+* w3m-mbconv-command:                    General Variables.   (line 365)
+* w3m-menu-on-forefront:                 General Variables.   (line 613)
 * w3m-minor-mode:                        Gnus.                (line   6)
 * w3m-minor-mode-command-alist:          Gnus.                (line   6)
 * w3m-minor-mode-hook:                   Hooks.               (line  46)
@@ -6644,9 +6650,9 @@ Variable Index
 * w3m-namazu-input-coding-system:        Namazu Variables.    (line  29)
 * w3m-namazu-output-coding-system:       Namazu Variables.    (line  34)
 * w3m-namazu-page-max:                   Namazu Variables.    (line  40)
-* w3m-new-session-in-background:         General Variables.   (line 641)
+* w3m-new-session-in-background:         General Variables.   (line 638)
 * w3m-no-proxy-domains:                  Minimal Settings.    (line  27)
-* w3m-output-coding-system:              General Variables.   (line 378)
+* w3m-output-coding-system:              General Variables.   (line 375)
 * w3m-perldoc-command:                   Perldoc Variables.   (line   7)
 * w3m-perldoc-input-coding-system:       Perldoc Variables.   (line  11)
 * w3m-perldoc-output-coding-system:      Perldoc Variables.   (line  17)
@@ -6654,28 +6660,29 @@ Variable Index
 * w3m-perldoc-pod2html-command:          Perldoc Variables.   (line  21)
 * w3m-pixels-per-character:              Image Variables.     (line  59)
 * w3m-pixels-per-line:                   Image Variables.     (line  67)
-* w3m-pop-up-frames:                     General Variables.   (line 381)
-* w3m-pop-up-windows:                    General Variables.   (line 389)
-* w3m-popup-frame-parameters:            General Variables.   (line 398)
-* w3m-prefer-cache:                      General Variables.   (line 403)
+* w3m-pop-up-frames:                     General Variables.   (line 378)
+* w3m-pop-up-windows:                    General Variables.   (line 386)
+* w3m-popup-frame-parameters:            General Variables.   (line 395)
+* w3m-prefer-cache:                      General Variables.   (line 400)
 * w3m-process-connection-type:           Other Variables.     (line  47)
 * w3m-process-modeline-format:           Other Variables.     (line  51)
-* w3m-profile-directory:                 General Variables.   (line 407)
+* w3m-profile-directory:                 General Variables.   (line 404)
 * w3m-quick-start <1>:                   Launching and Jumping.
                                                               (line  18)
 * w3m-quick-start:                       Moving over pages.   (line  32)
-* w3m-redirect-with-get:                 General Variables.   (line 418)
-* w3m-refresh-minimum-interval:          General Variables.   (line 607)
-* w3m-relationship-estimate-rules:       General Variables.   (line 429)
+* w3m-redirect-with-get:                 General Variables.   (line 415)
+* w3m-refresh-minimum-interval:          General Variables.   (line 604)
+* w3m-relationship-estimate-rules:       General Variables.   (line 426)
 * w3m-resize-image-scale:                Image Variables.     (line  76)
 * w3m-resize-images:                     Image Variables.     (line  79)
 * w3m-search-default-engine:             The Search Interface.
                                                               (line  30)
 * w3m-search-engine-alist:               Quick Searching.     (line   6)
+* w3m-search-thing-at-point-arg:         Search Variables.    (line  25)
 * w3m-search-word-at-point:              Search Variables.    (line  20)
 * w3m-select-buffer-hook:                Hooks.               (line  53)
-* w3m-select-buffer-horizontal-window:   General Variables.   (line 433)
-* w3m-select-buffer-window-ratio:        General Variables.   (line 437)
+* w3m-select-buffer-horizontal-window:   General Variables.   (line 430)
+* w3m-select-buffer-window-ratio:        General Variables.   (line 434)
 * w3m-session-automatic-keep-number:     Session Manager Variables.
                                                               (line  25)
 * w3m-session-automatic-save:            Session Manager.     (line  40)
@@ -6698,38 +6705,38 @@ Variable Index
 * w3m-session-unknown-title:             Session Manager Variables.
                                                               (line  28)
 * w3m-show-current-title-in-buffer-tab:  Other Variables.     (line  56)
-* w3m-show-decoded-url:                  General Variables.   (line 442)
-* w3m-show-error-information:            General Variables.   (line 480)
+* w3m-show-decoded-url:                  General Variables.   (line 439)
+* w3m-show-error-information:            General Variables.   (line 477)
 * w3m-show-graphic-icons-in-header-line: Image Variables.     (line  82)
 * w3m-show-graphic-icons-in-mode-line:   Image Variables.     (line  88)
-* w3m-space-before-favicon:              General Variables.   (line 485)
-* w3m-space-before-modeline-icon:        General Variables.   (line 490)
-* w3m-submit-form-safety-check:          General Variables.   (line 588)
+* w3m-space-before-favicon:              General Variables.   (line 482)
+* w3m-space-before-modeline-icon:        General Variables.   (line 487)
+* w3m-submit-form-safety-check:          General Variables.   (line 585)
 * w3m-tab-mouse-position-adjuster:       Using Tabs.          (line  60)
 * w3m-tab-track-mouse:                   Using Tabs.          (line  54)
-* w3m-terminal-coding-system:            General Variables.   (line 495)
+* w3m-terminal-coding-system:            General Variables.   (line 492)
 * w3m-toggle-inline-images-permanently:  Image Variables.     (line  93)
-* w3m-touch-command:                     General Variables.   (line 502)
-* w3m-track-mouse:                       General Variables.   (line 507)
+* w3m-touch-command:                     General Variables.   (line 499)
+* w3m-track-mouse:                       General Variables.   (line 504)
 * w3m-treat-image-size:                  Image Variables.     (line  46)
 * w3m-uri-replace-alist:                 Quick Searching.     (line   6)
-* w3m-url-local-directory-alist:         General Variables.   (line 561)
-* w3m-use-ange-ftp:                      General Variables.   (line 569)
+* w3m-url-local-directory-alist:         General Variables.   (line 558)
+* w3m-use-ange-ftp:                      General Variables.   (line 566)
 * w3m-use-cookies:                       Cookie Variables.    (line  20)
-* w3m-use-cygdrive:                      General Variables.   (line 573)
+* w3m-use-cygdrive:                      General Variables.   (line 570)
 * w3m-use-favicon:                       Image Variables.     (line 103)
-* w3m-use-filter:                        General Variables.   (line 577)
-* w3m-use-form:                          General Variables.   (line 584)
-* w3m-use-header-line:                   General Variables.   (line 592)
-* w3m-use-header-line-title:             General Variables.   (line 595)
-* w3m-use-mule-ucs:                      General Variables.   (line 599)
-* w3m-use-refresh:                       General Variables.   (line 602)
-* w3m-use-symbol:                        General Variables.   (line 611)
+* w3m-use-filter:                        General Variables.   (line 574)
+* w3m-use-form:                          General Variables.   (line 581)
+* w3m-use-header-line:                   General Variables.   (line 589)
+* w3m-use-header-line-title:             General Variables.   (line 592)
+* w3m-use-mule-ucs:                      General Variables.   (line 596)
+* w3m-use-refresh:                       General Variables.   (line 599)
+* w3m-use-symbol:                        General Variables.   (line 608)
 * w3m-use-tab:                           Using Tabs.          (line  45)
-* w3m-use-tab-menubar:                   General Variables.   (line 626)
-* w3m-use-title-buffer-name:             General Variables.   (line 477)
-* w3m-use-toolbar:                       General Variables.   (line 634)
-* w3m-user-agent:                        General Variables.   (line 637)
+* w3m-use-tab-menubar:                   General Variables.   (line 623)
+* w3m-use-title-buffer-name:             General Variables.   (line 474)
+* w3m-use-toolbar:                       General Variables.   (line 631)
+* w3m-user-agent:                        General Variables.   (line 634)
 * w3m-weather-default-area:              Weather Variables.   (line   7)
 * w3m-weather-filter-functions:          Weather Variables.   (line  11)
 
@@ -6796,7 +6803,7 @@ Function Index
                                                               (line  27)
 * w3m-next-form:                         Moving in a page.    (line  86)
 * w3m-next-image:                        Moving in a page.    (line  94)
-* w3m-pattern-uri-replace:               General Variables.   (line 547)
+* w3m-pattern-uri-replace:               General Variables.   (line 544)
 * w3m-previous-anchor:                   Moving in a page.    (line  81)
 * w3m-previous-buffer:                   Moving across buffers.
                                                               (line  22)
@@ -6819,7 +6826,7 @@ Function Index
 * w3m-scroll-up-or-next-url:             Moving over pages.   (line  61)
 * w3m-search:                            The Search Interface.
                                                               (line  30)
-* w3m-search-uri-replace:                General Variables.   (line 552)
+* w3m-search-uri-replace:                General Variables.   (line 549)
 * w3m-select-buffer:                     Selecting buffers.   (line  47)
 * w3m-session-select:                    Session Manager.     (line  11)
 * w3m-session-select-delete:             Session Manager.     (line  23)
@@ -6910,69 +6917,69 @@ Node: Frame Local Buffers83116
 Node: Session Manager84717
 Node: Customizable Variables86951
 Node: General Variables89787
-Node: Image Variables115971
-Node: Form Variables120772
-Node: Cookie Variables121688
-Node: Bookmark Variables122336
-Node: Search Variables123161
-Node: Weather Variables124246
-Node: Dtree Variables124885
-Node: Antenna Variables125893
-Node: Perldoc Variables127204
-Node: Namazu Variables128145
-Node: Octet Variables129883
-Node: Session Manager Variables130149
-Node: Hooks130989
-Node: Other Variables132797
-Node: Hooking into MUAs135299
-Node: Gnus136371
-Node: Mew140906
-Node: SEMI MUAs143278
-Node: VM146069
-Node: Frequently Asked Questions146486
-Node: General FAQ146836
-Node: Trouble FAQ148781
-Ref: Trouble FAQ-Footnote-1158242
-Node: Shimbun FAQ158314
-Node: Known Problems159147
-Node: Shimbun Library159316
-Node: Nnshimbun162169
-Ref: Nnshimbun-Footnote-1173614
-Ref: Nnshimbun-Footnote-2173814
-Ref: Nnshimbun-Footnote-3174515
-Ref: Nnshimbun-Footnote-4174619
-Node: Mew Shimbun175089
-Ref: Mew Shimbun-Footnote-1184557
-Ref: Mew Shimbun-Footnote-2184687
-Node: Shimbun with Wanderlust184852
-Node: Shimbun local mode185236
-Node: Shimbun Sites187024
-Node: Newspapers Supported by Shimbun187580
-Node: News Sites Supported by Shimbun198265
-Node: Mailing Lists Supported by Shimbun207687
-Node: Sport Sites Supported by Shimbun221090
-Node: Misc Sites Supported by Shimbun221948
-Node: Shimbun Basics233706
-Node: Overview234301
-Node: Getting web page and header information238136
-Ref: Getting web page and header information-Footnote-1243896
-Ref: Getting web page and header information-Footnote-2243989
-Node: Displaying an article244097
-Node: Inheriting shimbun module246896
-Ref: Inheriting shimbun module-Footnote-1249079
-Ref: Inheriting shimbun module-Footnote-2249164
-Node: Making text/plain articles249218
-Node: Zenkaku to hankaku conversion251548
-Node: Coding convention of Shimbun252658
-Node: Tips253830
-Node: Mailing List258688
-Node: Emacs-w3m Functions260030
-Node: External Packages260218
-Node: Authors261384
-Node: Index261754
-Node: Concept Index262023
-Node: Key Index268843
-Node: Variable Index278432
-Node: Function Index295514
+Node: Image Variables116018
+Node: Form Variables120819
+Node: Cookie Variables121735
+Node: Bookmark Variables122383
+Node: Search Variables123208
+Node: Weather Variables124422
+Node: Dtree Variables125061
+Node: Antenna Variables126069
+Node: Perldoc Variables127380
+Node: Namazu Variables128321
+Node: Octet Variables130059
+Node: Session Manager Variables130325
+Node: Hooks131165
+Node: Other Variables132973
+Node: Hooking into MUAs135475
+Node: Gnus136547
+Node: Mew141082
+Node: SEMI MUAs143454
+Node: VM146245
+Node: Frequently Asked Questions146662
+Node: General FAQ147012
+Node: Trouble FAQ148957
+Ref: Trouble FAQ-Footnote-1158418
+Node: Shimbun FAQ158490
+Node: Known Problems159323
+Node: Shimbun Library159492
+Node: Nnshimbun162345
+Ref: Nnshimbun-Footnote-1173790
+Ref: Nnshimbun-Footnote-2173990
+Ref: Nnshimbun-Footnote-3174691
+Ref: Nnshimbun-Footnote-4174795
+Node: Mew Shimbun175265
+Ref: Mew Shimbun-Footnote-1184733
+Ref: Mew Shimbun-Footnote-2184863
+Node: Shimbun with Wanderlust185028
+Node: Shimbun local mode185412
+Node: Shimbun Sites187200
+Node: Newspapers Supported by Shimbun187756
+Node: News Sites Supported by Shimbun198441
+Node: Mailing Lists Supported by Shimbun207863
+Node: Sport Sites Supported by Shimbun221266
+Node: Misc Sites Supported by Shimbun222124
+Node: Shimbun Basics233882
+Node: Overview234477
+Node: Getting web page and header information238312
+Ref: Getting web page and header information-Footnote-1244072
+Ref: Getting web page and header information-Footnote-2244165
+Node: Displaying an article244273
+Node: Inheriting shimbun module247072
+Ref: Inheriting shimbun module-Footnote-1249255
+Ref: Inheriting shimbun module-Footnote-2249340
+Node: Making text/plain articles249394
+Node: Zenkaku to hankaku conversion251724
+Node: Coding convention of Shimbun252834
+Node: Tips254006
+Node: Mailing List258864
+Node: Emacs-w3m Functions260206
+Node: External Packages260394
+Node: Authors261560
+Node: Index261930
+Node: Concept Index262199
+Node: Key Index269019
+Node: Variable Index278608
+Node: Function Index295836
 
 End Tag Table

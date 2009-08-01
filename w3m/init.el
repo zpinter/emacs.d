@@ -1,3 +1,5 @@
+(zconfig-add-lisp-path "flim-1.14.9")
+
 (require 'w3m-load)
 (require 'mime-w3m)
 

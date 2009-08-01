@@ -48,10 +48,17 @@
   )
 
 (defun zconfig-load-module (module-name)
+  (zconfig-run-module module-name "load"))
+
+(defun zconfig-update-module (module-name)
+  (zconfig-run-module module-name "update"))
+
+(defun zconfig-run-module (module-name operation)
   (setq zconfig-current-module module-name)
   (setq zconfig-current-module-dir (concat zconfig-emacsd module-name))
   (setq zconfig-current-module-init-file (concat zconfig-current-module-dir "/init.el"))
   (setq zconfig-current-module-private-file (concat zconfig-current-module-dir "/private.el"))
+  (setq zconfig-current-module-update-file (concat zconfig-current-module-dir "/update.el"))
 
   ;;   (print (concat "module is " zconfig-current-module))
   ;;   (print (concat "module-dir is " zconfig-current-module-dir))
@@ -66,9 +73,16 @@
   (if (file-exists-p (concat zconfig-current-module-dir "/icons"))
       (zconfig-add-icons-path "icons"))
 
-  (if (file-exists-p zconfig-current-module-private-file)
-      (load-file zconfig-current-module-private-file))
+  (when (equal operation "load")
+    (if (file-exists-p zconfig-current-module-private-file)
+        (load-file zconfig-current-module-private-file))
 
-  (if (file-exists-p zconfig-current-module-init-file)
-      (load-file zconfig-current-module-init-file))
-  )
+    (if (file-exists-p zconfig-current-module-init-file)
+        (load-file zconfig-current-module-init-file)))
+
+  (when (equal operation "update")
+    (if (file-exists-p zconfig-current-module-update-file)
+        (load-file zconfig-current-module-update-file)))
+
+)
+
