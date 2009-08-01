@@ -47,6 +47,9 @@
   (add-to-list 'image-load-path (expand-file-name (concat zconfig-current-module-dir "/" p)))
   )
 
+(defun zconfig-get-module-dir (module-name)
+  (concat zconfig-emacsd module-name))
+
 (defun zconfig-load-module (module-name)
   (zconfig-run-module module-name "load"))
 
@@ -66,6 +69,9 @@
 
   (if (file-exists-p (concat zconfig-current-module-dir "/lisp"))
       (zconfig-add-lisp-path "lisp"))
+
+  (if (file-exists-p (concat zconfig-current-module-dir "/tex"))
+      (zconfig-add-lisp-path "tex"))
 
   (if (file-exists-p (concat zconfig-current-module-dir "/info"))
       (zconfig-add-info-path "info"))

@@ -20,6 +20,7 @@
                         "twitter"
                         "post-mode"
                         "gnus"
+								"bbdb"
                         "puppet-mode"
                         "markdown-mode"
 ;;                         "ess"

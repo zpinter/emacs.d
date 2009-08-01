@@ -16,14 +16,14 @@
 (setq gnus-ignored-newsgroups "")
 (setq gnus-gcc-mark-as-read t)
 
-(require 'external-abook)
-(setq external-abook-command "contacts -lSf '%%e\t\"%%n\"' '%s'")
+;; (require 'external-abook)
+;; (setq external-abook-command "contacts -lSf '%%e\t\"%%n\"' '%s'")
 
-(eval-after-load "message"
-  '(progn
-    (add-to-list 'message-mode-hook
-     '(lambda ()
-       (define-key message-mode-map (kbd "M-/") 'external-abook-try-expand)))))
+;; (eval-after-load "message"
+;;   '(progn
+;;     (add-to-list 'message-mode-hook
+;;      '(lambda ()
+;;        (define-key message-mode-map (kbd "M-/") 'external-abook-try-expand)))))
 
 (setq gnus-buttonized-mime-types
       '("multipart/alternative" "multipart/signed"))
