@@ -164,10 +164,6 @@
 
 (defalias 'mkdir 'make-directory)
 
-; winner mode, loop through window configs
-(when (fboundp 'winner-mode)
-  (winner-mode 1))
-
 ; add the function back to the latest carbon emacs
 (defun mac-toggle-max-window ()
   (interactive)
