@@ -1,5 +1,5 @@
-(zconfig-add-lisp-path "gnus-cvs/lisp")
-(require 'gnus-load)
+;; (zconfig-add-lisp-path "gnus-cvs/lisp")
+;(require 'gnus-load)
 
 (add-hook 'dired-mode-hook 'turn-on-gnus-dired-mode)
 

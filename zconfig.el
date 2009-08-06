@@ -39,6 +39,10 @@
   (add-to-list 'load-path (expand-file-name (concat zconfig-current-module-dir "/" p)))
   )
 
+(defun zconfig-add-lisp-path-end (p)
+  (add-to-list 'load-path (expand-file-name (concat zconfig-current-module-dir "/" p)) t)
+  )
+
 (defun zconfig-add-info-path (p)
   (add-to-list 'Info-default-directory-list (expand-file-name (concat zconfig-current-module-dir "/" p)))
   )
