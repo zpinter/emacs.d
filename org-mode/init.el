@@ -1,5 +1,4 @@
-(zconfig-add-lisp-path "lisp/lisp")
-(zconfig-add-lisp-path "lisp/contrib/lisp")
+(zconfig-add-lisp-path "contrib/lisp")
 
 (setq org-modules nil)
 (add-to-list 'org-modules 'org-mac-iCal)
