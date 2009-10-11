@@ -1,6 +1,6 @@
 (require 'hippie-exp)
 
-(global-set-key (kbd "M-/") 'hippie-expand)
+;; (global-set-key (kbd "M-/") 'hippie-expand)
 (global-set-key (kbd "C-.") 'hippie-expand)
 
 ;default list

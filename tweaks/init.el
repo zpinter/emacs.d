@@ -182,6 +182,18 @@
 (set-keyboard-coding-system 'utf-8)
 (setq default-buffer-file-coding-system 'utf-8)
 
+;sudo stuff
+(defun sudo-edit (&optional arg)
+  (interactive "p")
+  (if arg
+      (find-file (concat "/sudo:root@localhost:" (ido-read-file-name "File: ")))
+    (find-alternate-file (concat "/sudo:root@localhost:" buffer-file-name))))
+
+(defun sudo-edit-current-file ()
+  (interactive)
+  (find-alternate-file (concat "/sudo:root@localhost:" (buffer-file-name (current-buffer)))))
+(global-set-key (kbd "C-c C-r") 'sudo-edit-current-file)
+
 ;; remember my place
 (setq save-place-file "~/.saveplace")
 (setq-default save-place t)                   ;; activate it for all buffers
@@ -195,5 +207,3 @@
 				 (progn
 					(save-buffer)
 					(kill-buffer (buffer-name (current-buffer)))))))
-
-

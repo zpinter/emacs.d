@@ -11,7 +11,7 @@
                         "color-theme"
                         "color-theme-zenburn"
                         "ido"
-;;                         "hippie-expand"
+                        "hippie-expand"
                         "nxml"
                         "ruby"
                         "js2-mode"
@@ -45,6 +45,10 @@
 ;; 								"cedet"
 ;; 								"ecb"
 ;; 								"jdee"
+								"textmate"
                         "tweaks"
+								"smex"
                         "server"
                         ))
+
+(put 'narrow-to-region 'disabled nil)

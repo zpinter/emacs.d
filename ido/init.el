@@ -1,20 +1,14 @@
 (require 'ido)
 (ido-mode t)
-(ido-everywhere t)
+;; (ido-everywhere t)
 
 (setq ido-enable-flex-matching t)      ; fuzzy matching is a must have
 
 (global-set-key (kbd "C-x C-b") 'ido-switch-buffer)
 
-(icomplete-mode 1)
-(setq icomplete-compute-delay 0)
-(require 'icomplete+)
-
-;; (require 'smex)
-;; (smex-initialize)
-
-;; (global-set-key (kbd "M-x") 'smex)
-;; (global-set-key (kbd "M-X") 'smex-major-mode-commands)
+;; (icomplete-mode 1)
+;; (setq icomplete-compute-delay 0)
+;; (require 'icomplete+)
 
 (defalias 'ido-list-directory 'ido-dired)
 

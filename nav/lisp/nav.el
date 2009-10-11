@@ -3,7 +3,7 @@
 ;; Copyright 2009 Google Inc. All Rights Reserved.
 ;;
 ;; Author: issactrotts@google.com (Issac Trotts)
-;; Version: 55
+;; Version: 56
 ;;
 
 ;;; License:
@@ -47,12 +47,15 @@
 
 (require 'cl)
 (require 'nav-bufs)
+(require 'nav-tags)
+
+(defconst nav-max-int 268435455)
 
 (defgroup nav nil
   "A lightweight file/directory navigator."
   :group 'applications)
 
-(defcustom nav-width 20
+(defcustom nav-default-width 20
   "*Initial width of the Nav window."
   :type 'integer
   :group 'nav)
@@ -64,11 +67,15 @@
   :group 'nav)
 
 (defcustom nav-quickfile-list
-  (list "~/.emacs.d/nav.el" "~/.emacs.d/nav-bufs.el" "~/.emacs")
+  (list "~/.emacs.d/nav.el" "~/.emacs.d/nav-bufs.el" "~/.emacs.d/nav-tags.el")
   "*Nav quick file list. Fill this with your most frequently visited files."
   :type '(repeat string)
   :group 'nav)
 
+(defcustom nav-quickjump-show t
+  "*If t, nav will show quickjump buttons."
+  :type 'boolean
+  :group 'nav)
 
 (defcustom nav-no-hidden-boring-file-regexps
   (list "\\.pyc$" "\\.o$" "~$" "\\.bak$"
@@ -97,6 +104,43 @@ This is used if only one window besides the Nav window is visible."
   :type 'boolean
   :group 'nav)
 
+(defcustom nav-widths-percentile 90
+  "*What percentage of files should remain completely visible when shrink-wrapping."
+  :type 'integer
+  :group 'nav)
+
+;; Make nav faces
+(make-empty-face 'nav-face-heading)
+(make-empty-face 'nav-face-button-num)
+(make-empty-face 'nav-face-dir)
+(make-empty-face 'nav-face-hdir)
+(make-empty-face 'nav-face-file)
+(make-empty-face 'nav-face-hfile)
+
+;; params here are: foreground background stipple bold ital underline inverse
+(modify-face 'nav-face-heading "white" "navy" nil nil nil nil nil)
+(modify-face 'nav-face-button-num "LightSalmon" nil nil nil nil nil nil)
+(modify-face 'nav-face-dir "green" nil nil nil nil nil nil)
+(modify-face 'nav-face-hdir "red" nil nil nil nil nil nil)
+(modify-face 'nav-face-file nil nil nil nil nil nil nil)
+(modify-face 'nav-face-hfile "pink" nil nil nil nil nil nil)
+
+(setq nav-face-heading 'nav-face-heading)
+(setq nav-face-button-num 'nav-face-button-num)
+(setq nav-face-dir 'nav-face-dir)
+(setq nav-face-hdir 'nav-face-hdir)
+(setq nav-face-file 'nav-face-file)
+(setq nav-face-hfile 'nav-face-hfile)
+
+
+(defun nav-insert-text (text face-type)
+  "Inserts text with select face."
+  (interactive)
+  (insert text)
+  (overlay-put
+   (make-overlay (line-beginning-position) (line-end-position))
+   'face face-type))
+
 
 (defun nav-buffer-menu-window-1 ()
   (interactive)
@@ -114,20 +158,18 @@ This is used if only one window besides the Nav window is visible."
 (defun nav-make-mode-map ()
   "Creates and returns a mode map with nav's key bindings."
   (let ((keymap (make-sparse-keymap)))
-    (define-key keymap "\t" 'forward-button)
     (define-key keymap "\n" 'nav-open-file-under-cursor)
     (define-key keymap "\r" 'nav-open-file-under-cursor)
     (define-key keymap "1" 'nav-open-file-other-window-1)
     (define-key keymap "2" 'nav-open-file-other-window-2)
-    (define-key keymap "5" (lambda nil (interactive) (nav-quickfile-jump 0)))   
+    (define-key keymap "5" (lambda nil (interactive) (nav-quickfile-jump 0)))
     (define-key keymap "6" (lambda nil (interactive) (nav-quickfile-jump 1)))
     (define-key keymap "7" (lambda nil (interactive) (nav-quickfile-jump 2)))
     (define-key keymap "8" (lambda nil (interactive) (nav-quickdir-jump 0)))   
     (define-key keymap "9" (lambda nil (interactive) (nav-quickdir-jump 1)))
     (define-key keymap "0" (lambda nil (interactive) (nav-quickdir-jump 2)))
     (define-key keymap "a" 'nav-make-new-file)
-    (define-key keymap "b" 'nav-buffer-menu-window-1)
-    (define-key keymap "B" 'nav-buffer-menu-window-2)
+    (define-key keymap "b" 'nav-bufs)
     (define-key keymap "c" 'nav-copy-file-or-dir)
     (define-key keymap "C" 'nav-customize)
     (define-key keymap "d" 'nav-delete-file-or-dir-on-this-line)
@@ -139,19 +181,33 @@ This is used if only one window besides the Nav window is visible."
     (define-key keymap "m" 'nav-move-file-or-dir)
     (define-key keymap "n" 'nav-make-new-directory)
     (define-key keymap "p" 'nav-pop-dir)
+    (define-key keymap "P" 'nav-print-current-dir)
+    (define-key keymap "o" (lambda nil (interactive) (other-window 1)))
     (define-key keymap "q" 'nav-quit)
     (define-key keymap "r" 'nav-refresh)
     (define-key keymap "s" 'nav-shell)
-    (define-key keymap "t" 'nav-term)
+    (define-key keymap "t" 'nav-tags-expand)
     (define-key keymap "u" 'nav-go-up-one-dir)
+    (define-key keymap "w" 'nav-shrink-wrap)
+    (define-key keymap "W" 'nav-set-width-to-default)
     (define-key keymap "[" 'nav-rotate-windows-ccw)
     (define-key keymap "]" 'nav-rotate-windows-cw)
     (define-key keymap "!" 'nav-shell-command)
     (define-key keymap ":" 'nav-turn-off-keys-and-be-writable)
     (define-key keymap "." 'nav-toggle-hidden-files)
     (define-key keymap "?" 'nav-help-screen)
-    (define-key keymap "`" 'nav-bufs)
-    (define-key keymap [S-down-mouse-3] 'nav-bufs)
+    (define-key keymap " " 'nav-jump-to-name)
+    (define-key keymap [S-down-mouse-3] 'nav-mouse-tags-expand)
+    (define-key keymap [mouse-3] 'nav-bufs)
+
+    ;; Avoid [(tab)] and [(shift tab)] because they fail on Issac's setup.
+    (define-key keymap "\t" 'forward-button)
+    (define-key keymap [backtab] 'backward-button)
+
+    (define-key keymap [(down)] 'forward-button)
+    (define-key keymap [(up)] 'backward-button)
+    (define-key keymap [(control ?n)] 'forward-button)
+    (define-key keymap [(control ?p)] 'backward-button)
     (define-key keymap [(control ?x) (control ?f)] 'find-file-other-window)
     keymap))
 
@@ -161,6 +217,8 @@ This is used if only one window besides the Nav window is visible."
 ;; changing the nav mode map.
 (setq nav-mode-map (nav-make-mode-map))
 
+(defvar nav-width nav-default-width)
+
 (defvar nav-dir-stack '())
 
 (defvar nav-map-dir-to-line-number (make-hash-table :test 'equal)
@@ -169,6 +227,9 @@ This is used if only one window besides the Nav window is visible."
 (defvar nav-filter-regexps nav-boring-file-regexps)
 
 (defvar nav-button-face nil)
+
+(defvar nav-other-width nav-width
+  "Used for toggling on w key.")
 
 (defconst nav-shell-buffer-name "*nav-shell*"
   "Name of the buffer used for the command line shell spawned by
@@ -249,16 +310,22 @@ If DIRNAME is not a directory or is not accessible, returns nil."
 (defun nav-cd (dirname)
   "Changes to a different directory and pushes it onto the stack."
   (let ((dirname (file-name-as-directory (file-truename dirname))))
-    ;; Update line number hash table.
-    (let ((line-num (nav-line-number-at-pos (point))))
-      (puthash (nav-get-working-dir) line-num nav-map-dir-to-line-number))
-
+    (nav-save-cursor-line)
     (setq default-directory dirname)
     (nav-show-dir dirname)
-    
-    ;; Remember what line we were on last time we visited this directory.
-    (let ((line-num (nav-get-line-for-cur-dir)))
-      (goto-line (if line-num line-num 2)))))
+    (nav-restore-cursor-line)))
+
+
+(defun nav-save-cursor-line ()
+  "Updates line number hash table."
+  (let ((line-num (nav-line-number-at-pos (point))))
+    (puthash (nav-get-working-dir) line-num nav-map-dir-to-line-number)))
+
+
+(defun nav-restore-cursor-line ()
+  "Remembers what line we were on last time we visited this directory."
+  (let ((line-num (nav-get-line-for-cur-dir)))
+    (goto-line (if line-num line-num 2))))
 
 
 (defun nav-open-file (filename)
@@ -283,6 +350,38 @@ If DIRNAME is not a directory or is not accessible, returns nil."
   (nav-push-dir ".."))
 
 
+(defun nav-shrink-wrap ()
+  "Updates the width of the Nav window to fit the longest filename in the
+current directory. Updates the global variable nav-width as a side effect."
+  (interactive)
+  (let* ((lines (split-string (buffer-string) "\n" t))
+	 (num-lines (length lines))
+	 (line-lengths (mapcar 'length lines))
+	 (desired-width (+ 1 (nav-percentile nav-widths-percentile
+					     (sort line-lengths '<))))
+	 (max-width (/ (frame-width) 2))
+	 (new-width (min desired-width max-width)))
+    (setq nav-width new-width)
+    (nav-set-window-width new-width)))
+
+
+(defun nav-percentile (percent sorted-things)
+  "Returns the item a certain percent of the way through a list of items
+assumed to be sorted."
+  (let* ((n (length sorted-things))
+	 (k (min (- n 1 )
+		 (truncate (* (/ percent 100.0) n)))))
+    (nth k sorted-things)))
+
+
+(defun nav-set-width-to-default ()
+  "Sets the width of the Nav window to nav-default-width, and
+updates the nav-width global variable as a side effect."
+  (interactive)
+  (setq nav-width nav-default-width)
+  (nav-set-window-width nav-width))
+
+
 (defun nav-push-dir (dirname)
   (push (file-truename default-directory) nav-dir-stack)
   (nav-cd dirname))
@@ -303,8 +402,10 @@ This works like a web browser's back button."
 
 
 (defun nav-get-cur-line-str ()
-  (buffer-substring-no-properties (point-at-bol)
-                                  (point-at-eol)))
+  (let ((str (buffer-substring-no-properties (point-at-bol)
+					     (point-at-eol))))
+    ;; Filter out button junk such as [5], [6], and so on.
+    (replace-regexp-in-string "^\\[[0-9]\\] " "" str)))
 
 
 (defun nav-non-boring-directory-files (dir)
@@ -323,15 +424,17 @@ This works like a web browser's back button."
 
 
 (defun nav-quickdir-jump-button-action (button)
-  (setq num (string-to-number (substring (button-label button) 1 2)))
-  (setq num (- num 1))
+  (setq num (string-to-number (substring (button-label button) 0 1)))
+  (if (= num 0) (setq num 2))
+  (if (= num 9) (setq num 1))
+  (if (= num 8) (setq num 0))  
   (nav-quickdir-jump num))
 
 
 (defun nav-quickfile-jump-button-action (button)
   (select-window (nav-get-window nav-buffer-name))
-  (setq num (string-to-number (substring (button-label button) 1 2)))
-  (setq num (- num 1))
+  (setq num (string-to-number (substring (button-label button) 0 1)))
+  (setq num (- num 5))
   (nav-quickfile-jump num))
 
 
@@ -341,59 +444,79 @@ This works like a web browser's back button."
         ;; in this let-block.
         (inhibit-read-only t))
     (erase-buffer)
-    (insert "Directory listing:  " )
+    (nav-insert-text "Directory:" nav-face-heading)
     (insert "\n")
     (insert new-contents)
-    (font-lock-fontify-buffer)
     (if should-make-filenames-clickable
         (nav-make-filenames-clickable))
-    (nav-insert-jump-buttons)
+    (nav-colorize-filenames)
+    (if nav-quickjump-show (nav-insert-jump-buttons))
     (goto-line saved-line-number)))
 
 
 (defun nav-insert-jump-buttons ()
   ;; Make bookmark buttons.
   (insert "\n\n")
-  (insert "Quickjump list:     ")
-  (insert "\n")
-  (insert-text-button (concat "D1 " (nth 0 nav-quickdir-list)) :type 'quickdir-jump-button)
-  (insert "\n")
-  (insert-text-button (concat "D2 " (nth 1 nav-quickdir-list)) :type 'quickdir-jump-button)
-  (insert "\n")
-  (insert-text-button (concat "D3 " (nth 2 nav-quickdir-list)) :type 'quickdir-jump-button)
+  (nav-insert-text "Quickjumps:" nav-face-heading)
   (insert "\n")
   (setq qfilename (replace-regexp-in-string "^.*/" "" (nth 0 nav-quickfile-list)))
-  (insert-text-button (concat "F1 " qfilename) :type 'quickfile-jump-button)
+  (insert-text-button (concat (propertize "5." 'face nav-face-button-num) " "
+			      qfilename) :type 'quickfile-jump-button)
   (insert "\n")
   (setq qfilename (replace-regexp-in-string "^.*/" "" (nth 1 nav-quickfile-list)))
-  (insert-text-button (concat "F2 " qfilename) :type 'quickfile-jump-button)
+  (insert-text-button (concat (propertize "6." 'face nav-face-button-num) " " 
+			      qfilename) :type 'quickfile-jump-button)
   (insert "\n")
   (setq qfilename (replace-regexp-in-string "^.*/" "" (nth 2 nav-quickfile-list)))
-  (insert-text-button (concat "F3 " qfilename) :type 'quickfile-jump-button))
+  (insert-text-button (concat (propertize "7." 'face nav-face-button-num) " " 
+			      qfilename) :type 'quickfile-jump-button)
+  (insert "\n")
+  (insert-text-button (concat (propertize "8." 'face nav-face-button-num) " " 
+			      (nth 0 nav-quickdir-list)) :type 'quickdir-jump-button)
+  (insert "\n")
+  (insert-text-button (concat (propertize "9." 'face nav-face-button-num) " "  
+			      (nth 1 nav-quickdir-list)) :type 'quickdir-jump-button)
+  (insert "\n")
+  (insert-text-button (concat (propertize "0." 'face nav-face-button-num) " "  
+			      (nth 2 nav-quickdir-list)) :type 'quickdir-jump-button))
 
 
 (defun nav-make-filenames-clickable ()
-  ;; In terminals, this function would only add a bunch of underlines,
-  ;; so return before that happens.
-  (when window-system
-    (condition-case err
-        (save-excursion
-          (goto-line 2)
-          (dotimes (i (count-lines 1 (point-max)))
-            (let ((start (line-beginning-position))
-                  (end (line-end-position)))
-              (make-button start end
-                           'action (lambda (button)
-				     (select-window (nav-get-window nav-buffer-name))
-                                     (nav-open-file (button-label button)))
-                           'follow-link t
-                           'face nav-button-face
-                           'help-echo nil))
-            (forward-line 1)))
-      (error 
-       ;; This can happen for versions of emacs that don't have
-       ;; make-button defined.
-       'failed))))
+  (condition-case err
+      (save-excursion
+	(goto-line 2)
+	(dotimes (i (count-lines 1 (point-max)))
+	  (let ((start (line-beginning-position))
+		(end (line-end-position)))
+	    (make-button start end
+			 'action (lambda (button)
+				   (select-window (nav-get-window nav-buffer-name))
+				   (nav-open-file (button-label button)))
+			 'follow-link t
+			 'face nav-button-face
+			 'help-echo nil))
+	  (forward-line 1)))
+    (error 
+     ;; This can happen for versions of emacs that don't have
+     ;; make-button defined.
+     'failed)))
+
+
+(defun nav-colorize-filenames()
+  "Adds faces to the directory listing."
+	(goto-line 2)
+	(dotimes (i (count-lines 1 (point-max)))
+	  (let ((start (line-beginning-position))
+		(end (line-end-position))
+		(filename (buffer-substring (line-beginning-position) (line-end-position)))
+		(face-type nav-face-file))
+	    (if (looking-at "^[.].*")(setq face-type nav-face-hfile))
+	    (if (looking-at "^.*/$")(setq face-type nav-face-dir))
+	    (if (looking-at "^[.].*/$")(setq face-type nav-face-hdir))
+	    (overlay-put 
+	     (make-overlay start end)
+	     'face face-type)
+	    (forward-line 1))))
 
 
 (defun nav-string< (s1 s2)
@@ -500,7 +623,8 @@ If there is no second other window, Nav will create one."
   "Resizes Nav window to original size, updates its contents."
   (interactive)
   (nav-set-window-width nav-width)
-  (nav-show-dir "."))
+  (nav-show-dir ".")
+  (goto-line 2))
 
 
 (defun nav-equalize-window-widths ()
@@ -579,6 +703,11 @@ Synonymous with the (nav) function."
   (interactive)
   (nav-push-dir "~"))
 
+(defun nav-jump-to-name (arg)
+ (interactive "K")
+ (goto-line 2)
+ (setq nav-search-string (concat "^" arg))
+ (search-forward-regexp nav-search-string))
 
 (defun nav-quickfile-jump (quickfile-num)
   "Jumps to directory from custom bookmark list."
@@ -610,6 +739,7 @@ Synonymous with the (nav) function."
 
 
 (defun nav-delete-file-or-dir (filename)
+  (nav-save-cursor-line)
   (if (and (file-directory-p filename)
            (not (file-symlink-p (directory-file-name filename))))
       (when (yes-or-no-p (format "Really delete directory %s ?" filename))
@@ -620,7 +750,8 @@ Synonymous with the (nav) function."
       (let ((filename (directory-file-name filename)))
         (when (y-or-n-p (format "Really delete file %s ? " filename))
           (delete-file filename)
-          (nav-refresh)))))
+          (nav-refresh))))
+  (nav-restore-cursor-line))
 
 
 (defun nav-delete-file-or-dir-on-this-line ()
@@ -628,6 +759,19 @@ Synonymous with the (nav) function."
   (interactive)
   (nav-delete-file-or-dir (nav-get-cur-line-str)))
 
+
+(defun nav-tags-expand ()
+  "Shows all function tags in file."
+  (interactive)
+  (nav-tags-fetch-imenu (nav-get-cur-line-str)))
+
+
+(defun nav-mouse-tags-expand ()
+  "Sets point to current mouse pos then calls nav-tags-expand."
+  (interactive)
+  (goto-line (+ 1  (cddr (mouse-position))))
+  (nav-tags-expand))
+  
 
 (defun nav-ok-to-overwrite (target-name)
   "Returns non-nil if it's ok to overwrite or create a file.
@@ -689,7 +833,7 @@ directory, or if the user says it's ok."
 
 (defun nav-find-files (pattern)
   "Finds files whose names match a regular expression, in '.' and all subdirs."
-  (interactive "sPattern: ")
+  (interactive "sFilename regex: ")
   (let* ((filenames (nav-get-non-boring-filenames-recursively "."))
          (names-matching-pattern
           (remove-if-not (lambda (name) (string-match pattern name)) filenames))
@@ -706,12 +850,14 @@ directory, or if the user says it's ok."
 
 
 (defun nav-show-find-results (paths)
-  (nav-replace-buffer-contents
-   (nav-join "\n" names-matching-pattern)
-   t)
-  ;; Enable nav keyboard shortcuts, mainly so hitting enter will open
-  ;; files.
-  (use-local-map nav-mode-map))
+  "Displays the results when the user hits the 'f' key."
+  (setq buffer-read-only nil)
+  (erase-buffer)
+  (let ((lines (mapcar (lambda (name)
+			 (concat name ":1:"))
+		       names-matching-pattern)))
+    (insert (nav-join "\n" lines)))
+  (grep-mode))
 
 
 (defun nav-make-new-file (name)
@@ -827,12 +973,24 @@ depending on the passed-in function next-i."
   (nav-set-window-width nav-width))
 
 
+(defun nav-print-current-dir ()
+  "Shows the full path that nav is currently displaying"
+  (interactive)
+  (print default-directory))
+
+
 (defun nav-help-screen-kill ()
   "Kills the help screen."
   (interactive)
   (setq buf (get-buffer "nav-help"))
   (kill-buffer buf)
   (other-window 1))
+
+
+;; http://www.emacswiki.org/emacs/ElispCookbook#toc41
+(defun nav-filter (condp lst)
+  (delq nil
+	(mapcar (lambda (x) (and (funcall condp x) x)) lst)))
 
 
 (defun nav-help-screen ()
@@ -848,27 +1006,30 @@ depending on the passed-in function next-i."
   (define-key map [mouse-3] 'nav-help-screen-kill) 
   (define-key map [mouse-2] 'nav-help-screen-kill) 
   (define-key map "q" 'nav-help-screen-kill)
-  (setq cursor-type nil 
-        display-hourglass nil
-        buffer-undo-list t)    
+  (setq display-hourglass nil
+        buffer-undo-list t)  
   (insert "\
-Help for nav mode
+Help for nav directory listing mode
 =================
 
-The letters at the bottom are shortcuts.  D1 takes you to the
-first bookmarked directory (or 'quickdir') and so on.  F1 goes 
-to the first bookmarked file (or 'quickfile') and so on.  These
-directories and files can be changed by pressing the 'b' key and
-using the Emacs customization page that appears.
+The numbers at the bottom are shortcuts.  5 opens the first 
+bookmarked file (or 'quickfile') and so on. 8 takes you to the
+first bookmarked directory (or 'quickdir') and so on. These 
+directories and files can be changed by pressing the 'C' key 
+and using the Emacs customization page that appears.
 
 Key Bindings
 ============
 
 Enter/Return: Open file or directory under cursor.
-Tab: To move through buttons
+Tab: To move forward through buttons.
+Shift-Tab: To move backward through buttons.
 
-1\t Open file/buffer under cursor in 1st other window.
-2\t Open file/buffer under cursor in 2nd other window.
+Space: Press then space then any other letter to jump to
+       filename that starts with that letter.
+
+1\t Open file under cursor in 1st other window.
+2\t Open file under cursor in 2nd other window.
 
 5\t Jump to 1st quick file.
 6\t Jump to 2nd quick file.
@@ -879,8 +1040,7 @@ Tab: To move through buttons
 0\t Jump to 3rd quick dir.
 
 a\t Make a new file.
-b\t Open buffer menu in first window.
-B\t Open buffer menu in second window.
+b\t Toggle file/buffer browser (or Left-Mouse).
 c\t Copy file or directory under cursor.
 C\t Customize Nav settings and bookmarks.
 d\t Delete file or directory under cursor (asks to confirm first).
@@ -891,18 +1051,20 @@ h\t Jump to home (~).
 j\t Jump to another directory.
 m\t Move or rename file or directory.
 n\t Make a new directory.
+o\t Switch to other window.
 p\t Pop directory stack to go back to the directory where you just were.
+P\t Print full path of current displayed directory.
 q\t Quit nav.
 r\t Refresh.
 s\t Start a shell in an emacs window in the current directory.
-t\t Start a terminal in an emacs window in the current directory.
- \t This allows programs like vi and less to run. Exit with C-d C-d.
+t\t Expand tags on selected file (or Shift-Left-Mouse).
 u\t Go up to parent directory.
+w\t Shrink-wrap Nav's window to fit the longest filename in the current directory.
+W\t Set the window width to its default value.
 !\t Run shell command.
 [\t Rotate non-nav windows counter clockwise.
 ]\t Rotate non-nav windows clockwise.
 .\t Toggle hidden files.
-`\t Toggle file/buffer browser (or Shift-Left-Mouse)
 ?\t Show this help screen.
 
 
@@ -917,31 +1079,30 @@ u\t Go up to parent directory.
 (define-derived-mode nav-mode fundamental-mode 
   "Nav-mode is for IDE-like navigation of directories.
 
- It's more IDEish than dired, not as heavy weight as speedbar."
+Nav is more IDEish than dired, and lighter weight than speedbar."
   (nav-set-window-width nav-width)
   (setq mode-name "Navigation")
   (use-local-map nav-mode-map)
-  (turn-on-font-lock)
-  (set-face-attribute
-   'font-lock-variable-name-face nil
-   :foreground "white"
-   :background "navy")
-  (font-lock-add-keywords 'nav-mode '(("^.*/$" . font-lock-type-face)))
-  (font-lock-add-keywords 'nav-mode '(("^[.].*" . font-lock-comment-face)))
-  (font-lock-add-keywords 'nav-mode '(("^[.].*/$" . font-lock-string-face)))
-  (font-lock-add-keywords 'nav-mode '(("D[1-3]\\|F[1-3]" . font-lock-warning-face)))
-  (font-lock-add-keywords 'nav-mode '(("Directory listing:  \\|Quickjump list:     " . font-lock-variable-name-face)))
   (setq buffer-read-only t)
+  (setq truncate-lines t)
   (nav-refresh))
 
 
-;; For ELPA, the Emacs Lisp Package Archive
+(defun nav-disable-annoying-emacs23-window-splitting ()
+  "Effectively turns off the unfortunate new feature where Emacs 23
+automatically splits windows when opening files in a large frame."
+  (setq split-width-threshold most-positive-fixnum)
+  (setq split-height-threshold most-positive-fixnum))
+
+
+;; The next line is for ELPA, the Emacs Lisp Package Archive.
 ;;;###autoload
 (defun nav ()
   "Run nav-mode in a narrow window on the left side."
   (interactive)
   (if (nav-is-open)
       (nav-quit)
+    (nav-disable-annoying-emacs23-window-splitting)
     (delete-other-windows)
     (split-window-horizontally)
     (other-window 1)

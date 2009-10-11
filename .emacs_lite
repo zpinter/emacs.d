@@ -10,4 +10,5 @@
                         "shell-current-directory"
                         "open-resource"
                         "tweaks"
+								"smex"
                         ))

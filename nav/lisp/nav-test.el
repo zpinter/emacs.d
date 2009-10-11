@@ -20,6 +20,7 @@
 
 
 (load-file "nav.el")
+(load-file "nav-tags.el")
 
 
 (setq nav-test-functions '())
@@ -37,7 +38,25 @@
          nav-test-functions))
 
 
-;;; Small tests
+(nav-deftest "nav-tags-flatten"
+	     (nav-assert (equal '(("f" . 123)) (nav-tags-flatten '("f" . 123))))
+	     (nav-assert (equal '(("class BadZipFile" . 123))
+				(nav-tags-flatten 
+				 '("class BadZipFile" . 123))))
+	     (nav-assert (equal '(("class PyZipFile" . 46255)
+				  ("PyZipFile._get_codename" . 49560)
+				  ("PyZipFile.writepy" . 46361))
+				(nav-tags-flatten
+				 '("class PyZipFile"
+				   (" class PyZipFile" . 46255)
+				   ("_get_codename" . 49560)
+				   ("writepy" . 46361))))))
+
+
+(nav-deftest "nav-filter"
+	     (nav-assert (equal '() (nav-filter 'numberp '())))
+	     (nav-assert (equal '(1) (nav-filter 'numberp '(1))))
+	     (nav-assert (equal '(1) (nav-filter 'numberp '(1 "foo")))))
 
 (nav-deftest "nav-join"
   (nav-assert (string= "" (nav-join "" '())))
