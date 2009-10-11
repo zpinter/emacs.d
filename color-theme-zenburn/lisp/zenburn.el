@@ -1,9 +1,12 @@
 ;;; zenburn.el --- just some alien fruit salad to keep you in the zone
 ;; Copyright (C) 2003, 2004, 2005, 2006  Daniel Brockman
+;; Copyright (C) 2009  Adrian C., Bastien Guerry
 
 ;; Author: Daniel Brockman <daniel@brockman.se>
 ;; URL: http://www.brockman.se/software/zenburn/zenburn.el
-;; Updated: 2008-06-23 12:03
+;; Updated: 2009-07-08 05:27
+
+;; Adrian C. and Bastien Guerry added org-mode faces.
 
 ;; This file is free software; you can redistribute it and/or
 ;; modify it under the terms of the GNU General Public License as
@@ -55,29 +58,37 @@
 (defvar zenburn-bg "#3f3f3f")
 (defvar zenburn-bg+1 "#4f4f4f")
 (defvar zenburn-bg+2 "#5f5f5f")
-(defvar zenburn-yellow "#f0dfaf")
-(defvar zenburn-yellow-1 "#e0cf9f")
-(defvar zenburn-yellow-2 "#d0bf8f")
-(defvar zenburn-orange "#dfaf8f")
 (defvar zenburn-red+1 "#dca3a3")
 (defvar zenburn-red "#cc9393")
 (defvar zenburn-red-1 "#bc8383")
 (defvar zenburn-red-2 "#ac7373")
 (defvar zenburn-red-3 "#9c6363")
 (defvar zenburn-red-4 "#8c5353")
+(defvar zenburn-orange "#dfaf8f")
+(defvar zenburn-yellow "#f0dfaf")
+(defvar zenburn-yellow-1 "#e0cf9f")
+(defvar zenburn-yellow-2 "#d0bf8f")
 (defvar zenburn-green-1 "#5f7f5f")
 (defvar zenburn-green "#7f9f7f")
 (defvar zenburn-green+1 "#8fb28f")
 (defvar zenburn-green+2 "#9fc59f")
 (defvar zenburn-green+3 "#afd8af")
 (defvar zenburn-green+4 "#bfebbf")
+(defvar zenburn-cyan "#93e0e3")
 (defvar zenburn-blue+1 "#94bff3")
 (defvar zenburn-blue "#8cd0d3")
 (defvar zenburn-blue-1 "#7cb8bb")
 (defvar zenburn-blue-2 "#6ca0a3")
 (defvar zenburn-blue-3 "#5c888b")
 (defvar zenburn-blue-4 "#4c7073")
-(defvar zenburn-cyan "#93e0e3")
+(defvar zenburn-magenta "#dc8cc3")
+
+(eval-after-load 'term
+  '(setq ansi-term-color-vector
+         (vector 'unspecified zenburn-bg
+                 zenburn-red zenburn-green
+                 zenburn-yellow zenburn-blue+1
+                 zenburn-magenta zenburn-cyan)))
 
 (defvar font-lock-pseudo-keyword-face 'font-lock-pseudo-keyword-face)
 (defvar font-lock-operator-face 'font-lock-operator-face)
@@ -128,8 +139,8 @@ to values."
   (zenburn-define-format-spec))
 
 (eval-after-load 'format-spec
-  (unless (zenburn-format-spec-works-p)
-    (zenburn-define-format-spec)))
+  '(unless (zenburn-format-spec-works-p)
+     (zenburn-define-format-spec)))
 
 (setq-default mode-line-buffer-identification
               (list (propertize "%12b" 'face
@@ -371,7 +382,7 @@ static char *gnus-pointer[] = {
      `(secondary-selection ((t (:foreground ,zenburn-fg :background "#506070"))))
 
      '(trailing-whitespace ((t (:inherit font-lock-warning))))
-     '(highlight ((t (:inherit font-lock-warning))))
+     '(highlight ((t (:underline t))))
      '(paren ((t (:inherit zenburn-lowlight-1))))
      '(show-paren-mismatch ((t (:inherit font-lock-warning))))
      '(show-paren-match ((t (:inherit font-lock-keyword))))
@@ -421,6 +432,8 @@ static char *gnus-pointer[] = {
      '(diary ((t (:underline nil :inherit zenburn-primary-1))))
      '(holiday ((t (:underline t :inherit zenburn-primary-4))))
 
+     '(bongo-unfilled-seek-bar ((t (:background "#606060"))))
+
      '(change-log-date ((t (:inherit zenburn-blue))))
 
      '(comint-highlight-input ((t (:inherit zenburn-primary-1))))
@@ -444,6 +457,8 @@ static char *gnus-pointer[] = {
        ((t (:inherit font-lock-doc))))
      '(custom-documentation
        ((t (:inherit font-lock-doc))))
+     '(custom-link
+       ((t (:inherit zenburn-yellow :underline t))))
      '(custom-tag
        ((t (:inherit zenburn-primary-2))))
      '(custom-group-tag
@@ -511,8 +526,12 @@ static char *gnus-pointer[] = {
 
      '(rcirc-my-nick ((t (:inherit zenburn-primary-1))))
      '(rcirc-other-nick ((t (:inherit bold))))
-     '(rcirc-server ((t (:inherit zenburn-green))))
+     '(rcirc-bright-nick ((t (:foreground "white" :inherit rcirc-other-nick))))
+     '(rcirc-dim-nick ((t (:inherit font-lock-comment))))
      '(rcirc-nick-in-message ((t (:inherit bold))))
+     '(rcirc-server ((t (:inherit font-lock-comment))))
+     '(rcirc-server-prefix ((t (:inherit font-lock-comment-delimiter))))
+     '(rcirc-timestamp ((t (:inherit font-lock-comment))))
      '(rcirc-prompt ((t (:inherit zenburn-primary-1))))
      '(rcirc-mode-line-nick ((t (:inherit zenburn-primary-1))))
 
@@ -573,15 +592,37 @@ static char *gnus-pointer[] = {
      `(gnus-cite-10 ((t (:foreground ,zenburn-yellow-1))))
      `(gnus-cite-11 ((t (:foreground ,zenburn-yellow))))
 
-     '(gnus-group-mail-1 ((t (:inherit zenburn-primary-1))))
-     '(gnus-group-mail-2 ((t (:inherit zenburn-primary-1))))
-     '(gnus-group-mail-3 ((t (:inherit zenburn-primary-1))))
-     '(gnus-group-mail-1-empty ((t (:inherit default))))
-     '(gnus-group-mail-2-empty ((t (:inherit default))))
-     `(gnus-group-mail-3-empty ((t (:foreground ,zenburn-yellow))))
-     '(gnus-group-news-1-empty ((t (:inherit default))))
-     '(gnus-group-news-2-empty ((t (:inherit default))))
-     '(gnus-group-news-3-empty ((t (:inherit default))))
+     `(gnus-group-news-1-empty ((t (:foreground ,zenburn-yellow))))
+     `(gnus-group-news-2-empty ((t (:foreground ,zenburn-green+3))))
+     `(gnus-group-news-3-empty ((t (:foreground ,zenburn-green+1))))
+     `(gnus-group-news-4-empty ((t (:foreground ,zenburn-blue-2))))
+     `(gnus-group-news-5-empty ((t (:foreground ,zenburn-blue-3))))
+     `(gnus-group-news-6-empty ((t (:inherit zenburn-lowlight-1))))
+     `(gnus-group-news-low-empty ((t (:inherit zenburn-lowlight-1))))
+
+     '(gnus-group-mail-1-empty ((t (:inherit gnus-group-news-1-empty))))
+     '(gnus-group-mail-2-empty ((t (:inherit gnus-group-news-2-empty))))
+     '(gnus-group-mail-3-empty ((t (:inherit gnus-group-news-3-empty))))
+     '(gnus-group-mail-4-empty ((t (:inherit gnus-group-news-4-empty))))
+     '(gnus-group-mail-5-empty ((t (:inherit gnus-group-news-5-empty))))
+     '(gnus-group-mail-6-empty ((t (:inherit gnus-group-news-6-empty))))
+     '(gnus-group-mail-low-empty ((t (:inherit gnus-group-news-low-empty))))
+
+     '(gnus-group-news-1 ((t (:bold t :inherit gnus-group-news-1-empty))))
+     '(gnus-group-news-2 ((t (:bold t :inherit gnus-group-news-2-empty))))
+     '(gnus-group-news-3 ((t (:bold t :inherit gnus-group-news-3-empty))))
+     '(gnus-group-news-4 ((t (:bold t :inherit gnus-group-news-4-empty))))
+     '(gnus-group-news-5 ((t (:bold t :inherit gnus-group-news-5-empty))))
+     '(gnus-group-news-6 ((t (:bold t :inherit gnus-group-news-6-empty))))
+     '(gnus-group-news-low ((t (:bold t :inherit gnus-group-news-low-empty))))
+
+     '(gnus-group-mail-1 ((t (:bold t :inherit gnus-group-mail-1-empty))))
+     '(gnus-group-mail-2 ((t (:bold t :inherit gnus-group-mail-2-empty))))
+     '(gnus-group-mail-3 ((t (:bold t :inherit gnus-group-mail-3-empty))))
+     '(gnus-group-mail-4 ((t (:bold t :inherit gnus-group-mail-4-empty))))
+     '(gnus-group-mail-5 ((t (:bold t :inherit gnus-group-mail-5-empty))))
+     '(gnus-group-mail-6 ((t (:bold t :inherit gnus-group-mail-6-empty))))
+     '(gnus-group-mail-low ((t (:bold t :inherit gnus-group-mail-low-empty))))
 
      `(gnus-signature ((t (:foreground ,zenburn-yellow))))
 
@@ -676,9 +717,6 @@ static char *gnus-pointer[] = {
      '(jde-java-font-lock-link
        ((t (:inherit zenburn-primary-5 :underline t))))
 
-		 '(semantic-tag-boundary-face
-			 ((t (:overline "#5f5f5f"))))
-		 
      '(keywiz-right ((t (:inherit zenburn-primary-1))))
      '(keywiz-wrong ((t (:inherit font-lock-warning))))
      '(keywiz-command ((t (:inherit zenburn-primary-2))))
@@ -749,6 +787,40 @@ static char *gnus-pointer[] = {
      '(nxml-namespace-attribute-colon
        ((t (:inherit nxml-attribute-colon))))
 
+     '(org-agenda-date-today ((t (:foreground "white"
+                               :slant italic :weight bold))) t)       ;; white
+     '(org-agenda-structure ((t (:inherit font-lock-comment-face))))  ;; zenburn-green
+     '(org-archived ((t (:foreground "#8f8f8f"))))                    ;; zenburn-bg slight lighter
+     '(org-column ((t (:height 98 :family "DejaVu Sans Mono"))))      ;; n/a
+     '(org-checkbox ((t (:background "#5f5f5f" :foreground "white"    ;; zenburn-fg on zenburn-bg+2
+                      :box (:line-width 1 :style released-button))))) ;;   - turn checkboxes into buttons
+     '(org-date ((t (:foreground "#8cd0d3" :underline t))))           ;; zenburn-blue
+     '(org-deadline-announce ((t (:foreground "#bc8383"))))           ;; zenburn-red-1
+     '(org-done ((t (:bold t :weight bold :foreground "#afd8af"))))   ;; zenburn-green+3
+     '(org-formula ((t (:foreground "#d0bf8f"))))                     ;; zenburn-yellow-2
+     '(org-headline-done ((t (:foreground "#afd8af"))))               ;; zenburn-green+3
+     '(org-hide ((t (:foreground "#282828"))))                        ;; zenburn-bg slight darker
+     '(org-level-1 ((t (:foreground "#dfaf8f"))))                     ;; zenburn-orange
+     '(org-level-2 ((t (:foreground "#f0dfaf"))))                     ;; zenburn-yellow
+     '(org-level-3 ((t (:foreground "#8cd0d3"))))                     ;; zenburn-blue
+     '(org-level-4 ((t (:foreground "#93e0e3"))))                     ;; zenburn-cyan
+     '(org-level-5 ((t (:foreground "#7cb8bb"))))                     ;; zenburn-blue-1
+     '(org-level-6 ((t (:foreground "#6ca0a3"))))                     ;; zenburn-blue-2
+     '(org-level-7 ((t (:foreground "#5c888b"))))                     ;; zenburn-blue-3
+     '(org-level-8 ((t (:foreground "#4c7073"))))                     ;; zenburn-blue-4
+     '(org-link ((t (:foreground "#d0bf8f" :underline t))))           ;; zenburn-yellow-2
+     ;'(org-priority faces                                            TODO
+     '(org-scheduled ((t (:foreground "#bfebbf"))))                   ;; zenburn-green+4
+     '(org-scheduled-previously ((t (:foreground "#8c5353"))))        ;; zenburn-red-4
+     '(org-scheduled-today ((t (:foreground "#94bff3"))))             ;; zenburn-blue+1
+     '(org-special-keyword ((t (:foreground "#e0cf9f"))))             ;; zenburn-yellow-1
+     '(org-table ((t (:foreground "#9fc59f"))))                       ;; zenburn-green+2
+     '(org-tag ((t (:bold t :weight bold))))                          ;; n/a
+     '(org-time-grid ((t (:foreground "#ffc9a4"))))                   ;; zenburn-orange slight lighter
+     '(org-todo ((t (:bold t :foreground "#cc9393" :weight bold))))   ;; zenburn-red
+     '(org-upcoming-deadline ((t (:inherit font-lock-keyword-face)))) ;; zenburn-fg
+     '(org-warning ((t (:bold t :foreground "#cc9393" :weight bold))));; zenburn-red
+
      ;; TODO
      '(outline-8 ((t (:inherit default))))
      '(outline-7 ((t (:inherit outline-8 :height 1.0))))
@@ -785,9 +857,6 @@ static char *gnus-pointer[] = {
      '(tuareg-font-lock-operator
        ((t (:inherit font-lock-operator))))
 
-		 '(flymake-errline ((t (:underline "#cc9393"))))
-		 '(flymake-warnline ((t (:underline "#f0dfaf"))))
-		 
      '(w3m-form-button
        ((t (:inherit widget-button))))
      '(w3m-form-button-pressed
@@ -1021,6 +1090,37 @@ static char *gnus-pointer[] = {
        nxml-tag-delimiter-face
        nxml-tag-slash-face
        nxml-text-face
+       org-agenda-date-today-face
+       org-agenda-structure-face
+       org-archived-face
+       org-column-face
+       ;org-checkbox-face
+       org-date-face
+       org-deadline-announce-face
+       org-done-face
+       org-formula-face
+       org-headline-done-face
+       org-hide-face
+       org-level-1-face
+       org-level-2-face
+       org-level-3-face
+       org-level-4-face
+       org-level-5-face
+       org-level-6-face
+       org-level-7-face
+       org-level-8-face
+       org-link-face
+       ;org-priority-face
+       org-scheduled-face
+       org-scheduled-previously-face
+       org-scheduled-today-face
+       org-special-keyword-face
+       org-table-face
+       org-tag-face
+       org-time-grid-face
+       org-todo-face
+       org-upcoming-deadline-face
+       org-warning-face
        paren-face
        plain-widget-button-face
        plain-widget-button-pressed-face
