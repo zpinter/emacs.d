@@ -29,15 +29,32 @@
                       ("@office" . ?o)
                       ("@phone" . ?p)
                       ("@errands" . ?e)
-                      ("@mom" . ?m)
-                      ("@dad" . ?d)))
+                      ("@computer" . ?c)
+                      ("@towatch" . ?w)
+                      ("@toread" . ?r)))
 
 (setq org-log-done 'time)
 (org-remember-insinuate)
 
 (setq org-remember-templates
-      '(("Todo" ?t "* TODO %?\n  %i\n  %a" "~/org/inbox.txt" "Tasks")
-        ("Journal" ?j "* %U %?\n\n  %i\n  %a" "~/org/journal.txt")))
+      '(
+		  ("Todo" ?t "* TODO %?\n  %i\n  %a" "~/org/gtd.txt" "Inbox")
+		  ("Zebra" ?z "* TODO %?\n  %i\n  %a" "~/org/gtd.txt" "Zebra")
+        ("Journal" ?j "* %U %?\n\n  %i\n  %a" "~/org/journal.txt")
+		  ))
+
+(setq org-mobile-directory "~/org/")
+(setq org-mobile-inbox-for-pull "~/org/inbox.txt")
+
+(add-hook 'org-mobile-post-push-hook
+          (lambda ()
+            (shell-command "cp -r ~/org/* /Volumes/org/")))
+(add-hook 'org-mobile-pre-pull-hook
+          (lambda ()
+            (shell-command "cp /Volumes/org/mobileorg.org ~/org/ ")))
+(add-hook 'org-mobile-post-pull-hook
+          (lambda ()
+            (shell-command "cp ~/org/mobileorg.org /Volumes/org/")))
 
 
 (require 'org-publish)
@@ -62,24 +79,25 @@
          :publishing-function org-publish-attachment
          )
 
-		  ("org" :components ("org-notes" "org-static"))
+        ("org" :components ("org-notes" "org-static"))
 
         ))
 
-; Use IDO for target completion
+                                        ; Use IDO for target completion
 (setq org-completion-use-ido t)
 
-; Targets include this file and any file contributing to the agenda - up to 5 levels deep
-;(setq org-refile-targets (quote ((org-agenda-files :maxlevel . 5) (nil :maxlevel . 5))))
-;(setq org-refile-use-outline-path (quote file))
-;(setq org-outline-path-complete-in-steps t)
+                                        ; Targets include this file and any file contributing to the agenda - up to 5 levels deep
+                                        ;(setq org-refile-targets (quote ((org-agenda-files :maxlevel . 5) (nil :maxlevel . 5))))
+                                        ;(setq org-refile-use-outline-path (quote file))
+                                        ;(setq org-outline-path-complete-in-steps t)
 
 (setq org-refile-use-outline-path nil)
-(setq org-refile-targets '( (org-agenda-files :regexp . "Tasks") ))
+(setq org-refile-targets (quote ((org-agenda-files :level . 1))))
+;;(setq org-refile-targets '( (org-agenda-files :regexp . "Tasks") ))
 (setq org-outline-path-complete-in-steps nil)
 
 
-;ical integration
+                                        ;ical integration
 (setq org-agenda-include-diary t)
 
 (setq org-agenda-custom-commands

@@ -23,7 +23,7 @@
  '(nav-quickjump-show t)
  '(ns-antialias-text t)
  '(ns-pop-up-frames nil)
- '(org-agenda-files (quote ("~/org/gnus.txt" "~/org/emacs.txt" "~/org/inbox.txt" "~/org/simplesoon.txt" "~/org/zigimus.txt" "~/org/zebra.txt" "~/org/natgeo.txt" "~/org/eui.txt" "~/org/personal.txt"))))
+ '(org-agenda-files (quote ("~/org/gtd.txt"))))
 (custom-set-faces
   ;; custom-set-faces was added by Custom.
   ;; If you edit it by hand, you could mess it up, so be careful.
