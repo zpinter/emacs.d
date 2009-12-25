@@ -197,13 +197,15 @@ argument allows editing of the test command arguments."
 		  (string-match "#\\(.*\\)" funname)
 		  (match-string 1 funname)))
 	 (path (buffer-file-name))
-	 (default-command (if fn
-			      (concat path " --name /" fn "/")
-			    path))
-	 (command (if edit-cmd-args
-		      (read-string "Run w/Compilation: " default-command)
-		    default-command)))
-    (if path (ruby-compilation-run command)
+         (ruby-options (list "-I" (expand-file-name "test" (rinari-root)) path))
+	 (default-command (mapconcat
+                           'identity
+                           (append (list path) (if fn (list "--name" (concat "/" fn "/"))))
+                           " "))
+         (command (if edit-cmd-args
+                      (read-string "Run w/Compilation: " default-command)
+                    default-command)))
+    (if path (ruby-compilation-run command ruby-options)
       (message "no test available"))))
 
 (defun rinari-console (&optional edit-cmd-args)
@@ -544,6 +546,8 @@ renders and redirects to find the final controller or view."
    (worker "w" ((t . "lib/workers/")) nil)
    (public "p" ((t . "public/")) nil)
    (stylesheet "y" ((t . "public/stylesheets/.*")) nil)
+   (sass "Y" ((t . "public/stylesheets/sass/.*")
+              (t . "app/stylesheets/.*")) nil)
    (javascript "j" ((t . "public/javascripts/.*")) nil)
    (plugin "u" ((t . "vendor/plugins/")) nil)
    (metal "e" ((t . "app/metal/")) nil)

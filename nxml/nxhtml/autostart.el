@@ -1,5 +1,5 @@
 (setq message-log-max t)
-(setq debug-on-error t)
+;(setq debug-on-error t)
 ;;; autostart.el --- Load nxhtml
 ;;
 ;; Author: By: Lennart Borgman

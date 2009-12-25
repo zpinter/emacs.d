@@ -159,7 +159,7 @@
     (let ((moving (= (point) (process-mark proc))))
       (save-excursion
         (goto-char (process-mark proc))
-        (insert (ansi-color-filter-apply string))
+        (insert (ansi-color-apply string))
         (set-marker (process-mark proc) (point)))
       (if moving (goto-char (process-mark proc))))))
 
@@ -205,6 +205,9 @@
           '(lambda ()
              (define-key feature-mode-map (kbd "C-x t") 'cucumber-compilation-this-buffer)
              (define-key feature-mode-map (kbd "C-x C-t") 'cucumber-compilation-this-scenario)
+
+	     ;; ensure font lock font-stripping doesn't kill our explicit ansi colorization
+	     (setq font-lock-unfontify-region-function 'ansi-color-unfontify-region)
              ))
 
 (provide 'cucumber-mode-compilation)
