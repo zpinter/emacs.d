@@ -164,6 +164,10 @@
 
 (defalias 'mkdir 'make-directory)
 
+;; make sure dired listings have human sizes
+(setq dired-listing-switches "-alh")
+
+
 ; add the function back to the latest carbon emacs
 (defun mac-toggle-max-window ()
   (interactive)
@@ -172,6 +176,19 @@
                                            'fullboth)))
 
 (setq ssl-certificate-directory "~/.certs")
+
+;ansi-term
+(defun visit-ansi-term ()
+  "If we are in an *ansi-term*, rename it.
+If there is no *ansi-term*, run it.
+If there is one running, switch to that buffer."
+  (interactive)
+  (if (equal "*ansi-term*" (buffer-name))
+      (call-interactively 'rename-buffer)
+      (if (get-buffer "*ansi-term*")
+   (switch-to-buffer "*ansi-term*")
+   (ansi-term "/bin/bash"))))
+(global-set-key (kbd "<f2>") 'visit-ansi-term)
 
 ;file encoding
 (prefer-coding-system 'utf-8)

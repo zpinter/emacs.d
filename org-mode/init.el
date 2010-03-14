@@ -11,6 +11,16 @@
 
                                         ; (eval-after-load "tex-mode" '(fset 'tex-font-lock-suscript 'ignore))
 
+(defun org-insert-link-as-file ()
+  (interactive)
+  (let ((current-prefix-arg '(4)))
+    (call-interactively 'org-insert-link)))
+
+(add-hook 'org-load-hook
+            (lambda ()
+				  (define-key org-mode-map (kbd "C-c C-g") 'org-insert-link-as-file)))
+
+
 (setq org-export-with-sub-superscripts nil)
 (global-set-key "\C-cl" 'org-store-link)
 (global-set-key "\C-ca" 'org-agenda)
@@ -45,16 +55,6 @@
 
 (setq org-mobile-directory "~/org/")
 (setq org-mobile-inbox-for-pull "~/org/inbox.txt")
-
-(add-hook 'org-mobile-post-push-hook
-          (lambda ()
-            (shell-command "cp -r ~/org/* /Volumes/org/")))
-(add-hook 'org-mobile-pre-pull-hook
-          (lambda ()
-            (shell-command "cp /Volumes/org/mobileorg.org ~/org/ ")))
-(add-hook 'org-mobile-post-pull-hook
-          (lambda ()
-            (shell-command "cp ~/org/mobileorg.org /Volumes/org/")))
 
 
 (require 'org-publish)

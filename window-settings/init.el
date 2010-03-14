@@ -26,12 +26,10 @@ determining the maximize number of columns to fit on a display"
 ;;;    "-apple-inconsolata-medium-r-normal--14-*-*-*-*-*-iso10646-1"))
 
 
-
-
 (if (and (ismac) window-system)
     (progn
 
-		(set-frame-font "-apple-inconsolata-medium-r-normal--14-*-*-*-*-*-iso10646-1")
+		(set-frame-font "-apple-inconsolata-medium-r-normal--12-*-*-*-*-*-iso10646-1")
 
 		(require 'cua-base)
 		(cua-mode t)

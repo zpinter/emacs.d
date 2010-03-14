@@ -1,4 +1,12 @@
-;;core functions
+ ;;core functions
+
+;; (eval-after-load "tramp"
+;;   '(debug))
+
+; prevent tramp from messing up recentf
+(require 'recentf)
+    (setq recentf-auto-cleanup 'never) ;; disable before we start recentf!
+    (recentf-mode 1)
 
 (defun add-path (p)
   (add-to-list 'load-path
