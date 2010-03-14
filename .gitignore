@@ -1,3 +1,5 @@
 tmp/*
 .DS_Store
 private.el
+magit/lisp/autom4te.cache/*
+

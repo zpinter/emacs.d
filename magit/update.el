@@ -8,12 +8,11 @@
 
   (let ((build-cmd (concat "cd " update-dir " && git clone git://gitorious.org/magit/mainline.git magit"
 			  " && cd magit"
-			  " && autoconf"
+			  " && ./autogen.sh"
 			  " && ./configure"
 			  " && make"
 			  " && rm -rf .git"
-			  " && cp -r ./* ../../lisp/"
-			  " && cp -r contrib/* ../../contrib/")))
+			  " && cp -r ./* ../../lisp/")))
 
 	 (message build-cmd)
 	 (shell-command build-cmd))
