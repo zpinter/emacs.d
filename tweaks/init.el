@@ -216,6 +216,10 @@ If there is one running, switch to that buffer."
 (setq-default save-place t)                   ;; activate it for all buffers
 (require 'saveplace)                          ;; get the package
 
+;; fix x copy/paste
+(setq x-select-enable-clipboard t)
+(setq interprogram-paste-function 'x-cut-buffer-or-selection-value)
+
 ; save and close buffer
 (global-set-key [(control c) (k)]
 		'(lambda ()
