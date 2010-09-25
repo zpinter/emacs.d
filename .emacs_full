@@ -47,6 +47,7 @@
 ;; 								"jdee"
 								"textmate"
 								"ack"
+								"csv-mode"
                         "tweaks"
 								"smex"
                         "server"

@@ -33,8 +33,8 @@ POST_UNINSTALL = :
 subdir = .
 DIST_COMMON = README $(am__configure_deps) $(srcdir)/Makefile.am \
 	$(srcdir)/Makefile.in $(srcdir)/magit-pkg.el.in \
-	$(top_srcdir)/configure AUTHORS COPYING ChangeLog INSTALL NEWS \
-	install-sh missing texinfo.tex
+	$(srcdir)/magit.spec.in $(top_srcdir)/configure AUTHORS \
+	COPYING ChangeLog INSTALL NEWS install-sh missing texinfo.tex
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
@@ -42,7 +42,7 @@ am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 am__CONFIG_DISTCLEAN_FILES = config.status config.cache config.log \
  configure.lineno config.status.lineno
 mkinstalldirs = $(install_sh) -d
-CONFIG_CLEAN_FILES = magit-pkg.el
+CONFIG_CLEAN_FILES = magit-pkg.el magit.spec
 SOURCES =
 DIST_SOURCES =
 INFO_DEPS = $(srcdir)/magit.info
@@ -109,6 +109,7 @@ PACKAGE_VERSION = 0.8
 PATH_SEPARATOR = :
 SET_MAKE = 
 SHELL = /bin/sh
+SITESTART = $(sysconfdir)/emacs/site-start.d
 STRIP = 
 VERSION = 0.8
 abs_builddir = /Users/zpinter/emacs.d/magit/update/magit
@@ -155,7 +156,7 @@ lisp_DATA = magit.el magit.elc
 sitestart_DATA = 50magit.el
 info_TEXINFOS = magit.texi
 CLEANFILES = magit.elc
-EXTRA_DIST = magit.el 50magit.el
+EXTRA_DIST = magit.el 50magit.el magit.spec
 all: all-am
 
 .SUFFIXES:
@@ -194,6 +195,8 @@ $(top_srcdir)/configure:  $(am__configure_deps)
 $(ACLOCAL_M4):  $(am__aclocal_m4_deps)
 	cd $(srcdir) && $(ACLOCAL) $(ACLOCAL_AMFLAGS)
 magit-pkg.el: $(top_builddir)/config.status $(srcdir)/magit-pkg.el.in
+	cd $(top_builddir) && $(SHELL) ./config.status $@
+magit.spec: $(top_builddir)/config.status $(srcdir)/magit.spec.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
 
 .texi.info:

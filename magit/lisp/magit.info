@@ -37,6 +37,7 @@ an extension to Emacs.
 * Resetting::
 * Stashing::
 * Branching::
+* The branch list::
 * Wazzup::
 * Merging::
 * Rebasing::
@@ -335,6 +336,12 @@ one branch, but not in another, for example.
 
    Typing `L' (or `C-u L') will show the log in a more verbose form.
 
+   Magit will show only `magit-log-cutoff-length' entries. `l' will
+show twice as many entries. `C-u l' will show all entries, and given a
+numeric prefix argument, `l' will add this number of entries. You can
+also show more entries by typing `RET' on the text appended at the end
+of the buffer.
+
    You can move point to a commit and then cause various things to
 happen with it.  (The following commands work in any list of commit,
 such as the one shown in the _Unpushed commits_ section.)
@@ -468,7 +475,7 @@ changes in your working tree and index.
 it, typing `RET' will move point into that buffer.
 
 
-File: magit.info,  Node: Branching,  Next: Wazzup,  Prev: Stashing,  Up: Top
+File: magit.info,  Node: Branching,  Next: The branch list,  Prev: Stashing,  Up: Top
 
 13 Branching
 ************
@@ -488,10 +495,40 @@ in a detached head.
 
    To create a new branch and switch to it immediately, type `B'.
 
-
-File: magit.info,  Node: Wazzup,  Next: Merging,  Prev: Branching,  Up: Top
+   Typing `V' will list the local and remote branches in a new buffer
+called `*magit-branches*' from which you can work with them. See *Note
+The branch list:: for more details.
 
-14 Wazzup
+
+File: magit.info,  Node: The branch list,  Next: Wazzup,  Prev: Branching,  Up: Top
+
+14 The branch list
+******************
+
+The branch list is a separate buffer called `*magit-branches*' with its
+own local key map. The keybindings are modeled after magit's main
+buffer. The buffer contains both local and remote branches. The current
+local branch is marked by a "*" in front of the name.
+
+   Typing `k' will delete the branch in the current line, and `C-u k'
+deletes it even if it hasn't been merged into the current local branch.
+Deleting works for both local and remote branches.
+
+   You can merge the branch in the current line by typing `m' for a
+manual merge and `M' for an automatic merge.
+
+   With `b' you can check out the branch in the current line.
+
+   Typing `$' shows the `*magit-process*' buffer which contains the
+transcript of the most recent command.
+
+   Typing `V' will refresh the branch list. `q' buries the branch list
+buffer and deletes its window.
+
+
+File: magit.info,  Node: Wazzup,  Next: Merging,  Prev: The branch list,  Up: Top
+
+15 Wazzup
 *********
 
 Typing `w' will show a summary of how your other branches relate to the
@@ -513,7 +550,7 @@ unignore it.
 
 File: magit.info,  Node: Merging,  Next: Rebasing,  Prev: Wazzup,  Up: Top
 
-15 Merging
+16 Merging
 **********
 
 Magit offers two ways to merge branches: manually and automatic.  A
@@ -549,7 +586,7 @@ resolved.
 
 File: magit.info,  Node: Rebasing,  Next: Rewriting,  Prev: Merging,  Up: Top
 
-16 Rebasing
+17 Rebasing
 ***********
 
 Typing `R' in the status buffer will initiate a rebase or, if one is
@@ -569,7 +606,7 @@ rebase can be finished with `R' as well.
 
 File: magit.info,  Node: Rewriting,  Next: Pushing and Pulling,  Prev: Rebasing,  Up: Top
 
-17 Rewriting
+18 Rewriting
 ************
 
 As hinted at earlier, you can rewrite your commit history.  For
@@ -636,7 +673,7 @@ it, like from any other diff.
 
 File: magit.info,  Node: Pushing and Pulling,  Next: Interfacing with Subversion,  Prev: Rewriting,  Up: Top
 
-18 Pushing and Pulling
+19 Pushing and Pulling
 **********************
 
 Magit will run `git push' when you type `P'.  If you give a prefix
@@ -667,34 +704,40 @@ branch, Magit shows them in a section called _Unpulled changes_.  Typing
 
 File: magit.info,  Node: Interfacing with Subversion,  Prev: Pushing and Pulling,  Up: Top
 
-19 Interfacing with Subversion
+20 Interfacing with Subversion
 ******************************
 
 Typing `N r' runs `git svn rebase' and typing `N c' runs `git svn
 dcommit'.
 
+   `N f' will prompt you for a (numeric, Subversion) revision and then
+search for a corresponding Git sha1 for the commit. This is limited to
+the path of the remote Subversion repository. With a prefix (`C-u N f'
+the user will also be prompted for a branch to search in.
+
 
 
 Tag Table:
 Node: Top549
-Node: Introduction1060
-Node: Acknowledgments2531
-Node: Sections3155
-Node: Status5705
-Node: Untracked files8434
-Node: Staging and Committing9381
-Node: History12575
-Node: Reflogs14979
-Node: Diffing15367
-Node: Tagging15965
-Node: Resetting16409
-Node: Stashing17933
-Node: Branching18514
-Node: Wazzup19318
-Node: Merging20100
-Node: Rebasing21571
-Node: Rewriting22386
-Node: Pushing and Pulling25240
-Node: Interfacing with Subversion26650
+Node: Introduction1080
+Node: Acknowledgments2551
+Node: Sections3175
+Node: Status5725
+Node: Untracked files8454
+Node: Staging and Committing9401
+Node: History12595
+Node: Reflogs15295
+Node: Diffing15683
+Node: Tagging16281
+Node: Resetting16725
+Node: Stashing18249
+Node: Branching18830
+Node: The branch list19821
+Node: Wazzup20794
+Node: Merging21582
+Node: Rebasing23053
+Node: Rewriting23868
+Node: Pushing and Pulling26722
+Node: Interfacing with Subversion28132
 
 End Tag Table

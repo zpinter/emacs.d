@@ -28,8 +28,12 @@
 (setq org-todo-keywords '((sequence "TODO(t)" "WAITING(w)" "SOMEDAY(s)" "|" "CANCELLED(c)" "DONE(d)")))
 
 (setq org-directory "~/org")
+(setq org-agenda-files '("~/org/gtd.txt" "~/org/zebra/zebra_log.txt"))
+(setq org-mobile-directory "~/Dropbox/MobileOrg/")
+(setq org-mobile-inbox-for-pull "~/org/inbox.txt")
 (setq org-archive-location "~/org/archive.txt")
-(setq org-default-notes-file "~/org/inbox.txt")
+
+(setq org-default-notes-file "~/org/gtd.txt")
 (setq org-special-ctrl-a/e t)
 (setq org-return-follows-link nil)
 (setq org-fast-tag-selection-single-key t)
@@ -52,9 +56,6 @@
 		  ("Zebra" ?z "* TODO %?\n  %i\n  %a" "~/org/gtd.txt" "Zebra")
         ("Journal" ?j "* %U %?\n\n  %i\n  %a" "~/org/journal.txt")
 		  ))
-
-(setq org-mobile-directory "~/org/")
-(setq org-mobile-inbox-for-pull "~/org/inbox.txt")
 
 
 (require 'org-publish)

@@ -82,7 +82,9 @@
 ;(defface trailing-whitespace
 ;  '((t (:background "pale green")))
 ;  "Used for tabs and such.")
-(add-hook 'before-save-hook 'delete-trailing-whitespace)
+
+
+;(add-hook 'before-save-hook 'delete-trailing-whitespace)
 
 (custom-set-faces
  '(flymake-errline ((t :underline "red")))

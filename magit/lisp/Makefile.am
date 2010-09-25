@@ -1,5 +1,5 @@
 lispdir = $(datadir)/emacs/site-lisp
-sitestartdir = $(sysconfdir)/emacs/site-start.d
+sitestartdir = @SITESTART@
 
 lisp_DATA = magit.el magit.elc
 sitestart_DATA = 50magit.el
@@ -7,7 +7,7 @@ sitestart_DATA = 50magit.el
 info_TEXINFOS = magit.texi
 
 CLEANFILES = magit.elc
-EXTRA_DIST = magit.el 50magit.el
+EXTRA_DIST = magit.el 50magit.el magit.spec
 
 %.elc: %.el
 	@if [ $(builddir) != $(srcdir) ]; then ln $(srcdir)/$*.el .; fi

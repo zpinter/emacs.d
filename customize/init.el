@@ -23,8 +23,7 @@
  '(nav-quickjump-show t)
  '(ns-antialias-text t)
  '(ns-pop-up-frames nil)
- ;; '(warning-suppress-types nil)
- '(org-agenda-files (quote ("~/org/gtd.txt"))))
+)))
 
 (custom-set-faces
   ;; custom-set-faces was added by Custom.
