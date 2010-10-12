@@ -71,6 +71,9 @@
 (defvar ruby-compilation-executable "ruby"
   "What bin to use to launch the tests. Override if you use JRuby etc.")
 
+(defvar ruby-compilation-executable-rake "rake"
+  "What bin to use to launch rake. Override if you use JRuby etc.")
+
 (defvar ruby-compilation-test-name-flag "-n"
   "What flag to use to specify that you want to run a single test.")
 
@@ -129,7 +132,7 @@ exec-to-string command, but it works and seems fast"
 			(read-from-minibuffer "Edit Rake Command: " (concat task " "))
 		      task)))
     (pop-to-buffer (ruby-compilation-do
-		    "rake" (cons "rake"
+		    "rake" (cons ruby-compilation-executable-rake
 				 (split-string rake-args))))))
 
 ;;;###autoload

@@ -107,6 +107,9 @@ leave this to the environment variables outside of Emacs.")
   (list ";" "'")
   "List of characters, each of which will be bound (with C-c) as a rinari-minor-mode keymap prefix.")
 
+(defvar rinari-partial-regex "render :partial *=> *[@'\"]?\\([A-Za-z/_]+\\)['\"]?"
+  "Regex that matches a partial rendering call.")
+
 (defadvice ruby-compilation-do (around rinari-compilation-do activate)
   "Set default directory to the root of the rails application
   before running ruby processes."
@@ -209,17 +212,28 @@ argument allows editing of the test command arguments."
       (message "no test available"))))
 
 (defun rinari-console (&optional edit-cmd-args)
-  "Run script/console in a compilation buffer, with command
-history and links between errors and source code.  With optional
-prefix argument allows editing of the console command arguments."
+  "Runs a Rails console in a compilation buffer, with command history
+and links between errors and source code.  With optional prefix
+argument allows editing of the console command arguments."
   (interactive "P")
-  (let* ((script ;; (concat (rinari-root) "script/console")
-	  (concat (expand-file-name "console" (file-name-as-directory
-					       (expand-file-name "script" (rinari-root))))
-		  (if rinari-rails-env (concat " " rinari-rails-env))))
-	 (command (if edit-cmd-args
-			      (read-string "Run Ruby: " (concat script " "))
-			    script)))
+  (let* ((default-directory (rinari-root))
+         (script (rinari-script-path))
+         (command
+          (expand-file-name
+           (if (file-exists-p (expand-file-name "console" script))
+               "console"
+             "rails console")
+           script)))
+
+    ;; Start console in correct environment.
+    (if rinari-rails-env
+        (setq command (concat command " " rinari-rails-env)))
+
+    ;; For customization of the console command with prefix arg.
+    (setq command (if edit-cmd-args
+                      (read-string "Run Ruby: " (concat command " "))
+                    command))
+
     (run-ruby command)
     (save-excursion
       (set-buffer "*ruby*")
@@ -261,19 +275,31 @@ from your conf/database.sql file."
 	  (rename-buffer (sql-name environment)) (rinari-launch))))))
 
 (defun rinari-web-server (&optional edit-cmd-args)
-  "Run script/server.  Dump output to a compilation buffer
-allowing jumping between errors and source code.  With optional
-prefix argument allows editing of the server command arguments."
+  "Starts a Rails webserver.  Dumps output to a compilation buffer
+allowing jumping between errors and source code.  With optional prefix
+argument allows editing of the server command arguments."
   (interactive "P")
   (let* ((default-directory (rinari-root))
-	 (script (concat (expand-file-name "server"
-					   (file-name-as-directory
-					    (expand-file-name "script" (rinari-root))))
-			 (if rinari-rails-env (concat " -e " rinari-rails-env))))
-	 (command (if edit-cmd-args
-		      (read-string "Run Ruby: " (concat script " "))
-		    script)))
-    (ruby-compilation-run command)) (rinari-launch))
+         (script (rinari-script-path))
+         (command
+          (expand-file-name
+           (if (file-exists-p (expand-file-name "server" script))
+               "server"
+             "rails server")
+           script)))
+
+    ;; Start web server in correct environment.
+    ;; NOTE: Rails 3 has a bug and does not start in any environment but development for now.
+    (if rinari-rails-env
+        (setq command (concat command " -e " rinari-rails-env)))
+
+    ;; For customization of the web server command with prefix arg.
+    (setq command (if edit-cmd-args
+                      (read-string "Run Ruby: " (concat command " "))
+                    command))
+
+    (ruby-compilation-run command))
+  (rinari-launch))
 
 (defun rinari-insert-erb-skeleton (no-equals)
   "Insert an erb skeleton at point, with optional prefix argument
@@ -283,22 +309,49 @@ don't include an '='."
   (if no-equals (backward-char 4) (backward-char 3)))
 
 (defun rinari-extract-partial (begin end partial-name)
+  "Extracts the selected region into a partial."
   (interactive "r\nsName your partial: ")
-  (let* ((path (buffer-file-name)) ending)
+  (let ((path (buffer-file-name))
+        (ending (rinari-ending)))
     (if (string-match "view" path)
-	(let ((ending (and (string-match ".+?\\(\\.[^/]*\\)$" path)
-			   (match-string 1 path)))
-	      (partial-name
-	       (replace-regexp-in-string "[[:space:]]+" "_" partial-name)))
-	  (kill-region begin end)
-	  (if (string-match "\\(.+\\)/\\(.+\\)" partial-name)
-	      (let ((default-directory (expand-file-name (match-string 1 partial-name)
-							 (expand-file-name ".."))))
-		(find-file (concat "_" (match-string 2 partial-name) ending)))
-	    (find-file (concat "_" partial-name ending)))
-	  (yank) (pop-to-buffer nil)
-	  (insert (concat "<%= render :partial => '" partial-name "' %>\n")))
+        (let ((partial-name
+               (replace-regexp-in-string "[[:space:]]+" "_" partial-name)))
+          (kill-region begin end)
+          (if (string-match "\\(.+\\)/\\(.+\\)" partial-name)
+              (let ((default-directory (expand-file-name (match-string 1 partial-name)
+                                                         (expand-file-name ".."))))
+                (find-file (concat "_" (match-string 2 partial-name) ending)))
+            (find-file (concat "_" partial-name ending)))
+          (yank) (pop-to-buffer nil)
+          (rinari-insert-partial partial-name ending))
       (message "not in a view"))))
+
+(defun rinari-insert-partial (partial-name ending)
+  "Inserts the partial call in to the buffer. The snippet depends on
+the current file ending.
+
+Supported markup languages are: Erb, Haml"
+  (let ((prefix) (suffix))
+    (cond
+     ((string-match "\\(html\\)?\\.erb" ending)
+      (setq prefix "<%= ")
+      (setq suffix " %>"))
+     ((string-match "\\(html\\)?\\.haml" ending)
+      (setq prefix "= ")
+      (setq suffix " ")))
+    (insert (concat prefix "render :partial => \"" partial-name "\"" suffix "\n"))))
+
+(defun rinari-goto-partial ()
+  "Visits the partial that is called on the current line."
+  (interactive)
+  (let ((line (buffer-substring-no-properties (line-beginning-position) (line-end-position))))
+    (when (string-match rinari-partial-regex line)
+      (setq line (match-string 1 line))
+      (let ((file))
+        (if (string-match "/" line)
+            (setq file (concat (rinari-root) "app/views/" (replace-regexp-in-string "\\([^/]+\\)/\\([^/]+\\)$" "\\1/_\\2" line)))
+          (setq file (concat default-directory "_" line)))
+        (find-file (concat file (rinari-ending)))))))
 
 (defvar rinari-rgrep-file-endings
   "*.[^l]*"
@@ -310,17 +363,38 @@ With optional prefix argument just run `rgrep'."
   (interactive "P")
   (grep-compute-defaults)
   (if arg (call-interactively 'rgrep)
-    (let ((word (thing-at-point 'word)))
-      (funcall 'rgrep (read-from-minibuffer "search for: " word)
-	       rinari-rgrep-file-endings (rinari-root)))))
+    (let ((query))
+      (if mark-active
+          (setq query (buffer-substring-no-properties (point) (mark)))
+        (setq query (thing-at-point 'word)))
+      (funcall 'rgrep (read-from-minibuffer "search for: " query)
+               rinari-rgrep-file-endings (rinari-root)))))
+
+(defun rinari-ending ()
+  "Returns the ending of the current file (ending being the file extension)."
+  (let* ((path (buffer-file-name))
+         (ending
+          (and (string-match ".+?\\(\\.[^/]*\\)$" path)
+               (match-string 1 path))))
+    ending))
+
+(defun rinari-script-path ()
+  "Returns the absolute path to the script folder."
+  (concat (file-name-as-directory (expand-file-name "script" (rinari-root)))))
 
 ;;--------------------------------------------------------------------
 ;; rinari movement using jump.el
 
 (defun rinari-generate (type name)
-  (message (shell-command-to-string
-	    (format "ruby %sscript/generate %s %s" (rinari-root) type
-		    (read-from-minibuffer (format "create %s: " type) name)))))
+  (let* ((default-directory (rinari-root))
+         (script (rinari-script-path))
+         (command
+          (expand-file-name
+           (if (file-exists-p (expand-file-name "generate" script))
+               "generate"
+             "rails generate")
+           script)))
+    (message (shell-command-to-string (concat command " " type " " (read-from-minibuffer (format "create %s: " type) name))))))
 
 (defvar rinari-ruby-hash-regexp
   "\\(:[^[:space:]]*?\\)[[:space:]]*\\(=>[[:space:]]*[\"\':]?\\([^[:space:]]*?\\)[\"\']?[[:space:]]*\\)?[,){}\n]"
@@ -539,6 +613,7 @@ renders and redirects to find the final controller or view."
 		       (and (string-match ".*/\\(.+?\\)_cell\.rb" path)
 			    (match-string 1 path)))))
    (environment "e" ((t . "config/environments/")) nil)
+   (application "a" ((t . "config/application.rb")) nil)
    (configuration "n" ((t . "config/")) nil)
    (script "s" ((t . "script/")) nil)
    (lib "l" ((t . "lib/")) nil)
@@ -550,7 +625,7 @@ renders and redirects to find the final controller or view."
               (t . "app/stylesheets/.*")) nil)
    (javascript "j" ((t . "public/javascripts/.*")) nil)
    (plugin "u" ((t . "vendor/plugins/")) nil)
-   (metal "e" ((t . "app/metal/")) nil)
+   (mailer "M" ((t . "app/mailers/")) nil)
    (file-in-project "f" ((t . ".*")) nil)
    (by-context
     ";"
@@ -602,7 +677,7 @@ behavior."
     ("e" . 'rinari-insert-erb-skeleton) ("t" . 'rinari-test)
     ("r" . 'rinari-rake)                ("c" . 'rinari-console)
     ("w" . 'rinari-web-server)          ("g" . 'rinari-rgrep)
-    ("x" . 'rinari-extract-partial)
+    ("x" . 'rinari-extract-partial)     ("p" . 'rinari-goto-partial)
     (";" . 'rinari-find-by-context)     ("'" . 'rinari-find-by-context)
     ("d" . 'rinari-cap))
   "alist mapping of keys to functions in `rinari-minor-mode'")

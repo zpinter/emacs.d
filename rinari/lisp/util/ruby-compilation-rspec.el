@@ -9,7 +9,7 @@
 (require 'ruby-compilation)
 
 (add-hook 'ruby-mode-hook (lambda ()
-                            (when (string-match "_spec.rb$" buffer-file-name)
+                            (when (and (not (null buffer-file-name)) (string-match "_spec.rb$" buffer-file-name))
                               (set (make-local-variable 'ruby-compilation-executable)
                                    "spec")
                               (set (make-local-variable 'ruby-compilation-test-name-flag)
@@ -22,9 +22,9 @@
   (if (equal ruby-compilation-executable "spec")
       (ruby-compilation-this-spec-name)
     (ruby-compilation-this-test-name-old)))
-    
+
 (defun ruby-compilation-this-spec-name ()
   "Return the line number at point"
   (number-to-string (line-number-at-pos)))
-  
+
 (provide 'ruby-compilation-rspec)
