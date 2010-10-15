@@ -45,7 +45,7 @@
 ;; 								"cedet"
 ;; 								"ecb"
 ;; 								"jdee"
-								"textmate"
+;;								"textmate"
 								"ack"
 								"csv-mode"
                         "tweaks"
