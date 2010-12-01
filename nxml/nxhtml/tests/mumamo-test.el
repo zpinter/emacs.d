@@ -26,7 +26,7 @@
 ;;; Code:
 
 ;;(eval-when-compile (require 'mumamo))
-(require 'mumamo)
+(eval-when-compile (require 'mumamo))
 (require 'whelp)
 
 ;;;;;;; TESTS, run in fundamental-mode buffer
@@ -63,11 +63,12 @@ When this mode is on the following keys are defined:
   )
 
 (defun mumamo-test-tell-bindings ()
-  (let ((s "mumamo-test-mode is on, use F3/shift-F3 for simple testing"))
-    (put-text-property 0 (length s)
-                       'face 'font-lock-warning-face
-                       s)
-    (message "%s" s)))
+  (save-match-data ;; runs in timer
+    (let ((s "mumamo-test-mode is on, use F3/shift-F3 for simple testing"))
+      (put-text-property 0 (length s)
+                         'face 'font-lock-warning-face
+                         s)
+      (message "%s" s))))
 
 ;;(mumamo-test-mode 1)
 
@@ -134,7 +135,7 @@ When this mode is on the following keys are defined:
       ;;(setq this-ovl (mumamo-test-create-chunk-at-point))
       (setq this-ovl (mumamo-find-chunks (point) "test loop"))
       ;;(message "this-ovl=%s" this-ovl)
-      (sit-for 0.01)
+      (sit-for 0.005)
       ;;(sit-for 0)
       (when last-ovl
         (if (= (point) (overlay-end last-ovl))
@@ -273,12 +274,6 @@ When this mode is on the following keys are defined:
 (defun mumamo-debug (&rest debugger-args)
   (let ((s (with-output-to-string (backtrace))))
     (message "mumamo-debug: %s" s)))
-
-(defun mumamo-list-timers ()
-  (interactive)
-  (mapatoms (lambda (s)
-              (when (timerp s)
-                (message "%s: %s" (symbol-name s) (symbol-value s))))))
 
 ;; (defun mumamo-bt-to-msg (msg)
 ;;   (mumamo-msgfntfy "%s: %s" msg

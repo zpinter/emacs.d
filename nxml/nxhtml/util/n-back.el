@@ -2,15 +2,15 @@
 ;;
 ;; Author: Lennart Borgman (lennart O borgman A gmail O com)
 ;; Created: 2009-05-23 Sat
-(defconst n-back:version 0.5);; Version:
-;; Last-Updated: 2009-05-30 Sat
+(defconst n-back:version "0.5");; Version:
+;; Last-Updated: 2009-08-04 Tue
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
 ;;
 ;; Features that might be required by this library:
 ;;
-  ;; `cl', `cus-load', `cus-start', `windmove', `winsav', `winsize'.
+;; `winsize'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -45,10 +45,13 @@
 ;;
 ;;; Code:
 
-;; (setq n-back-trials 2)
+;;(eval-when-compile (require 'viper))
 
-(require 'winsize) ;; Ehum...
-;;(require 'new-key-seq-widget)
+;; (setq n-back-trials 2)
+(eval-when-compile (require 'cl))
+(eval-when-compile (require 'nxhtml-base nil t))
+(eval-when-compile (require 'nxhtml-web-vcs nil t))
+(require 'winsize nil t) ;; Ehum...
 
 (defvar n-back-game-window nil)
 (defvar n-back-game-buffer nil)
@@ -71,6 +74,7 @@
 (defvar n-back-num-active nil)
 
 
+;;;###autoload
 (defgroup n-back nil
   "Customizations for `n-back-game' game."
   :group 'games)
@@ -79,12 +83,67 @@
   "Customizations for `n-back-game' game keys, faces etc."
   :group 'n-back)
 
+(defface n-back-ok
+  '((t (:foreground "black" :background "green")))
+  "Face for OK answer."
+  :group 'n-back-feel)
+
+(defface n-back-bad
+  '((t (:foreground "black" :background "OrangeRed1")))
+  "Face for bad answer."
+  :group 'n-back-feel)
+
+(defface n-back-hint
+  '((t (:foreground "black" :background "gold")))
+  "Face for bad answer."
+  :group 'n-back-feel)
+
+(defface n-back-do-now
+  '((((background dark)) (:foreground "yellow"))
+    (t (:foreground "blue")))
+  "Face for start and stop hints."
+  :group 'n-back-feel)
+
+(defface n-back-game-word
+  '((t (:foreground "black")))
+  "Face for word displayed in game."
+  :group 'n-back-feel)
+
+(defface n-back-header
+  '((((background dark)) (:background "OrangeRed4"))
+    (t (:background "gold")))
+  "Face for headers."
+  :group 'n-back-feel)
+
+(defface n-back-keybinding
+  '((((background dark)) (:background "purple4"))
+    (t (:background "OliveDrab1")))
+  "Face for key bindings."
+  :group 'n-back-feel)
+
+(defface n-back-last-result
+  '((((background dark)) (:background "OliveDrab4"))
+    (t (:background "yellow")))
+  "Face for last game result header."
+  :group 'n-back-feel)
+
+(defface n-back-welcome
+  '((((background dark)) (:foreground "OliveDrab3"))
+    (t (:foreground "OliveDrab4")))
+  "Face for welcome string"
+  :group 'n-back-feel)
+
+(defface n-back-welcome-header
+  '((t (:height 2.0)))
+  "Face for welcome header."
+  :group 'n-back-feel)
+
 (defcustom n-back-level 1
   "The n-Back level."
   :type '(radio (const 1)
-                 (const 2)
-                 (const 3)
-                 (const 4))
+                (const 2)
+                (const 3)
+                (const 4))
   :set (lambda (sym val)
          (set-default sym val)
          (when (featurep 'n-back)
@@ -155,6 +214,84 @@
   :type '(list (directory :tag "Directory")
                (regexp :tag "File name regexp"))
   :group 'n-back)
+
+(defcustom n-back-keys
+  '(
+    [?p]
+    [?c]
+    [?s]
+    [?w]
+    )
+  "Key bindings for answering."
+  :type '(list
+          (key-sequence :tag "position key")
+          (key-sequence :tag "color key")
+          (key-sequence :tag "sound key")
+          (key-sequence :tag "word key")
+          )
+  ;; :set (lambda (sym val)
+  ;;        (set-default sym val)
+  ;;        (n-back-make-keymap))
+  :group 'n-back-feel)
+
+(defvar n-back-control-mode-map nil)
+
+(defun n-back-key-binding (what)
+  "Return key binding used for WHAT match answers."
+  (nth
+   (case what
+     (position 0)
+     (color    1)
+     (sound    2)
+     (word     3))
+   n-back-keys))
+
+(defun n-back-make-keymap ()
+  "Make keymap for the game."
+  (let ((map (make-sparse-keymap)))
+    (define-key map [?1] 'n-back-change-level)
+    (define-key map [?2] 'n-back-change-level)
+    (define-key map [?3] 'n-back-change-level)
+    (define-key map [?4] 'n-back-change-level)
+    (define-key map [?5] 'n-back-change-level)
+    (define-key map [?6] 'n-back-change-level)
+    (define-key map [??] 'n-back-help)
+    (define-key map [?\ ] 'n-back-play)
+    (define-key map [(control ?g)] 'n-back-stop)
+    (define-key map [?-] 'n-back-decrease-speed)
+    (define-key map [?+] 'n-back-increase-speed)
+
+    (define-key map [(control ?r)] 'n-back-reset-game-to-saved)
+    (define-key map [(control ?s)] 'n-back-save-game-settings)
+
+    (define-key map [?t ?p] 'n-back-toggle-position)
+    (define-key map [?t ?c] 'n-back-toggle-color)
+    (define-key map [?t ?s] 'n-back-toggle-sound)
+    (define-key map [?t ?w] 'n-back-toggle-word)
+
+    (define-key map [?T ?a] 'n-back-toggle-auto-challenge)
+    (define-key map [up]    'n-back-challenge-up)
+    (define-key map [down]  'n-back-challenge-down)
+
+    (define-key map [?T ?p] 'n-back-toggle-allowed-position)
+    (define-key map [?T ?c] 'n-back-toggle-allowed-color)
+    (define-key map [?T ?s] 'n-back-toggle-allowed-sound)
+    (define-key map [?T ?w] 'n-back-toggle-allowed-word)
+
+    (define-key map (n-back-key-binding 'position) 'n-back-position-answer)
+    (define-key map (n-back-key-binding 'color)    'n-back-color-answer)
+    (define-key map (n-back-key-binding 'sound)    'n-back-sound-answer)
+    (define-key map (n-back-key-binding 'word)     'n-back-word-answer)
+    ;;(define-key map [t] 'ignore)
+    (setq n-back-control-mode-map map)))
+
+(defvar n-back-display-hint nil)
+(defcustom n-back-hint t
+  "Display hints - learning mode."
+  :type 'boolean
+  :group 'n-back)
+
+
 
 (defvar n-back-sound-files nil)
 ;;(n-back-get-sound-files)
@@ -231,8 +368,6 @@
     (customize-set-variable active-list-sym active-types)
     (customize-set-value active-list-sym active-types)))
 
-(defvar n-back-control-mode-map nil)
-
 (defcustom n-back-sec-per-trial 3.0
   "Seconds per trial."
   :type 'float
@@ -262,7 +397,8 @@
 (defun n-back-help ()
   "Show help for `n-back-game' game."
   (interactive)
-  (describe-function 'n-back-game))
+  (save-selected-window
+    (describe-function 'n-back-game)))
 
 (defun n-back-change-level (level)
   "Change n-Back level to LEVEL."
@@ -274,74 +410,6 @@
                    (list (string-to-number (read-string "n Back: "))))))
   (customize-set-variable 'n-back-level level)
   (customize-set-value 'n-back-level level))
-
-(defun n-back-key-binding (what)
-  "Return key binding used for WHAT match answers."
-  (nth
-   (case what
-    (position 0)
-    (color    1)
-    (sound    2)
-    (word     3))
-   n-back-keys))
-
-(defun n-back-make-keymap ()
-  "Make keymap for the game."
-  (let ((map (make-sparse-keymap)))
-    (define-key map [?1] 'n-back-change-level)
-    (define-key map [?2] 'n-back-change-level)
-    (define-key map [?3] 'n-back-change-level)
-    (define-key map [?4] 'n-back-change-level)
-    (define-key map [?5] 'n-back-change-level)
-    (define-key map [?6] 'n-back-change-level)
-    (define-key map [??] 'n-back-help)
-    (define-key map [?\ ] 'n-back-play)
-    (define-key map [(control ?g)] 'n-back-stop)
-    (define-key map [?-] 'n-back-decrease-speed)
-    (define-key map [?+] 'n-back-increase-speed)
-
-    (define-key map [(control ?r)] 'n-back-reset-game-to-saved)
-    (define-key map [(control ?s)] 'n-back-save-game-settings)
-
-    (define-key map [?t ?p] 'n-back-toggle-position)
-    (define-key map [?t ?c] 'n-back-toggle-color)
-    (define-key map [?t ?s] 'n-back-toggle-sound)
-    (define-key map [?t ?w] 'n-back-toggle-word)
-
-    (define-key map [?T ?a] 'n-back-toggle-auto-challenge)
-    (define-key map [up]    'n-back-challenge-up)
-    (define-key map [down]  'n-back-challenge-down)
-
-    (define-key map [?T ?p] 'n-back-toggle-allowed-position)
-    (define-key map [?T ?c] 'n-back-toggle-allowed-color)
-    (define-key map [?T ?s] 'n-back-toggle-allowed-sound)
-    (define-key map [?T ?w] 'n-back-toggle-allowed-word)
-
-    (define-key map (n-back-key-binding 'position) 'n-back-position-answer)
-    (define-key map (n-back-key-binding 'color)    'n-back-color-answer)
-    (define-key map (n-back-key-binding 'sound)    'n-back-sound-answer)
-    (define-key map (n-back-key-binding 'word)     'n-back-word-answer)
-    ;;(define-key map [t] 'ignore)
-    (setq n-back-control-mode-map map)))
-
-(defcustom n-back-keys
-  '(
-    [?p]
-    [?c]
-    [?s]
-    [?w]
-    )
-  "Key bindings for answering."
-  :type '(list
-          (key-sequence :tag "position key")
-          (key-sequence :tag "color key")
-          (key-sequence :tag "sound key")
-          (key-sequence :tag "word key")
-          )
-  :set (lambda (sym val)
-         (set-default sym val)
-         (n-back-make-keymap))
-  :group 'n-back-feel)
 
 (defvar n-back-frame nil)
 
@@ -382,29 +450,30 @@ that used in the report by Jaeggi mentioned at the above URL.
 
 Not all features in Brain Workshop are implemented here, but some
 new are maybe ... - and you have it available here in Emacs."
-;; -----
-;; Below is a short excerpt from the report by Jaeggi et al which
-;; gave the idea to the game:
+  ;; -----
+  ;; Below is a short excerpt from the report by Jaeggi et al which
+  ;; gave the idea to the game:
 
-;; Training task.  For the training task, we used the same material
-;; as described by Jaeggi et al.  (33), which was a dual n-Back task
-;; where squares at eight different locations were presented
-;; sequentially on a computer screen at a rate of 3 s (stimulus
-;; length, 500 ms; interstimulus interval, 2,500 ms).
-;; Simultaneously with the presentation of the squares, one of eight
-;; consonants was presented sequentially through headphones.  A
-;; response was required whenever one of the presented stimuli
-;; matched the one presented n positions back in the sequence.  The
-;; value of n was the same for both streams of stimuli.  There were
-;; six auditory and six visual targets per block (four appearing in
-;; only one modality, and two appearing in both modalities
-;; simultaneously), and their positions were determined randomly.
-;; Participants made responses manually by pressing on the letter
-;; ‘‘A’’ of a standard keyboard with their left index finger for
-;; visual targets, and on the letter ‘‘L’’ with their right index
-;; finger for auditory targets.  No responses were required for
-;; non-targets.
+  ;; Training task.  For the training task, we used the same material
+  ;; as described by Jaeggi et al.  (33), which was a dual n-Back task
+  ;; where squares at eight different locations were presented
+  ;; sequentially on a computer screen at a rate of 3 s (stimulus
+  ;; length, 500 ms; interstimulus interval, 2,500 ms).
+  ;; Simultaneously with the presentation of the squares, one of eight
+  ;; consonants was presented sequentially through headphones.  A
+  ;; response was required whenever one of the presented stimuli
+  ;; matched the one presented n positions back in the sequence.  The
+  ;; value of n was the same for both streams of stimuli.  There were
+  ;; six auditory and six visual targets per block (four appearing in
+  ;; only one modality, and two appearing in both modalities
+  ;; simultaneously), and their positions were determined randomly.
+  ;; Participants made responses manually by pressing on the letter
+  ;; ‘‘A’’ of a standard keyboard with their left index finger for
+  ;; visual targets, and on the letter ‘‘L’’ with their right index
+  ;; finger for auditory targets.  No responses were required for
+  ;; non-targets.
   (interactive)
+  (n-back-make-keymap)
   (when window-system
     (unless (frame-live-p n-back-frame)
       (setq n-back-frame (make-frame
@@ -412,9 +481,9 @@ new are maybe ... - and you have it available here in Emacs."
                                 '(tool-bar-lines . 0)
                                 '(menu-bar-lines . 0)
                                 (case (frame-parameter nil 'background-mode)
-                                  ('light '(background-color . "cornsilk"))
-                                  ('dark  '(background-color . "MidnightBlue"))
-                                  (t nil))
+                                  (light '(background-color . "cornsilk"))
+                                  (dark  '(background-color . "MidnightBlue"))
+                                  (otherwise nil))
                                 '(height . 45)
                                 '(width . 150)))))
     (select-frame n-back-frame)
@@ -437,8 +506,9 @@ new are maybe ... - and you have it available here in Emacs."
     (word     ": word match" nil)
     ))
 
-(defconst n-back-control-status nil
+(defvar n-back-control-status nil
   "For showing status in control window.")
+(setq n-back-control-status nil)
 
 ;;(n-back-set-match-status 'position 'bad)
 (defun n-back-set-match-status (match-type status)
@@ -469,125 +539,65 @@ new are maybe ... - and you have it available here in Emacs."
   "Return non-nil when game is active."
   (timerp n-back-timer))
 
-(defface n-back-ok
-  '((t (:foreground "black" :background "green")))
-  "Face for OK answer."
-  :group 'n-back-feel)
-
-(defface n-back-bad
-  '((t (:foreground "black" :background "OrangeRed1")))
-  "Face for bad answer."
-  :group 'n-back-feel)
-
-(defface n-back-hint
-  '((t (:foreground "black" :background "gold")))
-  "Face for bad answer."
-  :group 'n-back-feel)
-
-(defface n-back-do-now
-  '((((background dark)) (:foreground "yellow"))
-    (t (:foreground "blue")))
-  "Face for start and stop hints."
-  :group 'n-back-feel)
-
-(defface n-back-game-word
-  '((t (:foreground "black")))
-  "Face for word displayed in game."
-  :group 'n-back-feel)
-
-(defface n-back-header
-  '((((background dark)) (:background "OrangeRed4"))
-    (t (:background "gold")))
-  "Face for headers."
-  :group 'n-back-feel)
-
-(defface n-back-keybinding
-  '((((background dark)) (:background "purple4"))
-    (t (:background "OliveDrab1")))
-  "Face for key bindings."
-  :group 'n-back-feel)
-
-(defface n-back-last-result
-  '((((background dark)) (:background "OliveDrab4"))
-    (t (:background "yellow")))
-  "Face for last game result header."
-  :group 'n-back-feel)
-
-(defface n-back-welcome
-  '((((background dark)) (:foreground "OliveDrab3"))
-    (t (:foreground "OliveDrab4")))
-  "Face for welcome string"
-  :group 'n-back-feel)
-
-(defface n-back-welcome-header
-  '((t (:height 2.0)))
-  "Face for welcome header."
-  :group 'n-back-feel)
-
 ;;(n-back-update-control-buffer)
 (defun n-back-update-control-buffer ()
   "Update content of control buffer."
-  (when (buffer-live-p n-back-ctrl-buffer)
-    (with-current-buffer n-back-ctrl-buffer
-      (setq buffer-read-only nil)
-      (erase-buffer)
-      (insert (propertize (format "%s %s-back"
-                                  (let ((n (length n-back-active-match-types)))
-                                    (cond
-                                     ((= 1 n) "Single")
-                                     ((= 2 n) "Dual")
-                                     ((= 3 n) "Triple")
-                                     ))
-                                  n-back-level
-                                  ) 'face 'n-back-header)
-              (propertize
-               (if (n-back-is-playing) "  Press C-g to stop" "  Press SPACE to play")
-               'face 'n-back-do-now)
-              (if (n-back-is-playing) (format "  Left %s" n-back-trials-left) "")
-              "\n")
-      ;;(unless n-back-control-status (n-back-init-control-status))
-      (dolist (entry n-back-control-status)
-        (let* ((what (nth 0 entry))
-               (msg  (nth 1 entry))
-               (sts  (nth 2 entry))
-               (key (key-description (n-back-key-binding what))))
-          ;;(setq msg (concat (key-description (n-back-key-binding what)) msg))
-          (cond
-           ((eq sts 'bad)
-            (setq msg (propertize (concat key msg) 'face 'n-back-bad)))
-           ((eq sts 'ok)
-            (setq msg (propertize (concat key msg) 'face 'n-back-ok)))
-           ((eq sts 'miss)
+  (save-match-data ;; runs in timer
+    (when (buffer-live-p n-back-ctrl-buffer)
+      (with-current-buffer n-back-ctrl-buffer
+        (setq buffer-read-only nil)
+        (erase-buffer)
+        (insert (propertize (format "%s %s-back"
+                                    (let ((n (length n-back-active-match-types)))
+                                      (cond
+                                       ((= 1 n) "Single")
+                                       ((= 2 n) "Dual")
+                                       ((= 3 n) "Triple")
+                                       ))
+                                    n-back-level
+                                    ) 'face 'n-back-header)
+                (propertize
+                 (if (n-back-is-playing) "  Press C-g to stop" "  Press SPACE to play")
+                 'face 'n-back-do-now)
+                (if (n-back-is-playing) (format "  Left %s" n-back-trials-left) "")
+                "\n")
+        ;;(unless n-back-control-status (n-back-init-control-status))
+        (dolist (entry n-back-control-status)
+          (let* ((what (nth 0 entry))
+                 (msg  (nth 1 entry))
+                 (sts  (nth 2 entry))
+                 (key (key-description (n-back-key-binding what))))
+            ;;(setq msg (concat (key-description (n-back-key-binding what)) msg))
+            (cond
+             ((eq sts 'bad)
+              (setq msg (propertize (concat key msg) 'face 'n-back-bad)))
+             ((eq sts 'ok)
+              (setq msg (propertize (concat key msg) 'face 'n-back-ok)))
+             ((eq sts 'miss)
               (setq msg (concat
                          (if n-back-display-hint
                              (propertize key 'face 'n-back-header)
                            key)
                          msg)))
-           ((not sts)
-            (setq msg (concat key msg)))
-           (t
-            (error "n-back:Unknown sts=%s" sts)
-            ))
-          (insert msg "   "))
-        )
-      (when n-back-display-hint
-        (setq n-back-display-hint nil)
-        (run-with-timer 0.1 nil 'n-back-update-control-buffer))
-      (setq buffer-read-only t)
-      (if (window-live-p n-back-ctrl-window)
-          (with-selected-window n-back-ctrl-window
-            (goto-char 1))
-        (goto-char 1)))))
+             ((not sts)
+              (setq msg (concat key msg)))
+             (t
+              (error "n-back:Unknown sts=%s" sts)
+              ))
+            (insert msg "   "))
+          )
+        (when n-back-display-hint
+          (setq n-back-display-hint nil)
+          (run-with-timer 0.1 nil 'n-back-update-control-buffer))
+        (setq buffer-read-only t)
+        (if (window-live-p n-back-ctrl-window)
+            (with-selected-window n-back-ctrl-window
+              (goto-char 1))
+          (goto-char 1))))))
 
 (defcustom n-back-trials 20
   "Number of trials per session."
   :type 'integer
-  :group 'n-back)
-
-(defvar n-back-display-hint nil)
-(defcustom n-back-hint t
-  "Display hints - learning mode."
-  :type 'boolean
   :group 'n-back)
 
 ;;(n-back-compute-result-values n-back-result)
@@ -771,39 +781,42 @@ If type WORST is non-nil try to include that."
                             miss
                             (floor (* 100 (cdr res))))))))
 
-    (setq buffer-read-only t))))
+      (setq buffer-read-only t))))
 
 (defun n-back-show-welcome (msg)
   "Show welcome startup info and message MSG."
-  (with-current-buffer n-back-game-buffer
-    (let ((src (or (when (boundp 'nxhtml-install-dir)
-                     (expand-file-name "nxhtml/doc/img/fun-brain-2.png" nxhtml-install-dir))
-                   "c:/program files/brain workshop/res/brain_graphic.png"))
-          img
-          buffer-read-only)
-      (erase-buffer)
-      ;;(insert (propertize "\nEmacs n-back game (after Brain Workshop)\n\n" 'face '(:height 2.0)))
-      (insert (propertize "\nEmacs n-back game (after Brain Workshop)\n\n" 'face 'n-back-welcome-header))
-      (if (file-exists-p src)
-          (condition-case err
-              (setq img (create-image src nil nil
-                                      :relief 0
-                                      ;;:margin inlimg-margins
-                                      ))
-            (error (setq img (error-message-string err))))
-        (setq img (concat "Image not found: " src)))
-      (if (stringp img)
-          (insert img)
-        (insert-image img))
-      (insert (propertize "\n\nPlay for fun and maybe a somewhat happier brain"
-                          'face 'n-back-welcome))
-      (when msg (insert "\n\n" msg))
-      )))
+  (when (and n-back-game-buffer
+             (buffer-live-p n-back-game-buffer))
+    (with-current-buffer n-back-game-buffer
+      (let ((src (or (when (boundp 'nxhtml-install-dir)
+                       (expand-file-name "nxhtml/doc/img/fun-brain-2.png" nxhtml-install-dir))
+                     "c:/program files/brain workshop/res/brain_graphic.png"))
+            img
+            buffer-read-only)
+        (erase-buffer)
+        ;;(insert (propertize "\nEmacs n-back game (after Brain Workshop)\n\n" 'face '(:height 2.0)))
+        (insert (propertize "\nEmacs n-back game (after Brain Workshop)\n\n" 'face 'n-back-welcome-header))
+        (unless (file-exists-p src)
+          (n-back-maybe-download-files (file-name-directory src) (list (file-name-nondirectory src))))
+        (if (file-exists-p src)
+            (condition-case err
+                (setq img (create-image src nil nil
+                                        :relief 0
+                                        ;;:margin inlimg-margins
+                                        ))
+              (error (setq img (error-message-string err))))
+          (setq img (concat "Image not found: " src)))
+        (if (stringp img)
+            (insert img)
+          (insert-image img))
+        (insert (propertize "\n\nPlay for fun and maybe a somewhat happier brain"
+                            'face 'n-back-welcome))
+        (when msg (insert "\n\n" msg))
+        ))))
 
 (defun n-back-setup-windows ()
   "Setup game frame and windows."
   (delete-other-windows)
-  (set-window-dedicated-p (selected-window) nil)
   ;; Info
   (split-window-horizontally)
   (setq n-back-info-window (next-window (frame-first-window)))
@@ -898,28 +911,30 @@ MAX-STRLEN.  Display item with background color COLOR."
 
 (defun n-back-clear-game-window ()
   "Erase game buffer."
-  (with-current-buffer n-back-game-buffer
-    (let (buffer-read-only)
-      (erase-buffer))))
+  (save-match-data ;; runs in timer
+    (with-current-buffer n-back-game-buffer
+      (let (buffer-read-only)
+        (erase-buffer)))))
 
 (defun n-back-play ()
   "Start playing."
   (interactive)
   (message "  ") ;; For easier reading *Messages*
-  ;;(n-back-setup-windows)
-  (unless n-back-active-match-types
-    (error "No active match types"))
-  ;;(setq n-back-result nil)
-  (n-back-init-control-status)
-  (n-back-init-this-result)
-  (n-back-cancel-timers)
-  (winsize-set-mode-line-colors t)
-  (setq n-back-ring (make-ring (1+ n-back-level)))
-  (n-back-clear-game-window)
-  (setq n-back-trials-left (+ n-back-trials n-back-level))
-  (random t)
-  (n-back-start-main-timer)
-  (n-back-update-control-buffer))
+  (n-back-update-info)
+  (if (not n-back-active-match-types)
+      (message (propertize "No active match types"
+                           'face 'secondary-selection))
+    ;;(setq n-back-result nil)
+    (n-back-init-control-status)
+    (n-back-init-this-result)
+    (n-back-cancel-timers)
+    (winsize-set-mode-line-colors t)
+    (setq n-back-ring (make-ring (1+ n-back-level)))
+    (n-back-clear-game-window)
+    (setq n-back-trials-left (+ n-back-trials n-back-level))
+    (random t)
+    (n-back-start-main-timer)
+    (n-back-update-control-buffer)))
 
 (defun n-back-start-main-timer ()
   "Start main game timer."
@@ -928,6 +943,9 @@ MAX-STRLEN.  Display item with background color COLOR."
          n-back-sec-per-trial
          nil ;;n-back-sec-per-trial
          'n-back-display-in-timer)))
+
+(defun n-back-maybe-download-files (dir file-name-list)
+  (nxhtml-get-missing-files (file-relative-name dir nxhtml-install-dir) file-name-list))
 
 (defun n-back-finish-game ()
   "Finish the game."
@@ -949,7 +967,7 @@ MAX-STRLEN.  Display item with background color COLOR."
        (case n-back-challenge-change
          (up "Congratulations! I see you need more challenge, raising difficulty!")
          (down "Making it a bit easier for now to make your playing more fun.")
-         (t "This game challenges seems the right way for you now.")))
+         (otherwise "This game challenges seems the right way for you now.")))
       (let* ((dir (when (boundp 'nxhtml-install-dir)
                     (expand-file-name "nxhtml/doc/img/" nxhtml-install-dir)))
              (up-imgs '("rembrandt-self-portrait.jpg"
@@ -968,19 +986,22 @@ MAX-STRLEN.  Display item with background color COLOR."
              ;; (setq n-back-trials 1)
              (pic (when dir (case n-back-challenge-change
                               (up (nth (random (length up-imgs)) up-imgs))
-                              (t  (nth (random (length t-imgs))  t-imgs)))))
+                              (otherwise  (nth (random (length t-imgs))  t-imgs)))))
              (src (when dir (expand-file-name pic dir)))
              img)
-           (when (and src (file-exists-p src))
-             (condition-case err
-                 (setq img (create-image src nil nil
-                                         :relief 0
-                                         ))
-               (error (setq img (error-message-string err)))))
-           (if (stringp img)
-               img
-             (insert "\n\n")
-             (insert-image img)))))
+        (when (and src (not (file-exists-p src)))
+          ;; Time to download?
+          (n-back-maybe-download-files (file-name-directory src) (append up-imgs t-imgs nil)))
+        (when (and src (file-exists-p src))
+          (condition-case err
+              (setq img (create-image src nil nil
+                                      :relief 0
+                                      ))
+            (error (setq img (error-message-string err)))))
+        (if (stringp img)
+            img
+          (insert "\n\n")
+          (insert-image img)))))
   (message "Game over"))
 
 (defun n-back-display-random ()
@@ -1063,7 +1084,7 @@ MAX-STRLEN.  Display item with background color COLOR."
 (defun n-back-display-in-timer ()
   "Display a trial in a timer."
   (condition-case err
-      (progn
+      (save-match-data ;; runs in timer
         (n-back-add-result)
         (if (>= 0 (setq n-back-trials-left (1- n-back-trials-left)))
             (n-back-finish-game)
@@ -1077,7 +1098,8 @@ MAX-STRLEN.  Display item with background color COLOR."
 (defun n-back-play-sound-in-timer (sound-file)
   "Play sound SOUND-FILE in a timer."
   (condition-case err
-      (play-sound (list 'sound :file sound-file :volume n-back-sound-volume))
+      (save-match-data ;; runs in timer
+        (play-sound (list 'sound :file sound-file :volume n-back-sound-volume)))
     (error (message "n-back-sound: %s" (error-message-string err))
            (n-back-cancel-timers))))
 
@@ -1210,6 +1232,9 @@ MAX-STRLEN.  Display item with background color COLOR."
   (message "Stopped n-back game")
   (n-back-show-welcome "Stopped"))
 
+(defvar viper-emacs-state-mode-list) ;; silence compiler
+(defvar viper-emacs-state-hook) ;; silence compiler
+
 (define-derived-mode n-back-control-mode nil "N-back"
   "Mode for controlling n-back game."
   (setq cursor-type nil)
@@ -1218,7 +1243,7 @@ MAX-STRLEN.  Display item with background color COLOR."
   (set (make-local-variable 'viper-emacs-state-hook) nil) ;; in vis cursor
   (abbrev-mode -1)
   (setq show-trailing-whitespace nil)
-  (visual-line-mode 1)
+  (when (fboundp 'visual-line-mode) (visual-line-mode 1))
   (n-back-make-keymap))
 
 (defun n-back-cancel-timers ()
@@ -1232,26 +1257,26 @@ MAX-STRLEN.  Display item with background color COLOR."
   (winsize-set-mode-line-colors nil))
 
 (defvar n-back-game-settings-symbols
-    '(
-      ;;n-back-keys
-      n-back-level
-      n-back-active-match-types
-      n-back-allowed-match-types
-      n-back-auto-challenge
-      ;;n-back-colors
-      ;;n-back-words
-      ;;n-back-sound-volume
-      ;;n-back-sounds
-      n-back-sec-per-trial
-      ;;n-back-keybinding-color
-      ;;n-back-trials
-      ))
+  '(
+    ;;n-back-keys
+    n-back-level
+    n-back-active-match-types
+    n-back-allowed-match-types
+    n-back-auto-challenge
+    ;;n-back-colors
+    ;;n-back-words
+    ;;n-back-sound-volume
+    ;;n-back-sounds
+    n-back-sec-per-trial
+    ;;n-back-keybinding-color
+    ;;n-back-trials
+    ))
 
 (defun n-back-save-game-settings ()
   "Save game settings."
   (interactive)
   (dolist (var n-back-game-settings-symbols)
-  )
+    )
   (custom-save-all))
 
 (defun n-back-reset-game-to-saved ()

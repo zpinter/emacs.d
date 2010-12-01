@@ -44,7 +44,7 @@
 ;;
 ;;; Code:
 
-(eval-when-compile (require 'udev))
+(eval-when-compile (require 'udev nil t))
 
 (defgroup udev-rinari nil
   "Customization group for udev-rinari."
@@ -86,7 +86,7 @@
 
 (defun udev-rinari-buffer-name (mode)
   "Return a name for current compilation buffer ignoring MODE."
-  (udev-buffer-name " *Updating Rinari %s*" udev-rinari-update-buffer mode))
+  (udev-buffer-name "*Updating Rinari %s*" udev-rinari-update-buffer mode))
 
 (defun udev-rinari-check-conflicts ()
   "Check if Rinari and ruby-mode already loaded and from where.

@@ -45,15 +45,17 @@
 ;;
 ;;; Code:
 
+(eval-when-compile (require 'cl))
+(eval-when-compile (require 'mumamo))
+(eval-when-compile (require 'ourcomments-widgets))
+(require 'ps-print) ;; For ps-print-ensure-fontified
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Internal side functions etc
 
 (defvar mumamo-regions nil
   "List of active mumamo regions.  Internal use only.
-Mumamo regions are like another layer of chunks above the normal chunks.
-They does not affect the normal chunks, but they overrides them.
-
-The entries in this should be like this
+The entries in this list should be like this
 
     \(OVL-DEF OVL-CHUNK)
 
@@ -89,6 +91,7 @@ boundaries."
   (let ((ovl (make-overlay start end)))
     (overlay-put ovl 'mumamo-region 'defined)
     (overlay-put ovl 'face 'mumamo-region)
+    (overlay-put ovl 'priority 2)
     (mumamo-region-set-major ovl major)
     (setq mumamo-regions (cons (list ovl nil) mumamo-regions))
     (mumamo-mark-for-refontification (overlay-start ovl) (overlay-end ovl))
@@ -179,12 +182,14 @@ to work)."
   (let* ((temp-mode-name (concat "mumamo-1-"
                                  (symbol-name major-mode)))
          (temp-mode-sym (intern-soft temp-mode-name)))
-    (unless temp-mode-sym
+    (unless (and temp-mode-sym
+                 (fboundp temp-mode-sym))
       (setq temp-mode-sym (intern temp-mode-name))
       (eval
        `(define-mumamo-multi-major-mode ,temp-mode-sym
           "Temporary multi major mode."
           ("Temporary" ,major-mode nil))))
+    (put temp-mode-sym 'mumamo-temporary major-mode)
     (funcall temp-mode-sym)))
 
 (defface mumamo-region
@@ -194,23 +199,63 @@ to work)."
 
 ;;;###autoload
 (defun mumamo-add-region ()
-  "Add a mumamo region."
+  "Add a mumamo region from selection.
+Mumamo regions are like another layer of chunks above the normal chunks.
+They does not affect the normal chunks, but they overrides them.
+
+To create a mumamo region first select a visible region and then
+call this function.
+
+If the buffer is not in a multi major mode a temporary multi
+major mode will be created applied to the buffer first.
+To get out of this and get back to a single major mode just use
+
+  M-x normal-mode"
   (interactive)
   (if (not mark-active)
-      (message "Please select a visible region first")
+      (message (propertize "Please select a visible region first" 'face 'secondary-selection))
     (let ((beg (region-beginning))
           (end (region-end))
           (maj (mumamo-region-read-major)))
       (mumamo-add-region-1 maj (copy-marker beg) (copy-marker end) (current-buffer))
       (setq deactivate-mark t))))
 
+;;;###autoload
+(defun mumamo-add-region-from-string ()
+  "Add a mumamo region from string at point.
+Works as `mumamo-add-region' but for string or comment at point.
+
+Buffer must be fontified."
+  (interactive)
+  ;; assure font locked.
+  (require 'ps-print)
+  (ps-print-ensure-fontified (point-min) (point-max))
+  (let ((the-face (get-text-property (point) 'face)))
+    (if (not (memq the-face
+                   '(font-lock-doc-face
+                     font-lock-string-face
+                     font-lock-comment-face)))
+        (message "No string or comment at point")
+      (let ((beg (previous-single-property-change (point) 'face))
+            (end (next-single-property-change (point) 'face))
+            (maj (mumamo-region-read-major)))
+        (setq beg (or (when beg (1+ beg))
+                      (point-min)))
+        (setq end (or (when end (1- end))
+                      (point-max)))
+        (mumamo-add-region-1 maj (copy-marker beg) (copy-marker end) (current-buffer))))))
 ;; (dolist (o (overlays-in (point-min) (point-max))) (delete-overlay o))
 (defun mumamo-clear-all-regions ()
-  "Clear all mumamo regions in buffer."
+  "Clear all mumamo regions in buffer.
+For information about mumamo regions see `mumamo-add-region'."
   (interactive)
+  (unless mumamo-multi-major-mode
+    (error "There can be no mumamo regions to clear unless in multi major modes"))
   (while mumamo-regions
     (mumamo-clear-region-1 (car mumamo-regions))
     (setq mumamo-regions (cdr mumamo-regions)))
+  (let ((old (get mumamo-multi-major-mode 'mumamo-temporary)))
+    (when old (funcall old)))
   (message "Cleared all mumamo regions"))
 
 (defun mumamo-region-read-major ()
@@ -235,23 +280,29 @@ Accept only single major mode, not mumamo multi major modes."
 
 (defun mumamo-region-set-major (ovl major)
   "Change major mode for mumamo region at point.
+For information about mumamo regions see `mumamo-add-region'.
+
 If run non-interactively then OVL should be a mumamo region and
 MAJOR the major mode to set for that region."
   (interactive
    (list (or (mumamo-region-at (point))
              (error "There is no mumamo region at point"))
          (mumamo-region-read-major)))
-  (overlay-put ovl 'mumamo-major-mode major)
+  (overlay-put ovl 'mumamo-major-mode `(,major))
   (overlay-put ovl 'help-echo (format "Mumamo region, major mode `%s'" major)))
 
 (defun mumamo-clear-region (ovl)
   "Clear the mumamo region at point.
+For information about mumamo regions see `mumamo-add-region'.
+
 If run non-interactively then OVL should be the mumamo region to
 clear."
   (interactive
    (list (or (mumamo-region-at (point))
              (error "There is no mumamo region at point"))))
-  (let ((region-entry (assoc ovl mumamo-regions)))
+  (let ((region-entry (rassoc (list ovl) mumamo-regions)))
+    (unless region-entry
+      (error "No mumamo region found at point"))
     (mumamo-clear-region-1 region-entry)))
 
 
