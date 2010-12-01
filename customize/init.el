@@ -22,8 +22,7 @@
  '(nav-quickfile-list (quote ("~/.bashrc" "~/.gnus" "~?repos/emacs.d/.emacs_full")))
  '(nav-quickjump-show t)
  '(ns-antialias-text t)
- '(ns-pop-up-frames nil)
-)))
+ '(ns-pop-up-frames nil))
 
 (custom-set-faces
   ;; custom-set-faces was added by Custom.
