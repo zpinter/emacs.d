@@ -27,6 +27,7 @@
                         "trac-wiki"
                         "remember"
                         "org-mode"
+								"paredit"								
 								"slime"
                         "clojure"
                         "cheat"
