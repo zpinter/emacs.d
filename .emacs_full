@@ -1,4 +1,4 @@
-;; mode:-*-emacs-lisp-*-
+; mode:-*-emacs-lisp--*
 (load "~/emacs.d/zconfig.el")
 
 (zconfig-load-modules (list
@@ -27,13 +27,13 @@
                         "trac-wiki"
                         "remember"
                         "org-mode"
-								"paredit"								
+								;; "paredit"								
 								"slime"
                         "clojure"
                         "cheat"
                         "shell-current-directory"
                         "erc"
-                        "anything"
+                        ;; "anything"
                         "w3m"
                         ;; "flyspell"
                         "jump"
