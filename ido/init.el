@@ -3,7 +3,8 @@
 (ido-everywhere t)
 
 (setq ido-enable-flex-matching t)      ; fuzzy matching is a must have
-(setq ido-enable-tramp-completion nil)
+(setq ido-enable-tramp-completion t)
+(setq tramp-default-method "ssh")
 
 (global-set-key (kbd "C-x C-b") 'ido-switch-buffer)
 
