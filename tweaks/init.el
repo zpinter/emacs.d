@@ -169,6 +169,8 @@
 ;; make sure dired listings have human sizes
 (setq dired-listing-switches "-alh")
 
+;; make it easier to copy between buffers
+(setq dired-dwim-target t)
 
 ; add the function back to the latest carbon emacs
 (defun mac-toggle-max-window ()
