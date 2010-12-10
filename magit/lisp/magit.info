@@ -1,4 +1,4 @@
-This is magit.info, produced by makeinfo version 4.13 from magit.texi.
+This is magit.info, produced by makeinfo version 4.8 from magit.texi.
 
 INFO-DIR-SECTION Emacs
 START-INFO-DIR-ENTRY
@@ -207,18 +207,18 @@ the working tree and the staging area.  You can hide and show them as
 described in the previous section.
 
    The first section shows _Untracked files_, if there are any.  See
-*note Untracked files:: for more details.
+*Note Untracked files:: for more details.
 
    Two section show your local changes.  They are explained fully in the
-next chapter, *note Staging and Committing::.
+next chapter, *Note Staging and Committing::.
 
    If the current branch is associated with a remote tracking branch,
 the status buffer shows the differences between the current branch and
-the tracking branch.  See *note Pushing and Pulling:: for more
+the tracking branch.  See *Note Pushing and Pulling:: for more
 information.
 
    During a history rewriting session, the status buffer shows the
-_Pending changes_ and _Pending commits_ sections.  See *note
+_Pending changes_ and _Pending commits_ sections.  See *Note
 Rewriting:: for more details.
 
 
@@ -496,7 +496,7 @@ in a detached head.
    To create a new branch and switch to it immediately, type `B'.
 
    Typing `V' will list the local and remote branches in a new buffer
-called `*magit-branches*' from which you can work with them. See *note
+called `*magit-branches*' from which you can work with them. See *Note
 The branch list:: for more details.
 
 
@@ -718,26 +718,26 @@ the user will also be prompted for a branch to search in.
 
 
 Tag Table:
-Node: Top550
-Node: Introduction1081
-Node: Acknowledgments2552
-Node: Sections3176
-Node: Status5726
-Node: Untracked files8455
-Node: Staging and Committing9402
-Node: History12596
-Node: Reflogs15296
-Node: Diffing15684
-Node: Tagging16282
-Node: Resetting16726
-Node: Stashing18250
-Node: Branching18831
-Node: The branch list19822
-Node: Wazzup20795
-Node: Merging21583
-Node: Rebasing23054
-Node: Rewriting23869
-Node: Pushing and Pulling26723
-Node: Interfacing with Subversion28133
+Node: Top549
+Node: Introduction1080
+Node: Acknowledgments2551
+Node: Sections3175
+Node: Status5725
+Node: Untracked files8454
+Node: Staging and Committing9401
+Node: History12595
+Node: Reflogs15295
+Node: Diffing15683
+Node: Tagging16281
+Node: Resetting16725
+Node: Stashing18249
+Node: Branching18830
+Node: The branch list19821
+Node: Wazzup20794
+Node: Merging21582
+Node: Rebasing23053
+Node: Rewriting23868
+Node: Pushing and Pulling26722
+Node: Interfacing with Subversion28132
 
 End Tag Table
