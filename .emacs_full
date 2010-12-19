@@ -1,4 +1,4 @@
-; mode:-*-emacs-lisp--*
+; -*- mode: emacs-lisp; -*-
 (load "~/emacs.d/zconfig.el")
 
 (zconfig-load-modules (list
@@ -11,6 +11,7 @@
 								"color-theme"
 								"color-theme-ir-black"
                         "ido"
+                        "ibuffer"								
                         "hippie-expand"
                         "nxml"
                         "ruby"
@@ -43,10 +44,11 @@
                         "open-resource"
                         "breadcrumb"
 ;;                         "company-mode"
-;; 								"cedet"
+								"cedet"
 ;; 								"ecb"
 ;; 								"jdee"
 ;;								"textmate"
+								"jabber"
 								"ack"
 								"csv-mode"
                         "tweaks"
