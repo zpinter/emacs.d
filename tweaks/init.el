@@ -162,6 +162,7 @@
 (add-hook 'dired-mode-hook
 			 '(lambda ()
 				 (define-key dired-mode-map "o" 'dired-launch-command)
+				 (define-key dired-mode-map "e" 'wdired-change-to-wdired-mode)				 
 				 (define-key dired-mode-map "b" 'shell-current-directory)))
 
 (defalias 'mkdir 'make-directory)
