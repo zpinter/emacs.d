@@ -84,13 +84,26 @@
 ;  "Used for tabs and such.")
 
 
+;; (defvar ph/delete-whitespace-counter 0)
+;; (defun ph/delete-whitespace (arg)
+;;   (interactive "*p")
+;;   (if (eq this-command last-command)
+;;       (progn 
+;;         (incf ph/delete-whitespace-counter)
+;;         (if (= ph/delete-whitespace-counter 1)
+;;             (delete-blank-lines)
+;;           (join-line arg)))
+;;     (setq ph/delete-whitespace-counter 0) 
+;;     (just-one-space arg))) 
+;; (global-set-key (kbd "M-SPC") 'ph/delete-whitespace)
+
 ;(add-hook 'before-save-hook 'delete-trailing-whitespace)
 
 (custom-set-faces
  '(flymake-errline ((t :underline "red")))
  '(flymake-warnline ((t :underline "green"))))
 
-;(global-set-key [(control return)] 'set-mark-command)
+;(global-set-key [(control return)] 'set-mark-command) 
 
 (defun reload-file ()
   (interactive)
@@ -224,6 +237,15 @@ If there is one running, switch to that buffer."
 ;; fix x copy/paste
 (setq x-select-enable-clipboard t)
 (setq interprogram-paste-function 'x-cut-buffer-or-selection-value)
+
+; window movement
+(global-set-key [s-left] 'windmove-left)
+(global-set-key [s-right] 'windmove-right)
+(global-set-key [s-up] 'windmove-up)
+(global-set-key [s-down] 'windmove-down)
+
+; make sure to set this back to nil, in case anything is misbehaving
+(setq debug-on-error nil)
 
 ; save and close buffer
 (global-set-key [(control c) (k)]
