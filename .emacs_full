@@ -48,6 +48,7 @@
 ;; 								"ecb"
 ;; 								"jdee"
 ;;								"textmate"
+								"undo-tree"
 								"jabber"
 								"ack"
 								"csv-mode"
