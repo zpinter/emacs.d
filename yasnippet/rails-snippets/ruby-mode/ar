@@ -1,3 +1,0 @@
-#name : assert_raises  ...  { $. }
-# --
-assert_raises ${Exception} { $. }

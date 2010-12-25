@@ -1,3 +1,0 @@
-#name : render :text => " ... ", :status =>  ... 
-# --
-render :text => "${Text here...}", :status => ${401}

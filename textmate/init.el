@@ -1,2 +1,0 @@
-(require 'textmate)
-(textmate-mode)

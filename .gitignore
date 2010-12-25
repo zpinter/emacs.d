@@ -1,4 +1,9 @@
 tmp/*
+old/
+auto-save-list/
+el-get/
+url/
+tmp.auto-saves*
 .DS_Store
 private.el
 magit/lisp/autom4te.cache/*

@@ -1,3 +1,0 @@
-#name : render :action => " ... ", :layout => " ... "
-# --
-render :action => "${action}", :layout => "${layoutname}"

@@ -1,3 +1,0 @@
-#name : flash[: ... ] = " ... "
-# --
-flash[:${notice}] = "${Text here...}"

@@ -1,3 +1,0 @@
-#name : render :partial => " ... ", :status =>  ... 
-# --
-render :partial => "${item}", :status => ${500}

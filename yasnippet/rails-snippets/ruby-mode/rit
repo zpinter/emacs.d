@@ -1,3 +1,0 @@
-#name : render :inline => " ... ", :type => : ... )
-# --
-render :inline => "${<%= 'hello' %>}", :type => :${rxml})
