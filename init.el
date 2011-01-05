@@ -1,16 +1,38 @@
 ;;my new, el-get driven emacs config
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/"))
 
+(setenv "PATH" (concat (getenv "PATH") ":~/homebrew/bin"))
+(setq exec-path (append exec-path '("~/homebrew/bin")))
+
 (if (not (load "~/.emacs.d/el-get/el-get/el-get" t))
-	 (throw 'not-configured "Install el-get to get dependencies: https://github.com/dimitri/el-get/"))
+	 (let ((buffer (url-retrieve-synchronously
+		       "https://github.com/dimitri/el-get/raw/master/el-get-install.el")))
+		(save-excursion
+		  (set-buffer buffer)
+		  (end-of-buffer)
+		  (eval-print-last-sexp)
+		  (kill-buffer (current-buffer)))))
 
 (setq el-get-sources
       '(
 		  color-theme
-		  color-theme-twilight
+		  
+		  (:name color-theme-twilight
+					:after (lambda ()
+								(add-hook 'after-make-frame-functions
+											 '(lambda (f)
+												 (with-selected-frame f
+													(when (window-system f) (color-theme-twilight)))))
+								(setq color-theme-is-global nil)))
+		  
 		  package ;; elpa
 		  
-		  (:name js2-mode :type elpa)
+		  (:name js2-mode :type elpa
+					:after (lambda ()
+								(add-to-list 'auto-mode-alist '("\\.js$" . js2-mode))
+								(add-to-list 'auto-mode-alist '("\\.jsx$" . js2-mode))
+								(add-to-list 'auto-mode-alist '("\\.jsfl$" . js2-mode))))
+		  
 		  (:name nxhtml :compile nil)
 
 		  (:name open-resource 
@@ -18,23 +40,38 @@
 			 :features open-resource
 			 :url "http://emacs-open-resource.googlecode.com/svn/trunk/open-resource.el")
 		  
+		  (:name el-get)
 		  ;; (:name inf-ruby :type elpa)		  
 		  ;; (:name ruby-mode :type elpa)
 		  ;; (:name rspec-mode :type elpa)
 		  ;; (:name rinari :type elpa)
+		  (:name scss-mode :type git :url "https://github.com/antonj/scss-mode.git" :features scss-mode)
 		  (:name sass-mode :type elpa)
 		  (:name css-mode :type elpa)
 		  (:name yaml-mode :type elpa)		  
-		  
+		  (:name paredit 
+					:after
+					(lambda
+					  (add-hook 'emacs-lisp-mode-hook       (lambda () (paredit-mode +1)))
+					  (add-hook 'lisp-mode-hook             (lambda () (paredit-mode +1)))
+					  (add-hook 'lisp-interaction-mode-hook (lambda () (paredit-mode +1)))
+					  (add-hook 'clojure-mode-hook          (lambda () (paredit-mode +1)))))					
 		  gist
-		  magit
+		  (:name magit
+					:after (lambda ()
+								(require 'magit-svn)
+								(defalias 'gs 'magit-status)
+								(defun magit-stage-all-even-untracked ()
+								  (interactive)
+								  (magit-run-git "add" "."))
+								(defalias 'ga. 'magit-stage-all-even-untracked)))
 		  nognus
 		  org-mode
 		  markdown-mode
-		  slime
-		  ;; (:name slime :type elpa)
-		  ;; (:name slime-repl :type elpa)		  
-		  clojure-mode
+		  ;; (:name slime :features (slime slime-repl))
+		  (:name slime :type elpa)
+		  (:name slime-repl :type elpa)		  
+		  (:name clojure-mode :features clojure-mode)
 		  cedet
 		  
 		  (:name undo-tree
@@ -49,8 +86,7 @@
 					:after (lambda ()
 								(smex-initialize)
 								(global-set-key (kbd "M-x") 'smex)
-								(global-set-key (kbd "M-X") 'smex-major-mode-commands)))
-))
+								(global-set-key (kbd "M-X") 'smex-major-mode-commands)))))
 
 
 ; prevent tramp from messing up recentf
@@ -426,3 +462,4 @@ If there is one running, switch to that buffer."
 
 
 (el-get 'sync)
+(server-start)
