@@ -1,5 +1,5 @@
 ; -*- mode: emacs-lisp; -*-
-(load "~/emacs.d/zconfig.el")
+(load "~/.emacs.d/zconfig.el")
 
 (zconfig-load-modules (list
                         "core"

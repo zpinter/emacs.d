@@ -18,8 +18,6 @@
  '(jde-global-classpath (quote ("/Users/zpinter/repos/emacs.d/jdee/classes")))
  '(jde-jdk (quote ("1.6.0")))
  '(jde-jdk-registry (quote (("1.6.0" . "/System/Library/Frameworks/JavaVM.framework/Versions/1.6.0"))))
- '(nav-quickdir-list (quote ("~/repos" "~/repos/zebra" "~/repos/emacs.d")))
- '(nav-quickfile-list (quote ("~/.bashrc" "~/.gnus" "~?repos/emacs.d/.emacs_full")))
  '(nav-quickjump-show t)
  '(ns-antialias-text t)
  '(ns-pop-up-frames nil))
