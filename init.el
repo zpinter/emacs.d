@@ -54,6 +54,7 @@
 								"jabber"
 								"ack"
 								"csv-mode"
+								"scss-mode"								
                         "tweaks"
 								"smex"
                         "server"
