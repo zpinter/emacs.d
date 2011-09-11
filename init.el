@@ -52,7 +52,7 @@
 								"cedet"
 ;; 								"ecb"
 ;; 								"jdee"
-;;								"textmate"
+								"textmate"
 								"undo-tree"
 								"jabber"
 								"ack"
