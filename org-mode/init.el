@@ -1,6 +1,7 @@
 (zconfig-add-lisp-path "contrib/lisp")
 
 (setq org-modules nil)
+(setq org-startup-folded "showall")
 (add-to-list 'org-modules 'org-mac-iCal)
 (add-to-list 'org-modules 'org-gnus)
 
