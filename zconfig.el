@@ -1,3 +1,6 @@
+(setenv "PATH" (concat (getenv "PATH") ":/usr/local/bin"))
+(setq exec-path (append exec-path '("/usr/local/bin")))
+
 (setq zconfig-emacsd (file-name-directory load-file-name))
 
 (setq zconfig-errors nil)
