@@ -2,6 +2,10 @@
 
 (setq mac-option-modifier 'meta)
 
+; don't commit (save outside .emacs.d), save silently
+(setq abbrev-file-name "~/.abbrev_defs")
+(setq save-abbrevs 'silently)
+
 (require 'uniquify)
 (setq uniquify-buffer-name-style 'post-forward-angle-brackets)
 
