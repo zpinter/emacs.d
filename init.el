@@ -22,7 +22,7 @@
 								"magit"
                         "twitter"
                         "post-mode"
-                        "gnus"
+                        ;; "gnus"
 								"bbdb"
                         "puppet-mode"
                         "markdown-mode"
