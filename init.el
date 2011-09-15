@@ -20,6 +20,7 @@
                         "js2-mode"
 ;;                         "yasnippet"
 								"magit"
+								"mo-git-blame"
                         "twitter"
                         "post-mode"
                         ;; "gnus"
