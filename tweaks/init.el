@@ -75,7 +75,7 @@
 ;; (make-directory user-temporary-file-directory-semantic t)
 ;; (setq semanticdb-default-save-directory  user-temporary-file-directory-semantic)
 
-(global-set-key (kbd "<f8>") 'mac-toggle-max-window)
+(global-set-key (kbd "<f8>") 'ns-toggle-fullscreen)
 
 (require 'misc) ;;needed for zap-up-to-char
 (global-set-key "\M-z" 'zap-up-to-char)
@@ -189,13 +189,6 @@
 
 ;; make it easier to copy between buffers
 (setq dired-dwim-target t)
-
-; add the function back to the latest carbon emacs
-(defun mac-toggle-max-window ()
-  (interactive)
-  (set-frame-parameter nil 'fullscreen (if (frame-parameter nil 'fullscreen)
-                                           nil
-                                           'fullboth)))
 
 (setq ssl-certificate-directory "~/.certs")
 
