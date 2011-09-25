@@ -7,10 +7,9 @@
   (let ((build-cmd (concat "cd " update-dir " && git clone git://repo.or.cz/anything-config.git anything-config"
 			  " && cd anything-config"
 			  " && rm -rf .git"
-			  ;; " && rm extensions/anything-gtags.el" ;;throws compile error
 			  " && make"
 			  " && cp -r ./* ../../lisp/")))
-
+	 
 	 (message build-cmd)
 	 (shell-command build-cmd))
 )

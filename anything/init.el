@@ -1,49 +1,38 @@
+(defvar anything-command-map-prefix-key "C-;")
+
 (require 'anything-config)
 
 (setq recentf-max-saved-items 500)
 
 ;; http://www.emacswiki.org/emacs/AnythingSources#toc65
-(defvar anything-c-source-git-project-files-cache nil "(path signature cached-buffer)")
-    (defvar anything-c-source-git-project-files
-      '((name . "Files from Current GIT Project")
-	(init . (lambda ()
-		  (let* ((top-dir (file-truename (magit-get-top-dir (if (buffer-file-name)
-									(file-name-directory (buffer-file-name))
-								      default-directory))))
-			 (default-directory top-dir)
-			 (signature (magit-shell (magit-format-git-command "rev-parse --verify HEAD" nil))))
 
-		    (unless (and anything-c-source-git-project-files-cache
-				 (third anything-c-source-git-project-files-cache)
-				 (equal (first anything-c-source-git-project-files-cache) top-dir)
-				 (equal (second anything-c-source-git-project-files-cache) signature))
-		      (if (third anything-c-source-git-project-files-cache)
-			  (kill-buffer (third anything-c-source-git-project-files-cache)))
-		      (setq anything-c-source-git-project-files-cache
-			    (list top-dir
-				  signature
-				  (anything-candidate-buffer 'global)))
-		      (with-current-buffer (third anything-c-source-git-project-files-cache)
-			(dolist (filename (mapcar (lambda (file) (concat default-directory file))
-						  (magit-shell-lines (magit-format-git-command "ls-files" nil))))
-			  (insert filename)
-			  (newline))))
-		    (anything-candidate-buffer (third anything-c-source-git-project-files-cache)))))
+(defun anything-c-sources-git-project-for (pwd)
+  (loop for elt in
+        '(("Modified files (%s)" . "--modified")
+          ("Untracked files (%s)" . "--others --exclude-standard")
+          ("All controlled files in this project (%s)" . ""))
+        collect
+        `((name . ,(format (car elt) pwd))
+          (init . (lambda ()
+                    (unless (and ,(string= (cdr elt) "") ;update candidate buffer every time except for that of all project files
+                                 (anything-candidate-buffer))
+                      (with-current-buffer
+                          (anything-candidate-buffer 'global)
+                        (insert
+                         (shell-command-to-string
+                          ,(format "git ls-files $(git rev-parse --show-cdup) %s"
+                                   (cdr elt))))))))
+          (candidates-in-buffer)
+          (type . file))))
 
-        (type . file)
-	(candidates-in-buffer)))
+(defun anything-git-project ()
+  (interactive)
+  (let* ((pwd (shell-command-to-string "echo -n `pwd`"))
+         (sources (anything-c-sources-git-project-for pwd)))
+    (anything-other-buffer sources
+     (format "*Anything git project in %s*" pwd))))
 
-
-(global-set-key [(super t)]
-  (lambda() (interactive)
-    (anything
-     :prompt "Open file: "
-     :candidate-number-limit 15                 ;; up to 10 of each 
-     :sources
-     '( 
-        ;; anything-c-source-files-in-current-dir+ ;; current dir
-        anything-c-source-git-project-files-cache))))
-
+(define-key global-map (kbd "s-t") 'anything-git-project)
 
 ;; (setq anything-sources
 ;;       '(

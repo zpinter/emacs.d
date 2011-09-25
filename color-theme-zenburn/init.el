@@ -16,5 +16,3 @@
 ;; Must manually call `my-color-theme-frame-init' for the initial frame.
 (cond ((selected-frame)
        (my-color-theme-frame-init (selected-frame))))
-
-

@@ -1,5 +1,5 @@
-(setenv "PATH" (concat (getenv "PATH") ":/usr/local/bin"))
-(setq exec-path (append exec-path '("/usr/local/bin")))
+(setenv "PATH" (concat "/usr/local/bin:" (getenv "PATH")))
+(push "/usr/local/bin" exec-path)
 
 (setq zconfig-emacsd (file-name-directory load-file-name))
 
@@ -33,7 +33,8 @@
 (defun zconfig-load-modules (module-names)
   (dolist (element module-names value)
     (setq value nil)
-    (zconfig-module-error-wrap (zconfig-load-module element) element)
+    (zconfig-load-module element)
+    ;; (zconfig-module-error-wrap (zconfig-load-module element) element)
     )
   (if zconfig-errors
       (display-warning :error (concat "There were errors loading modules! " (prin1-to-string zconfig-errors)))))
