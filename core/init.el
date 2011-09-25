@@ -17,3 +17,6 @@
 
 (defun ismac ()
 	 (or (eq system-type "darwin") (eq system-type 'darwin)))
+
+;; bug workaround
+(setq warning-suppress-types nil)
