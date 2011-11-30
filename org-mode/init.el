@@ -58,6 +58,8 @@
         ("Journal" ?j "* %U %?\n\n  %i\n  %a" "~/org/journal.txt")
 		  ))
 
+(setq org-export-html-style
+		"<link rel=\"stylesheet\" type=\"text/css\" href=\"http://dl.dropbox.com/u/31884/org-style.css\" />")
 
 (require 'org-publish)
 (setq org-publish-project-alist
@@ -66,7 +68,7 @@
         ("org-notes"
          :base-directory "~/org/"
          :base-extension "txt"
-         :publishing-directory "~/Dropbox/Public/orgpub/"
+         :publishing-directory "~/Dropbox/orgpub/"
          :recursive t
          :publishing-function org-publish-org-to-html
          :headline-levels 4       ; Just the default for this project.
@@ -76,7 +78,7 @@
         ("org-base"
          :static-directory "~/org/"
          :base-extension "css\\|js\\|png\\|jpg\\|gif\\|pdf\\|mp3\\|ogg\\|swf"
-         :publishing-directory "~/Dropbox/Public/orgpub/"
+         :publishing-directory "~/Dropbox/orgpub/"
          :recursive t
          :publishing-function org-publish-attachment
          )

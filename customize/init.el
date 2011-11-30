@@ -18,9 +18,11 @@
  '(jde-global-classpath (quote ("/Users/zpinter/repos/emacs.d/jdee/classes")))
  '(jde-jdk (quote ("1.6.0")))
  '(jde-jdk-registry (quote (("1.6.0" . "/System/Library/Frameworks/JavaVM.framework/Versions/1.6.0"))))
+ '(jira-url "https://jira.hulu.com/rpc/xmlrpc")
  '(nav-quickjump-show t)
  '(ns-antialias-text t)
- '(ns-pop-up-frames nil))
+ '(ns-pop-up-frames nil)
+ '(nxml-child-indent 4))
 
 (custom-set-faces
   ;; custom-set-faces was added by Custom.

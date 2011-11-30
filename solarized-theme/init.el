@@ -1,0 +1,1 @@
+(require 'solarized-light-theme)

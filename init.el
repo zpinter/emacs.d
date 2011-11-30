@@ -8,8 +8,9 @@
                        "elscreen"
                        "easypg"
                        "window-settings"
-                       "color-theme"
-                       "color-theme-zenburn"
+							  "solarized-theme"
+							  ;; "color-theme"
+							  ;; "color-theme-zenburn"
                        "ido"
                        "ibuffer"
                        "hippie-expand"
@@ -17,9 +18,10 @@
                        "ruby"
                        "auto-complete"
 							  "python-mode"
-                       "pymacs"							  
+                       ;; "pymacs"							  
                        "mirah"
                        "js2-mode"
+                       "android-mode"							  
                        ;; "yasnippet"
                        "magit"
                        "mo-git-blame"
@@ -30,7 +32,9 @@
                        "puppet-mode"
                        "markdown-mode"
                        ;; "ess"
+							  "xml-rpc" ;needed by trac-wiki and jira
                        "trac-wiki"
+							  "jira"
                        "remember"
                        "org-mode"
                        "deft"
@@ -64,7 +68,9 @@
                        "tweaks"
                        "smex"
                        "server"
+							  ;; "edit-server"
                        ))
 
 (put 'narrow-to-region 'disabled nil)
 (put 'set-goal-column 'disabled nil)
+(put 'downcase-region 'disabled nil)
