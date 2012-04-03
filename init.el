@@ -34,6 +34,7 @@
                        "puppet-mode"
                        "markdown-mode"
                        ;; "ess"
+							  "lua-mode"
 							  "xml-rpc" ;needed by trac-wiki and jira
                        "trac-wiki"
 							  "jira"
