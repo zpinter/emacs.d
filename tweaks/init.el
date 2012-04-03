@@ -272,8 +272,8 @@ If there is one running, switch to that buffer."
 
 
 ;; fix x copy/paste
-;; (setq x-select-enable-clipboard t)
-;; (setq interprogram-paste-function 'x-cut-buffer-or-selection-value)
+(setq x-select-enable-clipboard t)
+(setq interprogram-paste-function 'x-cut-buffer-or-selection-value)
 
 ; window movement
 (global-set-key [s-left] 'windmove-left)
