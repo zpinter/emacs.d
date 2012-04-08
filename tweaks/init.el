@@ -271,9 +271,11 @@ If there is one running, switch to that buffer."
 (global-set-key [M-down] 'move-text-down)
 
 
-;; fix x copy/paste
-(setq x-select-enable-clipboard t)
-(setq interprogram-paste-function 'x-cut-buffer-or-selection-value)
+;; fix x copy/paste on linux
+(if (not (ismac))
+	 (progn
+		(setq x-select-enable-clipboard t)
+		(setq interprogram-paste-function 'x-cut-buffer-or-selection-value)))
 
 ; window movement
 (global-set-key [s-left] 'windmove-left)
