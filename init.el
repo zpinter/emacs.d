@@ -69,6 +69,7 @@
                        "ack"
                        "csv-mode"
                        "scss-mode"
+							  ;; "emacs-eclim"
                        "tweaks"
                        "smex"
                        "server"
