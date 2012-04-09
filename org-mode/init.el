@@ -3,7 +3,6 @@
 (setq org-modules nil)
 (setq org-startup-folded "showall")
 (add-to-list 'org-modules 'org-mac-iCal)
-(add-to-list 'org-modules 'org-gnus)
 
 (require 'org-install)
 
@@ -25,14 +24,26 @@
 (setq org-export-with-sub-superscripts nil)
 (global-set-key "\C-cl" 'org-store-link)
 (global-set-key "\C-ca" 'org-agenda)
-(global-set-key "\C-cr" 'org-remember)
+(global-set-key "\C-cb" 'org-iswitchb)
 (setq org-todo-keywords '((sequence "TODO(t)" "WAITING(w)" "SOMEDAY(s)" "|" "CANCELLED(c)" "DONE(d)")))
 
 (setq org-directory "~/org")
-(setq org-agenda-files '("~/org/gtd.txt" "~/org/zebra/zebra_log.txt"))
-(setq org-mobile-directory "~/Dropbox/MobileOrg/")
-(setq org-mobile-inbox-for-pull "~/org/inbox.txt")
-(setq org-archive-location "~/org/archive.txt")
+(setq org-agenda-files '("~/org/gtd"))
+
+
+;; Disable C-c [ and C-c ] in org-mode, since that screws with org-agenda-files
+(add-hook 'org-mode-hook
+          (lambda ()
+            ;; Undefine C-c [ and C-c ] since this breaks my
+            ;; org-agenda files when directories are include It
+            ;; expands the files in the directories individually
+            (org-defkey org-mode-map "\C-c["    'undefined)
+            (org-defkey org-mode-map "\C-c]"    'undefined))
+          'append)
+
+
+(setq org-archive-mark-done nil)
+(setq org-archive-location "%s_archive::* Archived Tasks")
 
 (setq org-default-notes-file "~/org/gtd.txt")
 (setq org-special-ctrl-a/e t)
@@ -48,15 +59,30 @@
                       ("@towatch" . ?w)
                       ("@toread" . ?r)))
 
-(setq org-log-done 'time)
-(org-remember-insinuate)
+;; flyspell mode for spell checking everywhere
+(add-hook 'org-mode-hook 'turn-on-flyspell 'append)
 
-(setq org-remember-templates
-      '(
-		  ("Todo" ?t "* TODO %?\n  %i\n  %a" "~/org/gtd.txt" "Inbox")
-		  ("Zebra" ?z "* TODO %?\n  %i\n  %a" "~/org/gtd.txt" "Zebra")
-        ("Journal" ?j "* %U %?\n\n  %i\n  %a" "~/org/journal.txt")
-		  ))
+
+(global-set-key (kbd "C-c r") 'org-capture)
+
+;; Capture templates for: TODO tasks, Notes, appointments, phone calls, and org-protocol
+(setq org-capture-templates
+      (quote (("t" "todo" entry (file "~/org/gtd/inbox.org")
+               "* TODO %?\n%U\n%a\n")
+              ("n" "note" entry (file "~/org/gtd/inbox.org")
+               "* %? :NOTE:\n%U\n%a\n")
+              ("j" "Journal" entry (file+datetree "~/org/gtd/journal.org")
+               "* %?\n%U\n"))))
+
+(setq org-log-done 'time)
+;; (org-remember-insinuate)
+
+;; (setq org-remember-templates
+;;       '(
+;; 		  ("Todo" ?t "* TODO %?\n  %i\n  %a" "~/org/gtd.txt" "Inbox")
+;; 		  ("Zebra" ?z "* TODO %?\n  %i\n  %a" "~/org/gtd.txt" "Zebra")
+;;         ("Journal" ?j "* %U %?\n\n  %i\n  %a" "~/org/journal.txt")
+;; 		  ))
 
 (setq org-export-html-style
 		"<link rel=\"stylesheet\" type=\"text/css\" href=\"http://dl.dropbox.com/u/31884/org-style.css\" />")
