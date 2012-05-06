@@ -70,6 +70,7 @@
                        "ack"
                        "csv-mode"
                        "scss-mode"
+							  "ace-jump-mode"
 							  ;; "emacs-eclim"
                        "tweaks"
                        "smex"
