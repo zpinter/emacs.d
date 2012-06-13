@@ -64,6 +64,7 @@
                        ;; "ecb"
                        ;; "jdee"
                        ;; "textmate"
+							  "csharp"
                        "undo-tree"
                        "jabber"
                        "ack"

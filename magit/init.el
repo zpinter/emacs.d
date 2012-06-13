@@ -1,8 +1,9 @@
-
 (require 'magit)
 
-(setenv "PATH" (concat (getenv "PATH") ":~/homebrew/bin"))
-(setq exec-path (append exec-path '("~/homebrew/bin")))
+(if (ismac)
+	 (progn
+		(setenv "PATH" (concat (getenv "PATH") ":~/homebrew/bin"))
+		(setq exec-path (append exec-path '("~/homebrew/bin")))))
 
 (defalias 'gs 'magit-status)
 
