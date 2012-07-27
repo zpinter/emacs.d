@@ -272,7 +272,7 @@ If there is one running, switch to that buffer."
 
 
 ;; fix x copy/paste on linux
-(if (and (not (ismac) (not iswindows)))
+(if (and (not (ismac)) (not (iswindows)))
 	 (progn
 		(setq x-select-enable-clipboard t)
 		(setq interprogram-paste-function 'x-cut-buffer-or-selection-value)))
