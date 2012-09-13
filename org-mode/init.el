@@ -135,3 +135,6 @@
          ((org-agenda-mode-hook
            (lambda ()
              (org-mac-iCal)))))))
+
+(setq org-todo-keyword-faces
+		'(("TODO" . (:foreground "red" :weight "bold"))))
