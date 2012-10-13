@@ -4,7 +4,7 @@
 (setq org-startup-folded "showall")
 (add-to-list 'org-modules 'org-mac-iCal)
 
-(require 'org-install)
+(require 'org)
 
 ;; (setq font-lock-maximum-decoration
 ;;       '((org-mode . nil) (tex-mode . nil) (latex-mode . nil)))
@@ -138,3 +138,6 @@
 
 (setq org-todo-keyword-faces
 		'(("TODO" . (:foreground "red" :weight "bold"))))
+
+
+(setq org-odt-data-dir (concat zconfig-current-module-dir "/data"))

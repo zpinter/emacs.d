@@ -4,6 +4,7 @@
 (zconfig-load-modules (list
                        "core"
                        "customize"
+                       "org-mode"							  
                        "apel"
                        "elscreen"
                        "easypg"
@@ -39,7 +40,6 @@
                        "trac-wiki"
 							  "jira"
                        "remember"
-                       "org-mode"
                        "deft"
                        "paredit"
                        "slime"
