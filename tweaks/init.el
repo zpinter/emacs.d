@@ -192,6 +192,26 @@
 
 (setq ssl-certificate-directory "~/.certs")
 
+(defun sw-shell-get-process (buffer-name)
+  (let ((buffer (get-buffer buffer-name)))
+    (and (buffer-live-p buffer) (get-buffer-process buffer))))
+
+(defun sw-get-process-if-live (buffer-name)
+  (let ((proc (sw-shell-get-process buffer-name)))
+    (and (processp proc)
+         (equal (process-status proc) 'run)
+         proc)))
+
+(defun send-ansi-term-cmd (buffer-name cmd)
+  (let ((ansi-process (sw-get-process-if-live buffer-name)))
+	 (if ansi-process
+		  (term-simple-send ansi-process cmd))))
+
+(defun update-ansi-term-directory (buffer-name)
+  (let ((current-dir (file-truename default-directory)))
+	 (send-ansi-term-cmd buffer-name (concat "cd \"" current-dir "\""))))
+
+
 ;ansi-term
 (defun visit-ansi-term ()
   "If we are in an *ansi-term*, rename it.
@@ -201,9 +221,12 @@ If there is one running, switch to that buffer."
   (if (equal "*ansi-term*" (buffer-name))
       (call-interactively 'rename-buffer)
       (if (get-buffer "*ansi-term*")
-   (switch-to-buffer "*ansi-term*")
-   (ansi-term "/bin/bash"))))
+			 (progn
+				(update-ansi-term-directory "*ansi-term*")
+				(switch-to-buffer "*ansi-term*"))
+		  (ansi-term "/bin/bash"))))   ;(ansi-term "/bin/bash"))))
 (global-set-key (kbd "<f2>") 'visit-ansi-term)
+(global-set-key (kbd "C-c C-t") 'visit-ansi-term)
 
 ;file encoding
 (prefer-coding-system 'utf-8)
