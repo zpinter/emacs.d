@@ -226,6 +226,7 @@ If there is one running, switch to that buffer."
   (find-alternate-file (concat "/sudo:root@localhost:" (buffer-file-name (current-buffer)))))
 (global-set-key (kbd "C-c C-r") 'sudo-edit-current-file)
 
+
 ;; remember my place
 (setq save-place-file "~/.saveplace")
 (setq-default save-place t)                   ;; activate it for all buffers
