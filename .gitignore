@@ -3,6 +3,7 @@ tmp/*
 private.el
 magit/lisp/autom4te.cache/*
 tmp.auto-saves*
+auto-save-list/*
 old/
 el-get/
 ede-projects.el
