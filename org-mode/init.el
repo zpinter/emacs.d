@@ -87,31 +87,31 @@
 (setq org-export-html-style
 		"<link rel=\"stylesheet\" type=\"text/css\" href=\"http://dl.dropbox.com/u/31884/org-style.css\" />")
 
-(require 'org-publish)
-(setq org-publish-project-alist
-      '(
+;; (require 'org-publish)
+;; (setq org-publish-project-alist
+;;       '(
 
-        ("org-notes"
-         :base-directory "~/org/"
-         :base-extension "txt"
-         :publishing-directory "~/Dropbox/orgpub/"
-         :recursive t
-         :publishing-function org-publish-org-to-html
-         :headline-levels 4       ; Just the default for this project.
-         :auto-preamble t
-         )
+;;         ("org-notes"
+;;          :base-directory "~/org/"
+;;          :base-extension "txt"
+;;          :publishing-directory "~/Dropbox/orgpub/"
+;;          :recursive t
+;;          :publishing-function org-publish-org-to-html
+;;          :headline-levels 4       ; Just the default for this project.
+;;          :auto-preamble t
+;;          )
 
-        ("org-base"
-         :static-directory "~/org/"
-         :base-extension "css\\|js\\|png\\|jpg\\|gif\\|pdf\\|mp3\\|ogg\\|swf"
-         :publishing-directory "~/Dropbox/orgpub/"
-         :recursive t
-         :publishing-function org-publish-attachment
-         )
+;;         ("org-base"
+;;          :static-directory "~/org/"
+;;          :base-extension "css\\|js\\|png\\|jpg\\|gif\\|pdf\\|mp3\\|ogg\\|swf"
+;;          :publishing-directory "~/Dropbox/orgpub/"
+;;          :recursive t
+;;          :publishing-function org-publish-attachment
+;;          )
 
-        ("org" :components ("org-notes" "org-static"))
+;;         ("org" :components ("org-notes" "org-static"))
 
-        ))
+;;         ))
 
                                         ; Use IDO for target completion
 (setq org-completion-use-ido t)
