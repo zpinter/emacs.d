@@ -1,6 +1,9 @@
 [submodule "util/jump"]
 	path = util/jump
-	url = git://github.com/eschulte/jump.el.git
+	url = https://github.com/eschulte/jump.el.git
 [submodule "util/test/ert"]
 	path = util/test/ert
-	url = git://github.com/nex3/ert.git
+	url = https://github.com/nex3/ert.git
+[submodule "util/inf-ruby"]
+	path = util/inf-ruby
+	url = https://github.com/nonsequitur/inf-ruby.git

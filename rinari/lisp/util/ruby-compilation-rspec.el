@@ -11,7 +11,9 @@
 (add-hook 'ruby-mode-hook (lambda ()
                             (when (and (not (null buffer-file-name)) (string-match "_spec.rb$" buffer-file-name))
                               (set (make-local-variable 'ruby-compilation-executable)
-                                   "spec")
+                                   (file-name-nondirectory
+                                    (or (executable-find "rspec")
+                                        (executable-find "spec"))))
                               (set (make-local-variable 'ruby-compilation-test-name-flag)
                                    "-l"))))
 
@@ -19,7 +21,7 @@
       (symbol-function 'ruby-compilation-this-test-name))
 
 (defun ruby-compilation-this-test-name ()
-  (if (equal ruby-compilation-executable "spec")
+  (if (string-match "^r?spec$" ruby-compilation-executable)
       (ruby-compilation-this-spec-name)
     (ruby-compilation-this-test-name-old)))
 

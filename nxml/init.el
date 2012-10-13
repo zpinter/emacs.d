@@ -1,6 +1,7 @@
 ;;(add-module-path "nxhtml")
 ;(add-module-path "nxml-mode-20041004")
 ;(load "rng-auto.el")
+(set 'nxml-path (concat zconfig-current-module-dir "/nxml-mode-20041004"))
 
 (add-to-list 'auto-mode-alist
              (cons (concat "\\." (regexp-opt '("xml" "xsd" "sch" "rng" "xslt" "svg" "rss") t) "\\'")
@@ -13,4 +14,6 @@
 (fset 'html-mode 'nxml-mode)
 
 (zconfig-add-lisp-path "nxhtml")
-(load "autostart.el")
+(zconfig-add-lisp-path "nxhtml/util")
+
+;; (load "autostart.el")

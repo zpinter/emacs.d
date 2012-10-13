@@ -31,11 +31,23 @@
 ;;   )
 
 (defun zconfig-load-modules (module-names)
-  (dolist (element module-names value)
-    (setq value nil)
-    (zconfig-load-module element)
+  (let ((benchmarks '()))
+	 (dolist (element module-names value)
+		(setq value nil)
+		(setq benchmarks (cons 
+								(prin1-to-string
+								 (list
+								  (benchmark-run 1
+										(zconfig-load-module element))
+								  element))
+								benchmarks)))
+	 
+	 (message "Benchmarks results")
+	 ;; (message benchmarks)
+	 (print (reverse (sort benchmarks 'string<)))
+	 )
+    
     ;; (zconfig-module-error-wrap (zconfig-load-module element) element)
-    )
   (if zconfig-errors
       (display-warning :error (concat "There were errors loading modules! " (prin1-to-string zconfig-errors)))))
 

@@ -134,6 +134,11 @@ ELPA (the ``Emacs List Package Archive'') see
 @uref{http://tromey.com/elpa/} for more information on using ELPA to
 install Rinari.
 
+Currently the version of Rinari available through ELPA does not work
+well with Rails3. If you want Rinari for Rails3 then download the
+latest from GitHub at @uref{http://github.com/eschulte/rinari}. See
+the Basic Setup section.
+
 @b{Emacs Starter Kit}
 
 Available at
