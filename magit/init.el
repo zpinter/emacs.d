@@ -12,3 +12,5 @@
   (magit-run-git "add" "."))
 
 (defalias 'ga. 'magit-stage-all-even-untracked)
+
+(global-set-key (kbd "C-c C-g") 'magit-status)
