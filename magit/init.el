@@ -1,4 +1,4 @@
-(require 'magit)
+(autoload 'magit-status "magit" nil t)
 
 (if (ismac)
 	 (progn

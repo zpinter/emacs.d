@@ -6,10 +6,8 @@
   (shell-command (concat "rm -rf " lisp-dir "/*"))
   (shell-command (concat "rm -rf " update-dir "/magit"))
 
-  (let ((build-cmd (concat "cd " update-dir " && git clone git://gitorious.org/magit/mainline.git magit"
+  (let ((build-cmd (concat "cd " update-dir " && git clone git://github.com/magit/magit.git"
 			  " && cd magit"
-			  " && ./autogen.sh"
-			  " && ./configure"
 			  " && make"
 			  " && rm -rf .git"
 			  " && cp -r ./* ../../lisp/")))
