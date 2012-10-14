@@ -73,6 +73,7 @@
                        "scss-mode"
 							  "ace-jump-mode"
 							  ;; "emacs-eclim"
+							  "expand-region"							  
                        "tweaks"
                        "smex"
                        "server"
