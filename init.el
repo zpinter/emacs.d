@@ -50,7 +50,7 @@
                        "haml-mode"
                        "smali"
 							  "helm"
-							  "helm-git"							  
+							  "helm-git"
                        ;; "anything"
                        ;; "w3m"
                        "flyspell"
