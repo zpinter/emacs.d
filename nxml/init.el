@@ -16,4 +16,6 @@
 (zconfig-add-lisp-path "nxhtml")
 (zconfig-add-lisp-path "nxhtml/util")
 
+(autoload 'emacs--debug-init "ourcomments-util" "Handy emacs debug launch" t)
+
 ;; (load "autostart.el")
