@@ -247,7 +247,8 @@ If there is one running, switch to that buffer."
 (defun sudo-edit-current-file ()
   (interactive)
   (find-alternate-file (concat "/sudo:root@localhost:" (buffer-file-name (current-buffer)))))
-(global-set-key (kbd "C-c C-r") 'sudo-edit-current-file)
+
+;; (global-set-key (kbd "C-c C-r") 'sudo-edit-current-file)
 
 
 ;; remember my place
