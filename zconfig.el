@@ -73,8 +73,29 @@
 (defun zconfig-load-module (module-name)
   (zconfig-run-module module-name "load"))
 
-(defun zconfig-update-module (module-name)
-  (zconfig-run-module module-name "update"))
+(defadvice shell-command 
+  (before zconfig-update-shell-command (&rest params) disable)
+  "Capture the output to a different buffer"
+  (ad-set-args 0 (list (car params) "*zconfig-update*" "*zconfig-update*"))
+  ;; (ad-set-arg 0 (car params))
+  ;; (ad-set-arg 1 '"*scratch*")
+  ;; (ad-set-arg 2 '"*scratch*")
+  ;; (ad-set-arg 0 "echo foo")
+  ;; (ad-set-arg 1 (get-buffer-create "*scratch*"))
+  ;; (ad-set-arg 2 (get-buffer-create "*zconfig-update*"))  
+  )
+
+(defun zconfig-update-module ()
+  "Update a module via its update.el"
+  (interactive)
+  (let ((module-name (read-from-minibuffer "Module? ")))
+	 (with-output-to-temp-buffer "*zconfig-update*"
+		(ad-enable-advice 'shell-command 'before 'zconfig-update-shell-command)
+		(ad-activate 'shell-command)
+		(zconfig-run-module module-name "update")
+		(ad-disable-advice 'shell-command 'before 'zconfig-update-shell-command)
+		(ad-activate 'shell-command)
+		)))
 
 (defun zconfig-run-module (module-name operation)
   (setq zconfig-current-module module-name)
