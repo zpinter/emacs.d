@@ -13,7 +13,7 @@
   (let ((build-cmd (concat "cd " update-dir " && git clone git://github.com/eschulte/rinari.git"
 			  " && cd rinari"
 			  " && git submodule update --init --recursive"
-			  " && rm -rf .git"
+			  " && find . -name \".git\" | xargs -I {} rm -rf {}"
 			  " && cp doc/* ../../info"
 			  " && mv ./* ../../lisp")))
 
