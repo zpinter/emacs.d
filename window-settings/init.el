@@ -25,6 +25,10 @@ determining the maximize number of columns to fit on a display"
 ;;;   (fixed-width-set-default-fontset
 ;;;    "-apple-inconsolata-medium-r-normal--14-*-*-*-*-*-iso10646-1"))
 
+(if (and (islinux) window-system)
+    (progn
+		(require 'cua-base)
+		(cua-mode t)))		
 
 (if (and (ismac) window-system)
     (progn
