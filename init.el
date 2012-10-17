@@ -75,6 +75,7 @@
 							  ;; "emacs-eclim"
 							  "expand-region"
 							  "mark-multiple"
+							  "smart-tab"
                        "tweaks"
                        "smex"
                        "server"
