@@ -28,7 +28,7 @@ determining the maximize number of columns to fit on a display"
 (if (and (islinux) window-system)
     (progn
 		(require 'cua-base)
-		(cua-mode t)))		
+		(cua-selection-mode t)))		
 
 (if (and (ismac) window-system)
     (progn
