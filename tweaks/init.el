@@ -55,8 +55,7 @@
 
 (defconst use-backup-dir t)
 
-(defvar user-temporary-file-directory
-  (concat zconfig-emacsd "tmp/"))
+(defvar user-temporary-file-directory "/tmp/emacs")
 
 (make-directory user-temporary-file-directory t)
 (setq backup-directory-alist
