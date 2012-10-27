@@ -10,10 +10,10 @@
 ;; 	  (expand-file-name "~/.emacs.d/elpa/package.el"))
 ;;   (package-initialize))
 (custom-set-variables
-  ;; custom-set-variables was added by Custom.
-  ;; If you edit it by hand, you could mess it up, so be careful.
-  ;; Your init file should contain only one such instance.
-  ;; If there is more than one, they won't work right.
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
  '(ecb-options-version "2.40")
  '(jde-global-classpath (quote ("/Users/zpinter/repos/emacs.d/jdee/classes")))
  '(jde-jdk (quote ("1.6.0")))
@@ -22,15 +22,14 @@
  '(nav-quickjump-show t)
  '(ns-antialias-text t)
  '(ns-pop-up-frames nil)
- '(nxml-child-indent 4))
+ '(nxml-child-indent 4)
+ '(smart-tab-disabled-major-modes (quote (org-mode term-mode mu4e-compose-mode))))
 
 (custom-set-faces
-  ;; custom-set-faces was added by Custom.
-  ;; If you edit it by hand, you could mess it up, so be careful.
-  ;; Your init file should contain only one such instance.
-  ;; If there is more than one, they won't work right.
- '(flymake-errline ((t :underline "red")))
- '(flymake-warnline ((t :underline "green")))
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
  '(mumamo-background-chunk-major ((((class color) (min-colors 88) (background dark)) nil)))
  '(mumamo-background-chunk-submode ((((class color) (min-colors 88) (background dark)) (:background "#222222"))))
  '(twit-author-face ((t (:height 0.8))))
