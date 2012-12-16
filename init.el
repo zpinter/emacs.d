@@ -4,7 +4,8 @@
 (zconfig-load-modules (list
                        "core"
                        "customize"
-                       "org-mode"
+							  "org-mode"
+							  "org-jira"
                        "apel"
                        "elscreen"
                        "easypg"
