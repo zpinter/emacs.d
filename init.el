@@ -16,7 +16,7 @@
                        "ibuffer"
                        "hippie-expand"
                        "nxml"
-                       "ruby"
+							  ;; "ruby"
                        "auto-complete"
                        "python-mode"
                        ;; "pymacs"
