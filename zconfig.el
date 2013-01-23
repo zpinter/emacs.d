@@ -176,10 +176,10 @@
 	 (if (file-directory-p zconfig-current-module-dir)
 		  (message "Module already exists!")
 		(progn
-		  (shell-command (concat "mkdir -p" zconfig-current-module-dir "lisp"))
-		  (shell-command (concat "mkdir -p" zconfig-current-module-dir "update"))
+		  (shell-command (concat "mkdir -p " zconfig-current-module-dir "/lisp"))
+		  (shell-command (concat "mkdir -p " zconfig-current-module-dir "/update"))
 		  (shell-command (concat "touch " zconfig-current-module-init-file))
 		  (write-string-to-file
-			(concat zconfig-current-module-dir "update.el")
-			(concat "(zconfig-update-from-git-simple \"" module-name "\" \"" arg "\")"))))))
+			(concat "(zconfig-update-from-git-simple \"" module-name "\" \"" arg "\")")
+			(concat zconfig-current-module-update-file))))))
 
