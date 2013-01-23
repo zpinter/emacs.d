@@ -224,8 +224,19 @@ If there is one running, switch to that buffer."
 				(update-ansi-term-directory "*ansi-term*")
 				(switch-to-buffer "*ansi-term*"))
 		  (ansi-term "/bin/bash"))))   ;(ansi-term "/bin/bash"))))
-(global-set-key (kbd "<f2>") 'visit-ansi-term)
 (global-set-key (kbd "C-c C-t") 'visit-ansi-term)
+
+
+(defun comint-delchar-or-eof-or-kill-buffer (arg)
+  (interactive "p")
+  (if (null (get-buffer-process (current-buffer)))
+      (kill-buffer)
+    (comint-delchar-or-maybe-eof arg)))
+
+(add-hook 'shell-mode-hook
+          (lambda ()
+            (define-key shell-mode-map
+				  (kbd "C-d") 'comint-delchar-or-eof-or-kill-buffer)))
 
 ;file encoding
 (prefer-coding-system 'utf-8)
@@ -293,6 +304,46 @@ If there is one running, switch to that buffer."
 
 (global-set-key [M-up] 'move-text-up)
 (global-set-key [M-down] 'move-text-down)
+
+;; Auto refresh buffers
+(global-auto-revert-mode 1)
+									
+;; Also auto refresh dired, but be quiet about it
+(setq global-auto-revert-non-file-buffers t)
+(setq auto-revert-verbose nil)
+
+(global-set-key [remap goto-line] 'goto-line-with-feedback)
+
+(defun goto-line-with-feedback ()
+  "Show line numbers temporarily, while prompting for the line number input"
+  (interactive)
+  (if (and (boundp 'linum-mode)
+           linum-mode)
+      (call-interactively 'goto-line)
+    (unwind-protect
+        (progn
+          (linum-mode 1)
+          (call-interactively 'goto-line))
+      (linum-mode -1))))
+
+(defun rename-current-buffer-file ()
+  "Renames current buffer and file it is visiting."
+  (interactive)
+  (let ((name (buffer-name))
+        (filename (buffer-file-name)))
+    (if (not (and filename (file-exists-p filename)))
+        (error "Buffer '%s' is not visiting a file!" name)
+      (let ((new-name (read-file-name "New name: " filename)))
+        (if (get-buffer new-name)
+            (error "A buffer named '%s' already exists!" new-name)
+          (rename-file filename new-name 1)
+          (rename-buffer new-name)
+          (set-visited-file-name new-name)
+          (set-buffer-modified-p nil)
+          (message "File '%s' successfully renamed to '%s'"
+						 name (file-name-nondirectory new-name)))))))
+
+(global-set-key (kbd "C-x C-r") 'rename-current-buffer-file)
 
 
 ;; fix x copy/paste on linux

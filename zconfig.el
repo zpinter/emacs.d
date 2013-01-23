@@ -5,6 +5,15 @@
 
 (setq zconfig-errors nil)
 
+(defun write-string-to-file (string file)
+   (interactive "sEnter the string: \nFFile to save to: ")
+   (with-temp-buffer
+     (insert string)
+     (when (file-writable-p file)
+       (write-region (point-min)
+                     (point-max)
+                     file))))
+
 (defmacro zconfig-module-error-wrap (fn module-name)
   `(unwind-protect
        (let (retval)
@@ -30,6 +39,14 @@
 ;;       (display-warning :error (concat "There were errors loading modules! " (prin1-to-string zconfig-errors))))
 ;;   )
 
+(defun zconfig-create-module ()
+  "Create a folder for a module and set it up with update script"
+  (interactive)
+  (let ((module-name (read-from-minibuffer "Module Name? "))
+		  (module-repo (read-from-minibuffer "Git repo? ")))
+	 (zconfig-run-module module-name "create" module-repo)))
+
+
 (defun zconfig-load-modules (module-names)
   (let ((benchmarks '()))
 	 (dolist (element module-names value)
@@ -38,7 +55,7 @@
 								(prin1-to-string
 								 (list
 								  (benchmark-run 1
-										(zconfig-load-module element))
+										(zconfig-load-module-by-name element))
 								  element))
 								benchmarks)))
 	 
@@ -47,7 +64,7 @@
 	 (print (reverse (sort benchmarks 'string<)))
 	 )
     
-    ;; (zconfig-module-error-wrap (zconfig-load-module element) element)
+    ;; (zconfig-module-error-wrap (zconfig-load-module-by-name element) element)
   (if zconfig-errors
       (display-warning :error (concat "There were errors loading modules! " (prin1-to-string zconfig-errors)))))
 
@@ -70,8 +87,14 @@
 (defun zconfig-get-module-dir (module-name)
   (concat zconfig-emacsd module-name))
 
-(defun zconfig-load-module (module-name)
+(defun zconfig-load-module-by-name (module-name)
   (zconfig-run-module module-name "load"))
+
+(defun zconfig-load-module ()
+  "Update a module via its update.el"
+  (interactive)
+  (let ((module-name (read-from-minibuffer "Module? ")))
+	 (zconfig-load-module-by-name module-name)))
 
 (defadvice shell-command 
   (before zconfig-update-shell-command (&rest params) disable)
@@ -85,6 +108,24 @@
   ;; (ad-set-arg 2 (get-buffer-create "*zconfig-update*"))  
   )
 
+(defun zconfig-update-from-git-simple
+  (repo-name repo)
+  (let ((lisp-dir (concat zconfig-current-module-dir "/lisp"))
+		  (update-dir (concat zconfig-current-module-dir "/update")))
+
+	 (shell-command (concat "mkdir -p " lisp-dir))
+	 (shell-command (concat "mkdir -p " update-dir))
+	 (shell-command (concat "rm -rf " lisp-dir "/*"))
+	 (shell-command (concat "rm -rf " update-dir "/" repo-name))
+
+	 (let ((build-cmd (concat "cd " update-dir " && git clone " repo " " repo-name
+									  " && cd " repo-name
+									  " && rm -rf .git"
+									  " && cp -r ./* ../../lisp/")))
+		
+		(message build-cmd)
+		(shell-command build-cmd))))
+
 (defun zconfig-update-module ()
   "Update a module via its update.el"
   (interactive)
@@ -97,7 +138,7 @@
 		(ad-activate 'shell-command)
 		)))
 
-(defun zconfig-run-module (module-name operation)
+(defun zconfig-run-module (module-name operation &optional arg)
   (setq zconfig-current-module module-name)
   (setq zconfig-current-module-dir (concat zconfig-emacsd module-name))
   (setq zconfig-current-module-init-file (concat zconfig-current-module-dir "/init.el"))
@@ -129,7 +170,16 @@
 
   (when (equal operation "update")
     (if (file-exists-p zconfig-current-module-update-file)
-        (load-file zconfig-current-module-update-file)))
+		  (load-file zconfig-current-module-update-file)))
 
-)
+  (when (equal operation "create")
+	 (if (file-directory-p zconfig-current-module-dir)
+		  (message "Module already exists!")
+		(progn
+		  (shell-command (concat "mkdir -p" zconfig-current-module-dir "lisp"))
+		  (shell-command (concat "mkdir -p" zconfig-current-module-dir "update"))
+		  (shell-command (concat "touch " zconfig-current-module-init-file))
+		  (write-string-to-file
+			(concat zconfig-current-module-dir "update.el")
+			(concat "(zconfig-update-from-git-simple \"" module-name "\" \"" arg "\")"))))))
 
