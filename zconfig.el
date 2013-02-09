@@ -17,10 +17,10 @@
 (defmacro zconfig-module-error-wrap (fn module-name)
   `(unwind-protect
        (let (retval)
-         (condition-case ex
-             (setq retval (progn ,fn))
+			(condition-case ex
+				 (setq retval (progn ,fn))
            ('error
-            (message (format "Caught exception in %s: [%s]" ,module-name ex))
+				(message (format "Caught exception in %s: [%s]" ,module-name ex))
             (add-to-list 'zconfig-errors (list ,module-name ex))
             (setq retval (cons 'exception (list ex)))))
          retval)

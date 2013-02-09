@@ -8,6 +8,11 @@
 
 (global-set-key (kbd "C-x C-b") 'ido-switch-buffer)
 
+;; Display ido results vertically, rather than horizontally
+(setq ido-decorations (quote ("\n-> " "" "\n   " "\n   ..." "[" "]" " [No match]" " [Matched]" " [Not readable]" " [Too big]" " [Confirm]")))
+(defun ido-disable-line-truncation () (set (make-local-variable 'truncate-lines) nil))
+(add-hook 'ido-minibuffer-setup-hook 'ido-disable-line-truncation)
+
 ;; (icomplete-mode 1)
 ;; (setq icomplete-compute-delay 0)
 ;; (require 'icomplete+)
