@@ -19,3 +19,11 @@
 (autoload 'emacs--debug-init "ourcomments-util" "Handy emacs debug launch" t)
 
 ;; (load "autostart.el")
+
+
+(defun xml-pretty-print-buffer ()
+    (interactive)
+    (save-excursion
+        (shell-command-on-region (point-min) (point-max) "xmllint --format -" (buffer-name) t)
+        (nxml-mode)
+        (indent-region begin end)))
