@@ -2,7 +2,6 @@
 
 (setq org-modules nil)
 (setq org-startup-folded "showall")
-(add-to-list 'org-modules 'org-mac-iCal)
 
 (require 'org)
 
@@ -28,7 +27,7 @@
 (setq org-todo-keywords '((sequence "TODO(t)" "WAITING(w)" "SOMEDAY(s)" "|" "CANCELLED(c)" "DONE(d)")))
 
 (setq org-directory "~/org")
-(setq org-agenda-files '("~/org/gtd"))
+(setq org-agenda-files '("~/org/new"))
 
 
 ;; Disable C-c [ and C-c ] in org-mode, since that screws with org-agenda-files
@@ -60,19 +59,21 @@
                       ("@toread" . ?r)))
 
 ;; flyspell mode for spell checking everywhere
-(add-hook 'org-mode-hook 'turn-on-flyspell 'append)
+;; (add-hook 'org-mode-hook 'turn-on-flyspell 'append)
 
 
 (global-set-key (kbd "C-c r") 'org-capture)
 
 ;; Capture templates for: TODO tasks, Notes, appointments, phone calls, and org-protocol
 (setq org-capture-templates
-      (quote (("t" "todo" entry (file "~/org/gtd/inbox.org")
-               "* TODO %?\n%U\n%a\n")
-              ("n" "note" entry (file "~/org/gtd/inbox.org")
-               "* %? :NOTE:\n%U\n%a\n")
-              ("j" "Journal" entry (file+datetree "~/org/gtd/journal.org")
-               "* %?\n%U\n"))))
+		(quote (("t" "Todo" entry (file+headline "~/org/new/refile.org" "Tasks")
+					"* TODO %?\n")
+				  ("m" "Meeting" entry (file+headline "~/org/new/refile.org" "Meetings")
+					"* Meeting on %U\n%?")
+				  ("n" "Note" entry (file+headline "~/org/new/refile.org" "Notes")
+					"* %?")
+				  ("j" "Journal" entry (file+datetree "~/org/new/journal.org")
+					"* %?\n%U \n"))))
 
 (setq org-log-done 'time)
 ;; (org-remember-insinuate)
@@ -121,8 +122,8 @@
                                         ;(setq org-refile-use-outline-path (quote file))
                                         ;(setq org-outline-path-complete-in-steps t)
 
-(setq org-refile-use-outline-path nil)
-(setq org-refile-targets (quote ((org-agenda-files :level . 1))))
+(setq org-refile-use-outline-path t)
+(setq org-refile-targets (quote ((org-agenda-files :level . 2))))
 ;;(setq org-refile-targets '( (org-agenda-files :regexp . "Tasks") ))
 (setq org-outline-path-complete-in-steps nil)
 
@@ -130,14 +131,14 @@
                                         ;ical integration
 (setq org-agenda-include-diary t)
 
-(setq org-agenda-custom-commands
-      '(("I" "Import diary from iCal" agenda ""
-         ((org-agenda-mode-hook
-           (lambda ()
-             (org-mac-iCal)))))))
+;; (setq org-agenda-custom-commands
+;;       '(("I" "Import diary from iCal" agenda ""
+;;          ((org-agenda-mode-hook
+;;            (lambda ()
+;;              (org-mac-iCal)))))))
 
-(setq org-todo-keyword-faces
-		'(("TODO" . (:foreground "red" :weight "bold"))))
+;; (setq org-todo-keyword-faces
+;; 		'(("TODO" . (:foreground "red" :weight "bold"))))
 
 
 (setq org-odt-data-dir (concat zconfig-current-module-dir "/data"))
