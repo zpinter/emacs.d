@@ -1,0 +1,1 @@
+(zconfig-update-from-git-simple "window-numbering" "git://github.com/nschum/window-numbering.el.git")

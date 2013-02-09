@@ -44,6 +44,7 @@
                        "remember"
                        "deft"
 							  ;; "paredit"
+							  "window-numbering"
 							  ;; "slime"
 							  ;; "clojure-mode"
                        "cheat"
