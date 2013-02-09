@@ -39,8 +39,9 @@
                        ;; "ess"
                        "lua-mode"
                        "xml-rpc" ;needed by trac-wiki and jira
-                       "trac-wiki"
-                       "jira"
+							  ;; "trac-wiki"
+							  "confluence-el"
+							  ;; "jira"
                        "remember"
                        "deft"
 							  ;; "paredit"
