@@ -89,6 +89,7 @@
 							  "ws-trim"
 							  "tweaks"
 							  "mu4e"
+							  ;; "emacs-git-gutter"
 							  "ido"
 							  ;;"el-get-setup"
 							  "smex"

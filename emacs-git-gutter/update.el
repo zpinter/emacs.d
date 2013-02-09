@@ -1,0 +1,1 @@
+(zconfig-update-from-git-simple "emacs-git-gutter" "git://github.com/syohex/emacs-git-gutter.git")
