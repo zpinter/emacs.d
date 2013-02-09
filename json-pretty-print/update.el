@@ -1,0 +1,1 @@
+(zconfig-update-from-git-simple "json-pretty-print" "git://github.com/thorstadt/json-pretty-print.el.git")

@@ -63,6 +63,10 @@
                        "open-resource"
                        "breadcrumb"
                        "xcscope"
+
+							  ;; "json" ;;required by json-pretty-print
+							  ;; "json-pretty-print"
+
                        ;; "company-mode"
                        ;; "cedet"
                        ;; "ecb"
