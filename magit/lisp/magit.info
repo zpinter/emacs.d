@@ -330,6 +330,11 @@ choice is stage everything at the time of hitting `c'.
 toggle a flag that determines whether the next commit will _amend_ the
 current commit in HEAD.
 
+   Typing `M-n' or `M-p' will cycle through the
+`log-edit-comment-ring', which will have your previous log messages.
+This is particularly useful if you have a hook that occasionally causes
+git to refuse your commit.
+
    Typing `C-c C-s' will toggle the `--signoff' option.  The default is
 determined by the `magit-commit-signoff' customization variable.
 
@@ -891,16 +896,16 @@ File: magit.info,  Node: Submodules,  Next: Using Magit Extensions,  Prev: Bisec
 21 Submodules
 *************
 
-`M u'
+`o u'
      Update the submodules, with a prefix argument it will initializing.
 
-`M i'
+`o i'
      Initialize the submodules.
 
-`M b'
+`o b'
      Update and initialize the submodules in one go.
 
-`M s'
+`o s'
      Synchronizes submodules' remote URL configuration setting to the
      value specified in .gitmodules.
 
@@ -1385,39 +1390,39 @@ Node: Sections3738
 Node: Status6288
 Node: Untracked files9027
 Node: Staging and Committing10232
-Node: History14130
-Node: Reflogs17312
-Node: Commit Buffer17716
-Node: Diffing19042
-Node: Tagging20029
-Node: Resetting20478
-Node: Stashing22002
-Node: Branches and Remotes23073
-Node: Branches Popup23894
-Node: Remotes Popup25156
-Node: Branches in the Branch Manager25507
-Node: Remotes in the Branch Manager26679
-Node: Wazzup27240
-Node: Merging28033
-Node: Rebasing29083
-Node: Interactive Rebasing29909
-Node: Rewriting31204
-Node: Pushing and Pulling34229
-Node: Submodules36158
-Node: Bisecting36578
-Node: Using Magit Extensions37797
-Node: Activating extensions38094
-Node: Interfacing with Subversion39479
-Node: Interfacing with Topgit40079
-Node: Interfacing with StGit41110
-Node: Developing Extensions42109
-Node: Using Git Directly45891
-Node: Customization46262
-Node: Frequently Asked Questions50843
-Node: FAQ - Changes51074
-Node: FAQ 1 - Troubleshooting51485
-Node: FAQ 1-151733
-Node: FAQ 2 - Display issues52038
-Node: FAQ 2-152267
+Node: History14347
+Node: Reflogs17529
+Node: Commit Buffer17933
+Node: Diffing19259
+Node: Tagging20246
+Node: Resetting20695
+Node: Stashing22219
+Node: Branches and Remotes23290
+Node: Branches Popup24111
+Node: Remotes Popup25373
+Node: Branches in the Branch Manager25724
+Node: Remotes in the Branch Manager26896
+Node: Wazzup27457
+Node: Merging28250
+Node: Rebasing29300
+Node: Interactive Rebasing30126
+Node: Rewriting31421
+Node: Pushing and Pulling34446
+Node: Submodules36375
+Node: Bisecting36795
+Node: Using Magit Extensions38014
+Node: Activating extensions38311
+Node: Interfacing with Subversion39696
+Node: Interfacing with Topgit40296
+Node: Interfacing with StGit41327
+Node: Developing Extensions42326
+Node: Using Git Directly46108
+Node: Customization46479
+Node: Frequently Asked Questions51060
+Node: FAQ - Changes51291
+Node: FAQ 1 - Troubleshooting51702
+Node: FAQ 1-151950
+Node: FAQ 2 - Display issues52255
+Node: FAQ 2-152484
 
 End Tag Table

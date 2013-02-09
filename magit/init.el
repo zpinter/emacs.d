@@ -26,6 +26,11 @@
   (kill-buffer)
   (jump-to-register :magit-fullscreen))
 
-
-
 (global-set-key (kbd "C-c C-g") 'magit-status)
+
+(eval-after-load "magit"
+  '(progn
+	  ;; (defun magit-diff-U-arg ()
+	  ;; 	 (format "-U%dw" magit-diff-context-lines))
+	  (add-to-list 'magit-diff-options "-w")
+	  ))

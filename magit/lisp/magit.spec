@@ -1,5 +1,5 @@
 Name:		magit
-Version:	1.2.0-18-gf1f800b
+Version:	1.2.0-108-gfd215cb
 Release:	1%{?dist}
 Summary:	An Emacs Extension for Git
 BuildArch: noarch

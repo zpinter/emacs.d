@@ -5,18 +5,18 @@
 
 ;;;### (autoloads (magit-status) "../../../../../../.emacs.d/magit/update/magit/magit"
 ;;;;;;  "../../../../../../.emacs.d/magit/update/magit/magit.el"
-;;;;;;  (20601 48471))
+;;;;;;  (20757 56095 0 0))
 ;;; Generated autoloads from ../../../../../../.emacs.d/magit/update/magit/magit.el
 
 (autoload 'magit-status "../../../../../../.emacs.d/magit/update/magit/magit" "\
-Open a Magit status buffer for the Git repository containing
-DIR.  If DIR is not within a Git repository, offer to create a
-Git repository in DIR.
+Open a Magit status buffer for the Git repository containing DIR.
+If DIR is not within a Git repository, offer to create a Git
+repository in DIR.
 
 Interactively, a prefix argument means to ask the user which Git
-repository to use even if `default-directory' is under Git control.
-Two prefix arguments means to ignore `magit-repo-dirs' when asking for
-user input.
+repository to use even if `default-directory' is under Git
+control.  Two prefix arguments means to ignore `magit-repo-dirs'
+when asking for user input.
 
 \(fn DIR)" t nil)
 
@@ -24,7 +24,7 @@ user input.
 
 ;;;### (autoloads (magit-blame-mode) "../../../../../../.emacs.d/magit/update/magit/magit-blame"
 ;;;;;;  "../../../../../../.emacs.d/magit/update/magit/magit-blame.el"
-;;;;;;  (20601 48471))
+;;;;;;  (20757 56095 0 0))
 ;;; Generated autoloads from ../../../../../../.emacs.d/magit/update/magit/magit-blame.el
 
 (autoload 'magit-blame-mode "../../../../../../.emacs.d/magit/update/magit/magit-blame" "\
@@ -34,9 +34,26 @@ Display blame information inline.
 
 ;;;***
 
+;;;### (autoloads (turn-on-magit-flow magit-flow-mode) "../../../../../../.emacs.d/magit/update/magit/magit-flow"
+;;;;;;  "../../../../../../.emacs.d/magit/update/magit/magit-flow.el"
+;;;;;;  (20757 56095 0 0))
+;;; Generated autoloads from ../../../../../../.emacs.d/magit/update/magit/magit-flow.el
+
+(autoload 'magit-flow-mode "../../../../../../.emacs.d/magit/update/magit/magit-flow" "\
+FLOW support for Magit
+
+\(fn &optional ARG)" t nil)
+
+(autoload 'turn-on-magit-flow "../../../../../../.emacs.d/magit/update/magit/magit-flow" "\
+Unconditionally turn on `magit-flow-mode'.
+
+\(fn)" nil nil)
+
+;;;***
+
 ;;;### (autoloads (turn-on-magit-stgit magit-stgit-mode) "../../../../../../.emacs.d/magit/update/magit/magit-stgit"
 ;;;;;;  "../../../../../../.emacs.d/magit/update/magit/magit-stgit.el"
-;;;;;;  (20601 48471))
+;;;;;;  (20757 56095 0 0))
 ;;; Generated autoloads from ../../../../../../.emacs.d/magit/update/magit/magit-stgit.el
 
 (autoload 'magit-stgit-mode "../../../../../../.emacs.d/magit/update/magit/magit-stgit" "\
@@ -53,7 +70,7 @@ Unconditionally turn on `magit-stgit-mode'.
 
 ;;;### (autoloads (turn-on-magit-svn magit-svn-mode) "../../../../../../.emacs.d/magit/update/magit/magit-svn"
 ;;;;;;  "../../../../../../.emacs.d/magit/update/magit/magit-svn.el"
-;;;;;;  (20601 48471))
+;;;;;;  (20757 56095 0 0))
 ;;; Generated autoloads from ../../../../../../.emacs.d/magit/update/magit/magit-svn.el
 
 (autoload 'magit-svn-mode "../../../../../../.emacs.d/magit/update/magit/magit-svn" "\
@@ -70,7 +87,7 @@ Unconditionally turn on `magit-svn-mode'.
 
 ;;;### (autoloads (turn-on-magit-topgit magit-topgit-mode) "../../../../../../.emacs.d/magit/update/magit/magit-topgit"
 ;;;;;;  "../../../../../../.emacs.d/magit/update/magit/magit-topgit.el"
-;;;;;;  (20601 48471))
+;;;;;;  (20757 56095 0 0))
 ;;; Generated autoloads from ../../../../../../.emacs.d/magit/update/magit/magit-topgit.el
 
 (autoload 'magit-topgit-mode "../../../../../../.emacs.d/magit/update/magit/magit-topgit" "\
@@ -88,7 +105,7 @@ Unconditionally turn on `magit-topgit-mode'.
 ;;;### (autoloads (global-magit-wip-save-mode magit-wip-save-mode
 ;;;;;;  magit-wip-mode) "../../../../../../.emacs.d/magit/update/magit/magit-wip"
 ;;;;;;  "../../../../../../.emacs.d/magit/update/magit/magit-wip.el"
-;;;;;;  (20601 48471))
+;;;;;;  (20757 56095 0 0))
 ;;; Generated autoloads from ../../../../../../.emacs.d/magit/update/magit/magit-wip.el
 
 (defvar magit-wip-mode nil "\
@@ -139,7 +156,7 @@ See `magit-wip-save-mode' for more information on Magit-Wip-Save mode.
 
 ;;;### (autoloads (rebase-mode) "../../../../../../.emacs.d/magit/update/magit/rebase-mode"
 ;;;;;;  "../../../../../../.emacs.d/magit/update/magit/rebase-mode.el"
-;;;;;;  (20601 48471))
+;;;;;;  (20757 56095 0 0))
 ;;; Generated autoloads from ../../../../../../.emacs.d/magit/update/magit/rebase-mode.el
 
 (autoload 'rebase-mode "../../../../../../.emacs.d/magit/update/magit/rebase-mode" "\
@@ -159,7 +176,7 @@ running 'man git-rebase' at the command line) for details.
 ;;;### (autoloads nil nil ("../../../../../../.emacs.d/magit/update/magit/magit-bisect.el"
 ;;;;;;  "../../../../../../.emacs.d/magit/update/magit/magit-key-mode.el"
 ;;;;;;  "../../../../../../.emacs.d/magit/update/magit/magit-pkg.el")
-;;;;;;  (20601 48473 876034))
+;;;;;;  (20757 56099 655747 0))
 
 ;;;***
 
