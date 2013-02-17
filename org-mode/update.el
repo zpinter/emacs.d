@@ -2,8 +2,7 @@
 		(lisp-dir (concat zconfig-current-module-dir "/lisp"))
 		(data-dir (concat zconfig-current-module-dir "/data"))
 		(contrib-dir (concat zconfig-current-module-dir "/contrib"))
-		(update-dir (concat zconfig-current-module-dir "/update"))
-		(emacs-cmd (if (ismac) "/Applications/Emacs.app/Contents/MacOS/Emacs" "emacs")))
+		(update-dir (concat zconfig-current-module-dir "/update")))
 
   (shell-command (concat "rm -rf " info-dir "/*"))
   (shell-command (concat "rm -rf " lisp-dir "/*"))
@@ -14,7 +13,7 @@
   (let ((build-cmd (concat "cd " update-dir " && git clone git://repo.or.cz/org-mode.git"
 			  " && cd org-mode"
 			  " && cp ../../local.mk ."
-			  " && sed -i -e 's,__emacspath__," emacs-cmd ",' local.mk"
+			  " && sed -i -e 's,__emacspath__," zconfig-emacs-cmd ",' local.mk"
 			  " && sed -i -e 's,__lispdir__," lisp-dir ",' local.mk"
 			  " && sed -i -e 's,__datadir__," data-dir ",' local.mk"
 			  " && sed -i -e 's,__infodir__," info-dir ",' local.mk"

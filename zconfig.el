@@ -5,6 +5,7 @@
 
 (setq zconfig-errors nil)
 
+
 (defun write-string-to-file (string file)
    (interactive "sEnter the string: \nFFile to save to: ")
    (with-temp-buffer
@@ -38,6 +39,10 @@
 ;;   (if zconfig-errors
 ;;       (display-warning :error (concat "There were errors loading modules! " (prin1-to-string zconfig-errors))))
 ;;   )
+
+(defun zconfig-emacs-cmd ()
+  "Provides the full path to the currently invoked emacs"
+  (concat invocation-directory invocation-name))
 
 (defun zconfig-create-module ()
   "Create a folder for a module and set it up with update script"
