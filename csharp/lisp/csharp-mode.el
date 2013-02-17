@@ -1784,7 +1784,7 @@ wrote this alternative.
 ;; The various modifiers used for class and method descriptions.
 (c-lang-defconst c-modifier-kwds
   csharp '("public" "partial" "private" "const" "abstract" "sealed"
-           "protected" "ref" "out" "static" "virtual"
+			  "protected" "ref" "out" "static" "virtual" "async"
            "override" "params" "internal"))
 
 
@@ -1852,7 +1852,7 @@ wrote this alternative.
   csharp '("namespace"))
 
 (c-lang-defconst c-other-kwds
-  csharp '("sizeof" "typeof" "is" "as" "yield"
+  csharp '("sizeof" "typeof" "is" "as" "yield" "await"
            "where" "select" "in" "from"))
 
 (c-lang-defconst c-overloadable-operators
