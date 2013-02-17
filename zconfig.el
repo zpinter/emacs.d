@@ -2,6 +2,7 @@
 (push "/usr/local/bin" exec-path)
 
 (setq zconfig-emacsd (file-name-directory load-file-name))
+(setq zconfig-emacs-cmd (concat invocation-directory invocation-name))
 
 (setq zconfig-errors nil)
 
@@ -40,9 +41,6 @@
 ;;       (display-warning :error (concat "There were errors loading modules! " (prin1-to-string zconfig-errors))))
 ;;   )
 
-(defun zconfig-emacs-cmd ()
-  "Provides the full path to the currently invoked emacs"
-  (concat invocation-directory invocation-name))
 
 (defun zconfig-create-module ()
   "Create a folder for a module and set it up with update script"
