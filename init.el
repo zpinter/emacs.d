@@ -7,7 +7,7 @@
                        "org-mode"
                        "org-jira"
 							  "apel"
-                       "elscreen"
+		       ;; "elscreen"
                        "easypg"
                        "window-settings"
 							  "solarized-theme"
