@@ -131,7 +131,6 @@
 				 (insert "~/")
 			  (call-interactively 'self-insert-command)))))))
 
-
 ;; (if (looking-back "~/")
 ;; (insert ".emacs.d/")
 ;; (if PREVIOUS-IF)) 
@@ -204,9 +203,12 @@
 (add-hook 'dired-mode-hook
 			 '(lambda ()
 				 (define-key dired-mode-map "o" 'dired-launch-command)
-				 (define-key dired-mode-map "e" 'wdired-change-to-wdired-mode)				 
+				 (define-key dired-mode-map "e" 'wdired-change-to-wdired-mode)
+				 (define-key dired-mode-map "s" 'magit-status)
 				 (define-key dired-mode-map "b" 'shell-current-directory)))
 
+
+(setq dired-recursive-copies 'always)
 (defalias 'mkdir 'make-directory)
 
 (defun dired-back-to-top ()
