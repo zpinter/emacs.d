@@ -63,31 +63,59 @@
     (zconfig-run-module module-name "create" module-repo)))
 
 
-(setq zconfig-required-modules '())
+(setq zconfig-benchmarks 'undefined)
 
-(defun zconfig-require (module)
-  (add-to-list 'zconfig-required-modules module t))
+(defun zconfig-start-benchmark ()
+  (setq zconfig-benchmarks '())
+  )
 
-(defun zconfig-load-modules ()
-  (let ((benchmarks '()))
-    (dolist (element zconfig-required-modules value)
-      (setq value nil)
-      (setq benchmarks (cons
-                        (prin1-to-string
-                         (list
-                          (benchmark-run 1
-                            (zconfig-load-module-by-name element))
-                          element))
-                        benchmarks)))
+(defun zconfig-benchmark-sort (x1 x2)
+  (< (car (car (cdr x2))) (car (car (cdr x1)))))
 
-    (message "Benchmarks results")
-    ;; (message benchmarks)
-    (print (reverse (sort benchmarks 'string<)))
-    )
+(defun zconfig-finish-benchmark ()
+	 (message "Benchmarks results")
 
-  ;; (zconfig-module-error-wrap (zconfig-load-module-by-name element) element)
-  (if zconfig-errors
-      (display-warning :error (concat "There were errors loading modules! " (prin1-to-string zconfig-errors)))))
+	 (loop for x in (sort zconfig-benchmarks 'zconfig-benchmark-sort) do
+		(message (concat "Benchmark " (car x) " in " (prin1-to-string (car (cdr x))))))
+
+	 ;; (setq zconfig-benchmarks 'undefined)
+)
+
+(defun zconfig-load (&optional module-name)
+  "Load/update a module via its init.el"
+  (interactive)
+  (let ((module-to-load (if module-name module-name (read-from-minibuffer "Module? "))))
+	 (if (eq zconfig-benchmarks 'undefined)
+		  (zconfig-run-module module-to-load "load")
+		(zconfig-load-module-by-name-with-benchmark module-to-load))))
+
+(defun zconfig-load-module-by-name-with-benchmark (module-name)
+  (add-to-list 'zconfig-benchmarks
+					 (list
+					  module-name
+					  (benchmark-run 1
+						 (zconfig-run-module module-name "load")))))
+
+;; (defun zconfig-load-modules ()
+;;   (let ((benchmarks '()))
+;;     (dolist (element zconfig-required-modules value)
+;;       (setq value nil)
+;;       (setq benchmarks (cons
+;;                         (prin1-to-string
+;;                          (list
+;;                           (benchmark-run 1
+;;                             (zconfig-load-module-by-name element))
+;;                           element))
+;;                         benchmarks)))
+
+;;     (message "Benchmarks results")
+;;     ;; (message benchmarks)
+;;     (print (reverse (sort benchmarks 'string<)))
+;; 	 ))
+
+;;   ;; (zconfig-module-error-wrap (zconfig-load-module-by-name element) element)
+;;   (if zconfig-errors
+;;       (display-warning :error (concat "There were errors loading modules! " (prin1-to-string zconfig-errors)))))
 
 (defun zconfig-add-lisp-path (p)
   (add-to-list 'load-path (expand-file-name (concat zconfig-current-module-dir "/" p)))
@@ -108,14 +136,6 @@
 (defun zconfig-get-module-dir (module-name)
   (concat zconfig-emacsd module-name))
 
-(defun zconfig-load-module-by-name (module-name)
-  (zconfig-run-module module-name "load"))
-
-(defun zconfig-load-module ()
-  "Update a module via its update.el"
-  (interactive)
-  (let ((module-name (read-from-minibuffer "Module? ")))
-    (zconfig-load-module-by-name module-name)))
 
 (defadvice shell-command
   (before zconfig-update-shell-command (&rest params) disable)
