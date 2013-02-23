@@ -21,7 +21,11 @@
 	 (or (eq system-type "darwin") (eq system-type 'darwin)))
 
 (defun iswindows ()
-  (or (eq system-type "windows-nt") (eq system-type 'windows-nt)))
+  (or 
+   (eq system-type "cygwin") 
+   (eq system-type 'cygwin) 
+   (eq system-type "windows-nt") 
+   (eq system-type 'windows-nt)))
 
 ;; bug workaround
 (setq warning-suppress-types nil)
