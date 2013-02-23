@@ -1,8 +1,10 @@
+(zconfig-add-lisp-path "lisp/lib/ert")
+(zconfig-add-lisp-path "lisp/lib/fuzzy")
+(zconfig-add-lisp-path "lisp/lib/popup")
+
 (require 'auto-complete-config)
 
 (add-to-list 'ac-dictionary-directories (concat zconfig-current-module-dir "/lisp/dict"))
-
-
 
 (ac-config-default)
 ;; equivalent to...
