@@ -1,4 +1,8 @@
+(when (not (iswindows))
+
 (zconfig-add-lisp-path-end "flim-1.14.9")
+
+(setq w3m-command (executable-find "w3m"))
 
 (require 'w3m-load)
 (require 'mime-w3m)
@@ -48,6 +52,4 @@
         w3m-modeline-title-string ""))
 (ad-activate 'w3m-modeline-title)
 
-
-
-
+)

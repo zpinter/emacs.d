@@ -1,6 +1,6 @@
-;;; w3m-tabmenu.el --- Functions for TAB menu browsing
+;;; w3m-tabmenu.el --- Functions for TAB menu browsing -*- coding: iso-2022-7bit; -*-
 
-;; Copyright (C) 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2009
+;; Copyright (C) 2001-2007, 2009, 2011-2012
 ;; TSUCHIYA Masatoshi <tsuchiya@namazu.org>
 
 ;; Authors: Hideyuki SHIRAI    <shirai@meadowy.org>,
@@ -173,7 +173,7 @@
 		     w3m-tab-menubar-items-sub-coeff))
 	(if (< total max)
 	    (setq menu (w3m-tab-menubar-make-items-1 buflst))
-	  (setq menu (list `(,(w3m-make-menu-item "¥¿¥Ö¤ÎÁªÂò"
+	  (setq menu (list `(,(w3m-make-menu-item "$B%?%V$NA*Br(B"
 						  "Select TAB")
 			     ,@(w3m-tab-menubar-make-items-1 buflst)))))
 	(setq w3m-tab-menubar-make-items-preitems
