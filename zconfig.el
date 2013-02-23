@@ -7,22 +7,35 @@
 (setq zconfig-errors nil)
 
 
+(defun islinux ()
+  (or (eq system-type "gnu/linux") (eq system-type 'gnu/linux)))
+
+(defun ismac ()
+  (or (eq system-type "darwin") (eq system-type 'darwin)))
+
+(defun iswindows ()
+  (or
+   (eq system-type "cygwin")
+   (eq system-type 'cygwin)
+   (eq system-type "windows-nt")
+   (eq system-type 'windows-nt)))
+
 (defun write-string-to-file (string file)
-   (interactive "sEnter the string: \nFFile to save to: ")
-   (with-temp-buffer
-     (insert string)
-     (when (file-writable-p file)
-       (write-region (point-min)
-                     (point-max)
-                     file))))
+  (interactive "sEnter the string: \nFFile to save to: ")
+  (with-temp-buffer
+    (insert string)
+    (when (file-writable-p file)
+      (write-region (point-min)
+                    (point-max)
+                    file))))
 
 (defmacro zconfig-module-error-wrap (fn module-name)
   `(unwind-protect
        (let (retval)
-			(condition-case ex
-				 (setq retval (progn ,fn))
+         (condition-case ex
+             (setq retval (progn ,fn))
            ('error
-				(message (format "Caught exception in %s: [%s]" ,module-name ex))
+            (message (format "Caught exception in %s: [%s]" ,module-name ex))
             (add-to-list 'zconfig-errors (list ,module-name ex))
             (setq retval (cons 'exception (list ex)))))
          retval)
@@ -46,28 +59,33 @@
   "Create a folder for a module and set it up with update script"
   (interactive)
   (let ((module-name (read-from-minibuffer "Module Name? "))
-		  (module-repo (read-from-minibuffer "Git repo? ")))
-	 (zconfig-run-module module-name "create" module-repo)))
+        (module-repo (read-from-minibuffer "Git repo? ")))
+    (zconfig-run-module module-name "create" module-repo)))
 
 
-(defun zconfig-load-modules (module-names)
+(setq zconfig-required-modules '())
+
+(defun zconfig-require (module)
+  (add-to-list 'zconfig-required-modules module t))
+
+(defun zconfig-load-modules ()
   (let ((benchmarks '()))
-	 (dolist (element module-names value)
-		(setq value nil)
-		(setq benchmarks (cons 
-								(prin1-to-string
-								 (list
-								  (benchmark-run 1
-										(zconfig-load-module-by-name element))
-								  element))
-								benchmarks)))
-	 
-	 (message "Benchmarks results")
-	 ;; (message benchmarks)
-	 (print (reverse (sort benchmarks 'string<)))
-	 )
-    
-    ;; (zconfig-module-error-wrap (zconfig-load-module-by-name element) element)
+    (dolist (element zconfig-required-modules value)
+      (setq value nil)
+      (setq benchmarks (cons
+                        (prin1-to-string
+                         (list
+                          (benchmark-run 1
+                            (zconfig-load-module-by-name element))
+                          element))
+                        benchmarks)))
+
+    (message "Benchmarks results")
+    ;; (message benchmarks)
+    (print (reverse (sort benchmarks 'string<)))
+    )
+
+  ;; (zconfig-module-error-wrap (zconfig-load-module-by-name element) element)
   (if zconfig-errors
       (display-warning :error (concat "There were errors loading modules! " (prin1-to-string zconfig-errors)))))
 
@@ -97,9 +115,9 @@
   "Update a module via its update.el"
   (interactive)
   (let ((module-name (read-from-minibuffer "Module? ")))
-	 (zconfig-load-module-by-name module-name)))
+    (zconfig-load-module-by-name module-name)))
 
-(defadvice shell-command 
+(defadvice shell-command
   (before zconfig-update-shell-command (&rest params) disable)
   "Capture the output to a different buffer"
   (ad-set-args 0 (list (car params) "*zconfig-update*" "*zconfig-update*"))
@@ -108,7 +126,7 @@
   ;; (ad-set-arg 2 '"*scratch*")
   ;; (ad-set-arg 0 "echo foo")
   ;; (ad-set-arg 1 (get-buffer-create "*scratch*"))
-  ;; (ad-set-arg 2 (get-buffer-create "*zconfig-update*"))  
+  ;; (ad-set-arg 2 (get-buffer-create "*zconfig-update*"))
   )
 
 (defun zconfig-update-from-git-simple
@@ -116,30 +134,30 @@
   (let ((lisp-dir (concat zconfig-current-module-dir "/lisp"))
 		  (update-dir (concat zconfig-current-module-dir "/update")))
 
-	 (shell-command (concat "mkdir -p " lisp-dir))
-	 (shell-command (concat "mkdir -p " update-dir))
-	 (shell-command (concat "rm -rf " lisp-dir "/*"))
-	 (shell-command (concat "rm -rf " update-dir "/" repo-name))
+    (shell-command (concat "mkdir -p " lisp-dir))
+    (shell-command (concat "mkdir -p " update-dir))
+    (shell-command (concat "rm -rf " lisp-dir "/*"))
+    (shell-command (concat "rm -rf " update-dir "/" repo-name))
 
-	 (let ((build-cmd (concat "cd " update-dir " && git clone " repo " " repo-name
-									  " && cd " repo-name
-									  " && rm -rf .git"
-									  " && cp -r ./* ../../lisp/")))
-		
-		(message build-cmd)
-		(shell-command build-cmd))))
+	 (let ((build-cmd (concat "cd " update-dir " && git clone --depth 1 --recursive " repo " " repo-name
+                             " && cd " repo-name
+									  " && rm -rf ./**/.git"
+                             " && cp -r ./* ../../lisp/")))
+
+      (message build-cmd)
+      (shell-command build-cmd))))
 
 (defun zconfig-update-module ()
   "Update a module via its update.el"
   (interactive)
   (let ((module-name (read-from-minibuffer "Module? ")))
-	 (with-output-to-temp-buffer "*zconfig-update*"
-		(ad-enable-advice 'shell-command 'before 'zconfig-update-shell-command)
-		(ad-activate 'shell-command)
-		(zconfig-run-module module-name "update")
-		(ad-disable-advice 'shell-command 'before 'zconfig-update-shell-command)
-		(ad-activate 'shell-command)
-		)))
+    (with-output-to-temp-buffer "*zconfig-update*"
+      (ad-enable-advice 'shell-command 'before 'zconfig-update-shell-command)
+      (ad-activate 'shell-command)
+      (zconfig-run-module module-name "update")
+      (ad-disable-advice 'shell-command 'before 'zconfig-update-shell-command)
+      (ad-activate 'shell-command)
+      )))
 
 (defun zconfig-run-module (module-name operation &optional arg)
   (setq zconfig-current-module module-name)
@@ -158,11 +176,20 @@
   (if (file-exists-p (concat zconfig-current-module-dir "/tex"))
       (zconfig-add-lisp-path "tex"))
 
+  (if (file-exists-p (concat zconfig-current-module-dir "/lisp/tex"))
+      (zconfig-add-lisp-path "lisp/tex"))
+
   (if (file-exists-p (concat zconfig-current-module-dir "/info"))
       (zconfig-add-info-path "info"))
 
+  (if (file-exists-p (concat zconfig-current-module-dir "/lisp/info"))
+      (zconfig-add-info-path "lisp/info"))
+
   (if (file-exists-p (concat zconfig-current-module-dir "/icons"))
       (zconfig-add-icons-path "icons"))
+
+  (if (file-exists-p (concat zconfig-current-module-dir "/lisp/icons"))
+      (zconfig-add-icons-path "lisp/icons"))
 
   (when (equal operation "load")
     (if (file-exists-p zconfig-current-module-private-file)
@@ -173,16 +200,15 @@
 
   (when (equal operation "update")
     (if (file-exists-p zconfig-current-module-update-file)
-		  (load-file zconfig-current-module-update-file)))
+        (load-file zconfig-current-module-update-file)))
 
   (when (equal operation "create")
-	 (if (file-directory-p zconfig-current-module-dir)
-		  (message "Module already exists!")
-		(progn
-		  (shell-command (concat "mkdir -p " zconfig-current-module-dir "/lisp"))
-		  (shell-command (concat "mkdir -p " zconfig-current-module-dir "/update"))
-		  (shell-command (concat "touch " zconfig-current-module-init-file))
-		  (write-string-to-file
-			(concat "(zconfig-update-from-git-simple \"" module-name "\" \"" arg "\")")
-			(concat zconfig-current-module-update-file))))))
-
+    (if (file-directory-p zconfig-current-module-dir)
+        (message "Module already exists!")
+      (progn
+        (shell-command (concat "mkdir -p " zconfig-current-module-dir "/lisp"))
+        (shell-command (concat "mkdir -p " zconfig-current-module-dir "/update"))
+        (shell-command (concat "touch " zconfig-current-module-init-file))
+        (write-string-to-file
+         (concat "(zconfig-update-from-git-simple \"" module-name "\" \"" arg "\")")
+         (concat zconfig-current-module-update-file))))))

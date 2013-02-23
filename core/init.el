@@ -14,18 +14,6 @@
 (add-to-list 'auto-mode-alist
              '("\\.emacs\\-[a-z\\-]" . emacs-lisp-mode))
 
-(defun islinux ()
-	 (or (eq system-type "gnu/linux") (eq system-type 'gnu/linux)))
-
-(defun ismac ()
-	 (or (eq system-type "darwin") (eq system-type 'darwin)))
-
-(defun iswindows ()
-  (or 
-   (eq system-type "cygwin") 
-   (eq system-type 'cygwin) 
-   (eq system-type "windows-nt") 
-   (eq system-type 'windows-nt)))
 
 ;; bug workaround
 (setq warning-suppress-types nil)

@@ -1,100 +1,100 @@
-                                        ; -*- mode: emacs-lisp; -*-
+; -*- mode: emacs-lisp; -*-
 (load "~/.emacs.d/zconfig.el")
 
-(zconfig-load-modules (list
-                       "core"
-                       "customize"
-                       "org-mode"
-                       "org-jira"
-							  "apel"
-		       ;; "elscreen"
-                       "easypg"
-                       "window-settings"
-							  "solarized-theme"
-                       ;; "color-theme"
-                       ;; "color-theme-zenburn"
-                       "ibuffer"
-                       "hippie-expand"
-                       "nxml"
-                       ;; "ruby"
-                       "ruby-minimal"
-                       "auto-complete"
-                       "python-mode"
-                       ;; "pymacs"
-                       "mirah"
-                       "js2-mode"
-                       "android-mode"
-                       ;; "yasnippet"
-                       "git-contrib"
-                       "egit"
-                       "magit"
-                       "mo-git-blame"
-                       "git-minimal"
-                       "twitter"
-                       "post-mode"
-                       ;; "gnus"
-                       "bbdb"
-                       "puppet-mode"
-                       "markdown-mode"
-                       ;; "ess"
-                       "lua-mode"
-                       "xml-rpc" ;needed by trac-wiki and jira
-                       ;; "trac-wiki"
-                       "confluence-el"
-                       ;; "jira"
-                       "remember"
-                       "deft"
-                       ;; "paredit"
-                       "window-numbering"
-                       ;; "slime"
-                       ;; "clojure-mode"
-                       "cheat"
-                       "shell-current-directory"
-                       "erc"
-                       "haml-mode"
-                       "smali"
-                       "helm"
-                       "helm-git"
-                       ;; "anything"
-                       ;;"w3m"
-                       "flyspell"
-                       "rinari"
-                       ;; "flex"
-                       "nav"
-                       "open-resource"
-                       "breadcrumb"
-                       "xcscope"
-                       ;; "json" ;;required by json-pretty-print
-                       ;; "json-pretty-print"
-                       ;; "company-mode"
-                       ;; "cedet"
-                       ;; "ecb"
-                       ;; "jdee"
-                       ;; "textmate"
-                       "csharp"
-                       "undo-tree"
-                       "jabber"
-                       "ack"
-                       "csv-mode"
-                       "scss-mode"
-                       "ace-jump-mode"
-                       "erlang-mode"
-                       "rvm"
-                       ;; "emacs-eclim"
-                       "expand-region" ;;should come after undo-tree
-                       "multiple-cursors"
-                       "etags"
-                       "smart-tab"
-                       "ws-trim"
-                       "tweaks"
-                       "mu4e"
-                       ;; "emacs-git-gutter"
-                       "ido"
-                       ;;"el-get-setup"
-                       "smex"
-                       ;; "server"
-                       ;; "edit-server"
-                       ))
+(zconfig-require "core")
+(zconfig-require "customize")
+(zconfig-require "org-mode")
+(zconfig-require "org-jira")
+(zconfig-require "apel")
+(if (not (iswindows)) (zconfig-require "elscreen")) ;breaks emacs-w32 on cygwin
+(zconfig-require "easypg")
+(zconfig-require "window-settings")
+(zconfig-require "solarized-theme")
+;; (zconfig-require "color-theme")
+;; (zconfig-require "color-theme-zenburn")
+(zconfig-require "ibuffer")
+(zconfig-require "hippie-expand")
+(zconfig-require "nxml")
+;; (zconfig-require "ruby")
+(zconfig-require "ruby-minimal")
+(zconfig-require "auto-complete")
+(zconfig-require "python-mode")
+;; (zconfig-require "pymacs")
+(zconfig-require "mirah")
+(zconfig-require "js2-mode")
+(zconfig-require "android-mode")
+;; (zconfig-require "yasnippet")
+(zconfig-require "git-contrib")
+(zconfig-require "egit")
+(zconfig-require "magit")
+(zconfig-require "mo-git-blame")
+(zconfig-require "git-minimal")
+(zconfig-require "twitter")
+(zconfig-require "post-mode")
+;; (zconfig-require "gnus")
+(zconfig-require "bbdb")
+(zconfig-require "puppet-mode")
+(zconfig-require "markdown-mode")
+;; (zconfig-require "ess")
+(zconfig-require "lua-mode")
+(zconfig-require "xml-rpc") ;needed by trac-wiki and jira
+;; (zconfig-require "trac-wiki")
+(zconfig-require "confluence-el")
+;; (zconfig-require "jira")
+(zconfig-require "remember")
+(zconfig-require "deft")
+;; (zconfig-require "paredit")
+(zconfig-require "window-numbering")
+;; (zconfig-require "slime")
+;; (zconfig-require "clojure-mode")
+(zconfig-require "cheat")
+(zconfig-require "shell-current-directory")
+(zconfig-require "erc")
+(zconfig-require "haml-mode")
+(zconfig-require "smali")
+(zconfig-require "helm")
+(zconfig-require "helm-git")
+;; (zconfig-require "anything")
+(if (not (iswindows)) (zconfig-require "w3m")) ;not important enough to solve on windows
+(zconfig-require "flyspell")
+(zconfig-require "rinari")
+;; (zconfig-require "flex")
+(zconfig-require "nav")
+(zconfig-require "open-resource")
+(zconfig-require "breadcrumb")
+(zconfig-require "xcscope")
+;; (zconfig-require "json") ;;required by json-pretty-print
+;; (zconfig-require "json-pretty-print")
+;; (zconfig-require "company-mode")
+;; (zconfig-require "cedet")
+;; (zconfig-require "ecb")
+;; (zconfig-require "jdee")
+;; (zconfig-require "textmate")
+(zconfig-require "csharp")
+(zconfig-require "undo-tree")
+(zconfig-require "jabber")
+(zconfig-require "ack")
+(zconfig-require "csv-mode")
+(zconfig-require "scss-mode")
+(zconfig-require "ace-jump-mode")
+(zconfig-require "erlang-mode")
+(zconfig-require "rvm")
+;; (zconfig-require "emacs-eclim")
+(zconfig-require "expand-region") ;;should come after undo-tree
+(zconfig-require "multiple-cursors")
+(zconfig-require "etags")
+(zconfig-require "smart-tab")
+(zconfig-require "ws-trim")
+(zconfig-require "tweaks")
+(zconfig-require "mu4e")
+;; (zconfig-require "emacs-git-gutter")
+(zconfig-require "ido")
+;;(zconfig-require "el-get-setup")
+(zconfig-require "smex")
+;; (zconfig-require "server")
+;; (zconfig-require "edit-server")
+
+(zconfig-load-modules)
 
 (put 'narrow-to-region 'disabled nil)
 (put 'set-goal-column 'disabled nil)
