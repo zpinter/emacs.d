@@ -266,7 +266,28 @@ If there is one running, switch to that buffer."
 				(update-ansi-term-directory "*ansi-term*")
 				(switch-to-buffer "*ansi-term*"))
 		  (ansi-term "/bin/bash"))))   ;(ansi-term "/bin/bash"))))
-(global-set-key (kbd "C-c C-t") 'visit-ansi-term)
+
+(global-set-key (kbd "C-c t") 'visit-ansi-term)
+
+;; (defun update-eshell-term-directory (buffer-name)
+;;   (let ((current-dir (file-truename default-directory)))
+;; 	 (save-excursion
+;; 		(set-buffer (get-buffer-create buffer-name))
+;; 		(message (string (eshell-parse-command (concat "cd \"" current-dir "\"")))))))
+
+;; (defun visit-eshell-term ()
+;;   "If we are in an *eshell-term*, rename it.
+;; If there is no *eshell-term*, run it.
+;; If there is one running, switch to that buffer."
+;;   (interactive)
+;;   (if (equal "*eshell*" (buffer-name))
+;;       (call-interactively 'rename-buffer)
+;; 		(if (get-buffer "*eshell*")
+;; 			 (progn
+;; 				(update-eshell-term-directory "*eshell*")
+;; 				(switch-to-buffer "*eshell*"))
+;; 		  (eshell))))
+;; (global-set-key (kbd "C-c e") 'visit-eshell-term)
 
 
 (defun comint-delchar-or-eof-or-kill-buffer (arg)

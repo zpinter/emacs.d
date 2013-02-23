@@ -26,7 +26,7 @@
   (kill-buffer)
   (jump-to-register :magit-fullscreen))
 
-(global-set-key (kbd "C-c C-g") 'magit-status)
+(global-set-key (kbd "C-c g") 'magit-status)
 
 (eval-after-load "magit"
   '(progn
