@@ -17,5 +17,6 @@
 ;;   (add-hook 'auto-complete-mode-hook 'ac-common-setup)
 ;;   (global-auto-complete-mode t))
 
-
+(define-key ac-mode-map (kbd "M-TAB") 'auto-complete)
 (global-auto-complete-mode t)
+
