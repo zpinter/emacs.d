@@ -8,6 +8,8 @@
 		  cua-resize-rectangle-left
 		  cua-resize-rectangle-right
 		  mc/add-cursor-on-click
+		  org-beginning-of-line
+		  org-self-insert-command
 		  ))
 
 (setq mc/cmds-to-run-once
