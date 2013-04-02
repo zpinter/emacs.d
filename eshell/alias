@@ -1,0 +1,21 @@
+alias gs magit-status .
+alias gcount git shortlog -sn
+alias gcfd git clean -f -d .
+alias gpr git pull --rebase
+alias gqc git commit -m 'quick commit'
+alias grm. git ls-files --deleted --full-name | xargs -I {} git rm {}
+alias gau git add -u
+alias ga. git add .
+alias ga git add
+alias gls git log --stat --date=relative
+alias gl git log --date=relative
+alias gba git branch -a
+alias gb git branch
+alias grh git reset --hard
+alias gsd git svn dcommit
+alias gsr git svn rebase
+alias gci git commit
+alias gco git checkout
+alias gcob git checkout -b
+alias d dired
+alias e find-file $1
