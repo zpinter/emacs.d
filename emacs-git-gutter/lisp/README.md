@@ -5,17 +5,19 @@
 which is a plugin of Sublime Text2.
 
 
-If you use fringe style(not linum style), please see [git-gutter-fringe](https://github.com/syohex/emacs-git-gutter-fringe)
+`git-gutter.el` does not work well with `linum-mode`.
+Please see [git-gutter-fringe](https://github.com/syohex/emacs-git-gutter-fringe)
+which can work with `linum-mode`, if you use `linum-mode`.
 
 
 ## Screenshot
 
-![git-gutter.el](https://github.com/syohex/emacs-git-gutter/raw/master/image/git-gutter1.png)
+![git-gutter.el](image/git-gutter1.png)
 
 
 ## Requirements
 
-* Emacs 24 or higher
+* Emacs 23 or higher
 
 ## Installation
 
@@ -23,13 +25,6 @@ You can install `git-gutter.el` from [MELPA](https://github.com/milkypostman/mel
 (`M-x package-install git-gutter`).
 
 And you can also install it with [el-get](https://github.com/dimitri/el-get).
-
-
-## Similar Project
-
-* [diff-hl](https://github.com/dgutov/diff-hl)
-
-`diff-hl` has more features than `git-gutter.el`.
 
 
 ## Global Minor Mode and Minor Mode
@@ -56,7 +51,7 @@ Following example of enabling `git-gutter` for some mode.
 
 `git-gutter.el` provides following commands.
 
-Show changes from last commit
+Show changes from last commit or Update change information.
 
     M-x git-gutter
 
@@ -67,6 +62,22 @@ Clear changes
 Toggle git-gutter
 
     M-x git-gutter:toggle
+
+Jump to next hunk(alias `git-gutter:next-diff`)
+
+    M-x git-gutter:next-hunk
+
+Jump to previous hunk(alias `git-gutter:previous-diff`)
+
+    M-x git-gutter:previous-hunk
+
+Popup diff of current position
+
+    M-x git-gutter:popup-diff
+
+Revert current hunk
+
+    M-x git-gutter:revert-hunk
 
 
 ## Sample Configuration
@@ -80,19 +91,23 @@ Toggle git-gutter
 ;; If you enable git-gutter-mode for some modes
 (add-hook 'ruby-mode-hook 'git-gutter-mode)
 
-;; bind git-gutter toggle command
 (global-set-key (kbd "C-x C-g") 'git-gutter:toggle)
+(global-set-key (kbd "C-x v =") 'git-gutter:popup-diff)
+
+;; Jump to next/previous hunk
+(global-set-key (kbd "C-x p") 'git-gutter:previous-hunk)
+(global-set-key (kbd "C-x n") 'git-gutter:next-hunk)
+
+;; Revert current hunk
+(global-set-key (kbd "C-x r") 'git-gutter:revert-hunk)
 ````
 
 
 ## Customize
 
-You can pass `git diff` option to set `git-gutter:diff-option`.
+### Look and feel
 
-````elisp
-;; ignore all spaces
-(setq git-gutter:diff-option "-w")
-````
+![git-gutter-multichar](image/git-gutter-multichar.png)
 
 You can change the signs and those faces.
 
@@ -106,12 +121,18 @@ You can change the signs and those faces.
 (set-face-foreground 'git-gutter:deleted "red")
 ````
 
-### Screenshot of above customization
+You can change minor-mode name in mode-line to set `git-gutter:lighter`.
+Default is " GitGutter"
 
-![git-gutter-multichar](https://github.com/syohex/emacs-git-gutter/raw/master/image/git-gutter-multichar.png)
+````elisp
+;; first character should be a space
+(setq git-gutter:lighter " GG")
+````
 
 
 ### Using full width characters
+
+![git-gutter-fullwidth](image/git-gutter-fullwidth.png)
 
 Emacs has `char-width` function which returns character width.
 `git-gutter.el` uses it for calculating character length of the signs.
@@ -126,39 +147,53 @@ character.
 (setq git-gutter:deleted-sign "☂")
 ````
 
-### Screenshot of above customization
-![git-gutter-fullwidth](https://github.com/syohex/emacs-git-gutter/raw/master/image/git-gutter-fullwidth.png)
+### Show Unchanged Information
+
+![git-gutter-unchanged](image/git-gutter-unchanged.png)
+
+`git-gutter.el` can view unchanged information by setting `git-gutter:unchanged-sign`.
+Like following.
+
+````elisp
+(setq git-gutter:unchanged-sign " ")
+(set-face-background 'git-gutter:unchanged "yellow")
+````
+
+Default value of `git-gutter:unchanged-sign` is `nil`.
+
+### Always Show Gutter
+
+Always show gutter if `git-gutter:always-show-gutter` is non-nil. (Default is `nil`)
+
+````elisp
+(setq git-gutter:always-show-gutter t)
+````
 
 
-## Implement your own git-gutter
+### Pass option to 'git diff' command
 
-You can create your own git-gutter to implement 2 functions.
+You can pass `git diff` option to set `git-gutter:diff-option`.
 
-### view function
-
-View function view diff informations to current buffer.
-View function takes list of diff informations(`diffinfos`). `diffinfos`
-are list of plist(`diffinfo`).  `diffinfo` has following property.
-
-
-property    | about
-------------|-------------------------------------------------------
-:type       | diff type('added, 'deleted, 'modified)
-:start-line | line number of changed start
-:end-line   | line number of changed end(Only 'added and 'modified)
+````elisp
+;; ignore all spaces
+(setq git-gutter:diff-option "-w")
+````
 
 
-Set view function variable `git-gutter:view-diff-function`.
+## See Also
 
+### [GitGutter](https://github.com/jisaacks/GitGutter)
 
-### clear function
+GitGutter is Sublime text2 plugin.
 
-Clear function clears diff informations.
-Clear function takes no arguments.
+### [diff-hl](https://github.com/dgutov/diff-hl)
 
-Set clear function variable `git-gutter:view-diff-function`.
+`diff-hl` has more features than `git-gutter.el`.
 
+### [vim-gitgutter](https://github.com/airblade/vim-gitgutter)
 
-## Sample implementation
+Vim version of GitGutter
 
-* [git-gutter-fringe](https://github.com/syohex/emacs-git-gutter-fringe).
+### Another implementation of git-gutter.el
+
+[How to write another implementation](wiki/Write-another-git-gutter.el-implementation)

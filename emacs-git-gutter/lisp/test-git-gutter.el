@@ -3,8 +3,6 @@
 ;; Copyright (C) 2013 by Syohei YOSHIDA
 
 ;; Author: Syohei YOSHIDA <syohex@gmail.com>
-;; URL:
-;; Version: 0.01
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -33,7 +31,15 @@
   "helper function `git-gutter:root-directory'"
   (let ((expected (expand-file-name default-directory))
         (got (git-gutter:root-directory)))
-    (should (string= expected got))))
+    (should (string= expected got)))
+
+  ;; temporary directory maybe be version-controled
+  (let ((default-directory temporary-file-directory))
+    (should (null (git-gutter:root-directory))))
+
+  ;; Files in .git/ directory are not version-controled
+  (let ((default-directory (concat default-directory ".git/")))
+    (should (null (git-gutter:root-directory)))))
 
 (ert-deftest git-gutter:sign-width ()
   "helper function `git-gutter:sign-width'"
@@ -69,15 +75,54 @@
 
 (ert-deftest git-gutter:make-diffinfo ()
   "helper function `git-gutter:make-diffinfo'"
-  (let ((diffinfo1 (git-gutter:make-diffinfo 'added 10 20))
-        (diffinfo2 (git-gutter:make-diffinfo 'deleted 5)))
+  (let ((diffinfo1 (git-gutter:make-diffinfo 'added "diff1" 10 20))
+        (diffinfo2 (git-gutter:make-diffinfo 'deleted "diff2" 5)))
     (loop for (prop . expected) in '((:type . added)
                                      (:start-line . 10) (:end-line . 20))
           do
           (should (eql (plist-get diffinfo1 prop) expected)))
+    (should (string= (plist-get diffinfo1 :content) "diff1"))
     (loop for (prop . expected) in '((:type . deleted)
                                      (:start-line . 5) (:end-line . nil))
           do
-          (should (eql (plist-get diffinfo2 prop) expected)))))
+          (should (eql (plist-get diffinfo2 prop) expected)))
+    (should (string= (plist-get diffinfo2 :content) "diff2"))))
+
+(ert-deftest git-gutter:in-git-repository-p ()
+  "Should return nil if default-directory does not exist"
+
+  ;; In git repository, but here is '.git'
+  (let ((buf (find-file-noselect ".git/config")))
+    (with-current-buffer buf
+      (should (null (git-gutter:in-git-repository-p)))))
+
+  (let ((default-directory (file-name-directory (locate-library "git-gutter"))))
+    (should (git-gutter:in-git-repository-p))))
+
+(ert-deftest git-gutter ()
+  "Should return nil if buffer does not related with file or file is not existed"
+  (with-current-buffer (get-buffer-create "*not-related-file*")
+    (should (null (git-gutter))))
+  (let ((buf (find-file-noselect "not-found")))
+    (with-current-buffer buf
+      (should (null (git-gutter))))))
+
+(ert-deftest git-gutter:collect-deleted-line ()
+  "Should return lines which start with '-'"
+  (let* ((input (mapconcat 'identity
+                           (list "-apple" "-melon" "+orange")
+                           "\n"))
+         (got (git-gutter:collect-deleted-line input)))
+    (should (equal got '("apple" "melon")))))
+
+(ert-deftest git-gutter:insert-deleted-lines ()
+  "Should insert deleted line"
+  (let ((input (mapconcat 'identity
+                          (list "-apple" "-melon" "+orange")
+                          "\n")))
+    (with-temp-buffer
+      (git-gutter:insert-deleted-lines input)
+      (should (string= (buffer-string)
+                       "apple\nmelon\n")))))
 
 ;;; test-git-gutter.el end here
