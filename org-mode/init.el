@@ -8,7 +8,9 @@
 ;; (setq font-lock-maximum-decoration
 ;;       '((org-mode . nil) (tex-mode . nil) (latex-mode . nil)))
 
-                                        ; (eval-after-load "tex-mode" '(fset 'tex-font-lock-suscript 'ignore))
+													 ; (eval-after-load "tex-mode" '(fset 'tex-font-lock-suscript 'ignore))
+
+(add-hook 'org-mode-hook #'(lambda () (flyspell-mode -1)))
 
 (defun org-insert-link-as-file ()
   (interactive)
@@ -19,15 +21,24 @@
             (lambda ()
 				  (define-key org-mode-map (kbd "C-c C-g") 'org-insert-link-as-file)))
 
+(org-babel-do-load-languages
+ 'org-babel-load-languages
+ '((R . t)
+	(emacs-lisp . t)
+	(ruby . t)
+   ))
 
+(setq org-confirm-babel-evaluate nil)
+
+(setq org-src-fontify-natively t)
 (setq org-export-with-sub-superscripts nil)
 (global-set-key "\C-cl" 'org-store-link)
 (global-set-key "\C-ca" 'org-agenda)
 (global-set-key "\C-cb" 'org-iswitchb)
-(setq org-todo-keywords '((sequence "TODO(t)" "WAITING(w)" "SOMEDAY(s)" "|" "CANCELLED(c)" "DONE(d)")))
+(setq org-todo-keywords '((sequence "TODO(t)" "WAITING(w)" "MAYBE(m)" "RECURRING(r)" "|" "CANCELLED(c)" "DONE(d)")))
 
 (setq org-directory "~/org")
-(setq org-agenda-files '("~/org/new"))
+(setq org-agenda-files '("~/org"))
 
 
 ;; Disable C-c [ and C-c ] in org-mode, since that screws with org-agenda-files
@@ -66,14 +77,19 @@
 
 ;; Capture templates for: TODO tasks, Notes, appointments, phone calls, and org-protocol
 (setq org-capture-templates
-		(quote (("t" "Todo" entry (file+headline "~/org/new/refile.org" "Tasks")
-					"* TODO %?\n")
-				  ("m" "Meeting" entry (file+headline "~/org/new/refile.org" "Meetings")
+		(quote (("t" "Todo" entry (file+headline "~/org/todo.org" "Inbox")
+					"* TODO    %? \n")
+				  ("m" "Meeting" entry (file+headline "~/org/meetings.org" "Meetings")
 					"* Meeting on %U\n%?")
-				  ("n" "Note" entry (file+headline "~/org/new/refile.org" "Notes")
+				  ("n" "Note" entry (file+headline "~/org/notes.org" "Notes")
 					"* %?")
-				  ("j" "Journal" entry (file+datetree "~/org/new/journal.org")
+				  ("j" "Journal" entry (file+datetree "~/org/journal.org")
 					"* %?\n%U \n"))))
+
+(add-hook 'org-capture-after-finalize-hook #'(lambda () (org-save-all-org-buffers)))
+
+(defadvice org-capture-refile (after save-after-refile-advice activate)
+  (org-save-all-org-buffers))
 
 (setq org-log-done 'time)
 ;; (org-remember-insinuate)
@@ -123,7 +139,7 @@
                                         ;(setq org-outline-path-complete-in-steps t)
 
 (setq org-refile-use-outline-path t)
-(setq org-refile-targets (quote ((org-agenda-files :level . 2))))
+(setq org-refile-targets (quote ((org-agenda-files :level . 1))))
 ;;(setq org-refile-targets '( (org-agenda-files :regexp . "Tasks") ))
 (setq org-outline-path-complete-in-steps nil)
 
@@ -137,8 +153,13 @@
 ;;            (lambda ()
 ;;              (org-mac-iCal)))))))
 
-;; (setq org-todo-keyword-faces
-;; 		'(("TODO" . (:foreground "red" :weight "bold"))))
+(setq org-todo-keyword-faces
+		'(
+		  ("TODO" . (:foreground "red" :weight "bold"))
+		  ("RECURRING" . (:foreground "purple" :weight "bold"))
+		  ("MAYBE" . (:foreground "grey" :weight "bold"))
+		  ("WAITING" . (:foreground "yellow" :weight "bold"))
+		  ))
 
 
 (setq org-odt-data-dir (concat zconfig-current-module-dir "/data"))
