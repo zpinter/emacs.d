@@ -6,6 +6,7 @@
 (setq ido-enable-tramp-completion t)
 (setq tramp-default-method "ssh")
 
+(setq ido-default-file-method 'selected-window)
 (global-set-key (kbd "C-x C-b") 'ido-switch-buffer)
 
 ;; Display ido results vertically, rather than horizontally
