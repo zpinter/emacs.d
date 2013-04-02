@@ -3,8 +3,9 @@ This is my Emacs config, made public
 Initial Setup:
 Install the inconsolita font, or edit window-settings
 
-Clone the repository to ~/emacs.d
-Create a symlink to ~/.emacs_full (e.g.  ln -s ~/emacs.d/.emacs_full ~/.emacs)
+Clone the repository to ~/.emacs.d
+Edit ~/.emacs.d/init.el, choose modules as desired
+Run emacs, check variable zconfig-errors if you run into any problems loading modules
 
 Core Ideas:
 
@@ -12,23 +13,22 @@ A module is composed of the following:
 lisp/    #auto-loaded to the path, contains .el files
 info/    #auto-loaded to the info path
 icons/   #auto-loaded to the image-load-path
+update.el #script to update the module
 init.el  #executed after load paths have been set
 private.el #executed before init.el, use it to set variables for init.el that you don't want committed to the git repo
 
 To load a module, run zconfig-load-module:
-(zconfig-load-module "gnus")
+(zconfig-load "mirah")
 
-To load multiple modules, run zconfig-load-modules:
-(zconfig-load-modules (list
-                        "core"
-                        "easypg"
-                        "window-settings"
-                        "ido"
-                        "hippie-expand"
-                        "shell-current-directory"
-                        "open-resource"
-                        "tweaks"
-                        ))
+To load multiple modules in your init.el, just do more of the same:
+
+(zconfig-load "core")
+(zconfig-load "customize")
+(zconfig-load "org-mode")
+(zconfig-load "org-jira")
+(zconfig-load "apel")
+(if (not (iswindows)) (zconfig-load "elscreen")) ;breaks emacs-w32 on cygwin
+...
 
 To launch emacs with a different set of modules:
 emacs -nw -Q -l ~/.emacs_lite

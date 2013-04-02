@@ -20,6 +20,17 @@
    (eq system-type "windows-nt")
    (eq system-type 'windows-nt)))
 
+(defmacro safe-wrap (fn &rest clean-up)
+  `(unwind-protect
+       (let (retval)
+         (condition-case ex
+             (setq retval (progn ,fn))
+           ('error
+            (message (format "Caught exception: [%s]" ex))
+            (setq retval (cons 'exception (list ex)))))
+         retval)
+     ,@clean-up))
+
 (defun write-string-to-file (string file)
   (interactive "sEnter the string: \nFFile to save to: ")
   (with-temp-buffer
@@ -29,41 +40,17 @@
                     (point-max)
                     file))))
 
-(defmacro zconfig-module-error-wrap (fn module-name)
-  `(unwind-protect
-       (let (retval)
-         (condition-case ex
-             (setq retval (progn ,fn))
-           ('error
-            (message (format "Caught exception in %s: [%s]" ,module-name ex))
-            (add-to-list 'zconfig-errors (list ,module-name ex))
-            (setq retval (cons 'exception (list ex)))))
-         retval)
-     nil))
-
-;; old way of loading modules
-;; (defun zconfig-load-all-modules ()
-;;   (let (
-;;         (module-directories (directory-files zconfig-emacsd nil "^[0-9]+\-")))
-
-;;     (dolist (element module-directories value)
-;;       (setq value nil)
-;;       (zconfig-module-error-wrap (zconfig-load-module element) element)
-;;       ))
-;;   (if zconfig-errors
-;;       (display-warning :error (concat "There were errors loading modules! " (prin1-to-string zconfig-errors))))
-;;   )
-
-
 (defun zconfig-create-module ()
   "Create a folder for a module and set it up with update script"
   (interactive)
   (let ((module-name (read-from-minibuffer "Module Name? "))
         (module-repo (read-from-minibuffer "Git repo? ")))
-    (zconfig-run-module module-name "create" module-repo)))
-
+	 (zconfig-run-module module-name "create" module-repo)
+	 (if (y-or-n-p "Update module now?")
+		  (zconfig-update-module-internal module-name))))
 
 (setq zconfig-benchmarks 'undefined)
+(setq zconfig-errors '())
 
 (defun zconfig-start-benchmark ()
   (setq zconfig-benchmarks '())
@@ -77,45 +64,38 @@
 
 	 (loop for x in (sort zconfig-benchmarks 'zconfig-benchmark-sort) do
 		(message (concat "Benchmark " (car x) " in " (prin1-to-string (car (cdr x))))))
-
-	 ;; (setq zconfig-benchmarks 'undefined)
 )
 
 (defun zconfig-load (&optional module-name)
   "Load/update a module via its init.el"
   (interactive)
-  (let ((module-to-load (if module-name module-name (read-from-minibuffer "Module? "))))
+  (if module-name
+		(zconfig-load-internal module-name)
+	 (zconfig-load-internal (read-from-minibuffer "Module? "))))
+
+(defun zconfig-protect (body-fn)
+  (unwind-protect
+		(condition-case e
+			 (funcall body-fn)
+		  (error (add-to-list 'zconfig-errors e)))))
+
+(defun zconfig-load-internal (module-to-load)
+  (let ((debug-on-error t))
 	 (if (eq zconfig-benchmarks 'undefined)
-		  (zconfig-run-module module-to-load "load")
+		  (let ((debug-on-error t))
+			 (zconfig-run-module module-to-load "load"))
 		(zconfig-load-module-by-name-with-benchmark module-to-load))))
 
 (defun zconfig-load-module-by-name-with-benchmark (module-name)
-  (add-to-list 'zconfig-benchmarks
-					 (list
-					  module-name
-					  (benchmark-run 1
-						 (zconfig-run-module module-name "load")))))
+	(add-to-list 'zconfig-benchmarks
+					  (list
+						module-name
+						(benchmark-run 1
+						  (unwind-protect
+								(condition-case e
+									 (zconfig-run-module module-name "load")
+								  (error (add-to-list 'zconfig-errors (list e (backtrace))))))))))
 
-;; (defun zconfig-load-modules ()
-;;   (let ((benchmarks '()))
-;;     (dolist (element zconfig-required-modules value)
-;;       (setq value nil)
-;;       (setq benchmarks (cons
-;;                         (prin1-to-string
-;;                          (list
-;;                           (benchmark-run 1
-;;                             (zconfig-load-module-by-name element))
-;;                           element))
-;;                         benchmarks)))
-
-;;     (message "Benchmarks results")
-;;     ;; (message benchmarks)
-;;     (print (reverse (sort benchmarks 'string<)))
-;; 	 ))
-
-;;   ;; (zconfig-module-error-wrap (zconfig-load-module-by-name element) element)
-;;   (if zconfig-errors
-;;       (display-warning :error (concat "There were errors loading modules! " (prin1-to-string zconfig-errors)))))
 
 (defun zconfig-add-lisp-path (p)
   (add-to-list 'load-path (expand-file-name (concat zconfig-current-module-dir "/" p)))
@@ -150,7 +130,7 @@
   )
 
 (defun zconfig-update-from-git-simple
-  (repo-name repo)
+  (repo-name repo &optional copy-whole-dir)
   (let ((lisp-dir (concat zconfig-current-module-dir "/lisp"))
 		  (update-dir (concat zconfig-current-module-dir "/update")))
 
@@ -162,22 +142,27 @@
 	 (let ((build-cmd (concat "cd " update-dir " && git clone --depth 1 --recursive " repo " " repo-name
                              " && cd " repo-name
 									  " && rm -rf ./**/.git"
-                             " && cp -r ./* ../../lisp/")))
+									  (if copy-whole-dir (concat " && cp -r ../" repo-name " ../../lisp/") " && cp -r ./* ../../lisp/")
+										 )))
 
       (message build-cmd)
-      (shell-command build-cmd))))
+		(shell-command build-cmd))))
 
 (defun zconfig-update-module ()
   "Update a module via its update.el"
   (interactive)
   (let ((module-name (read-from-minibuffer "Module? ")))
-    (with-output-to-temp-buffer "*zconfig-update*"
-      (ad-enable-advice 'shell-command 'before 'zconfig-update-shell-command)
-      (ad-activate 'shell-command)
-      (zconfig-run-module module-name "update")
-      (ad-disable-advice 'shell-command 'before 'zconfig-update-shell-command)
-      (ad-activate 'shell-command)
-      )))
+	 (zconfig-update-module-internal module-name)))
+
+(defun zconfig-update-module-internal (module-name)
+  (with-output-to-temp-buffer "*zconfig-update*"
+	 (ad-enable-advice 'shell-command 'before 'zconfig-update-shell-command)
+	 (ad-activate 'shell-command)
+	 (zconfig-run-module module-name "update")
+	 (ad-disable-advice 'shell-command 'before 'zconfig-update-shell-command)
+	 (ad-activate 'shell-command)
+	 (princ (concat "\nModule " module-name " updated!"))
+	 ))
 
 (defun zconfig-run-module (module-name operation &optional arg)
   (setq zconfig-current-module module-name)

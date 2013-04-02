@@ -20,6 +20,9 @@
 ;; (zconfig-load "ruby")
 (zconfig-load "ruby-minimal")
 (zconfig-load "auto-complete")
+(zconfig-load "go-mode")
+(zconfig-load "gocode")
+(zconfig-load "goflymake")
 (zconfig-load "python-mode")
 ;; (zconfig-load "pymacs")
 (zconfig-load "mirah")
@@ -65,8 +68,8 @@
 (zconfig-load "open-resource")
 (zconfig-load "breadcrumb")
 (zconfig-load "xcscope")
-;; (zconfig-load "json") ;;required by json-pretty-print
-;; (zconfig-load "json-pretty-print")
+(zconfig-load "json") ;;required by json-pretty-print
+(zconfig-load "json-pretty-print")
 ;; (zconfig-load "company-mode")
 ;; (zconfig-load "cedet")
 ;; (zconfig-load "ecb")
@@ -81,15 +84,24 @@
 (zconfig-load "ace-jump-mode")
 (zconfig-load "erlang-mode")
 (zconfig-load "rvm")
+(zconfig-load "rainbow-delimiters")
 ;; (zconfig-load "emacs-eclim")
 (zconfig-load "expand-region") ;;should come after undo-tree
 (zconfig-load "multiple-cursors")
 (zconfig-load "etags")
 (zconfig-load "smart-tab")
 (zconfig-load "ws-trim")
+(zconfig-load "eshell")
 (zconfig-load "tweaks")
+(zconfig-load "hulu")
 (zconfig-load "mu4e")
-;; (zconfig-load "emacs-git-gutter")
+(zconfig-load "emacs-git-gutter")
+
+;;if we're running an emacs without dired-hide-details-mode
+(when (not (fboundp 'dired-hide-details-mode))
+  (zconfig-load "dired-details")
+  (zconfig-load "dired-details-plus"))
+
 (zconfig-load "ido")
 ;;(zconfig-load "el-get-setup")
 (zconfig-load "smex")
