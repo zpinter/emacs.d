@@ -11,6 +11,18 @@
 
 (global-set-key (kbd "C-x C-r") 'bookmark-jump)
 
+(defun remove-dos-eol ()
+  "Do not show ^M in files containing mixed UNIX and DOS line endings."
+  (interactive)
+  (setq buffer-display-table (make-display-table))
+  (aset buffer-display-table ?\^M []))
+
+(add-hook 'text-mode-hook 'remove-dos-eol)
+(add-hook 'magit-status-mode-hook 'remove-dos-eol)
+(add-hook 'magit-commit-mode-hook 'remove-dos-eol)
+(add-hook 'csharp-mode-hook 'remove-dos-eol)
+(add-hook 'diff-mode-hook 'remove-dos-eol)
+
 (defun iwb ()
   "indent whole buffer"
   (interactive)
@@ -180,16 +192,6 @@
 
 (global-set-key (kbd "M-j") 'delete-indentation)
 
-(eval-after-load "em-term"
-  '(add-to-list 'eshell-visual-commands "git"))
-
-(eval-after-load "em-term"
-  '(add-to-list 'eshell-visual-commands "ssh"))
-
-;(setq eshell-visual-commands (cons "git" "ssh"))
-;;(add-to-list 'eshell-visual-commands "git")
-;;(add-to-list 'eshell-visual-commands "ssh")
-
 ;;dired tweaks
 (defun dired-launch-command ()
   (interactive)
@@ -202,11 +204,14 @@
 
 (add-hook 'dired-mode-hook
 			 '(lambda ()
+				 (if (fboundp 'dired-hide-details-mode)
+					  (dired-hide-details-mode))
 				 (define-key dired-mode-map "o" 'dired-launch-command)
 				 (define-key dired-mode-map "e" 'wdired-change-to-wdired-mode)
 				 (define-key dired-mode-map "s" 'magit-status)
 				 (define-key dired-mode-map "b" 'shell-current-directory)))
 
+(setq dired-hide-details-hide-symlink-targets nil)
 
 (setq dired-recursive-copies 'always)
 (defalias 'mkdir 'make-directory)
@@ -270,27 +275,6 @@ If there is one running, switch to that buffer."
 		  (ansi-term "/bin/bash"))))   ;(ansi-term "/bin/bash"))))
 
 (global-set-key (kbd "C-c t") 'visit-ansi-term)
-
-;; (defun update-eshell-term-directory (buffer-name)
-;;   (let ((current-dir (file-truename default-directory)))
-;; 	 (save-excursion
-;; 		(set-buffer (get-buffer-create buffer-name))
-;; 		(message (string (eshell-parse-command (concat "cd \"" current-dir "\"")))))))
-
-;; (defun visit-eshell-term ()
-;;   "If we are in an *eshell-term*, rename it.
-;; If there is no *eshell-term*, run it.
-;; If there is one running, switch to that buffer."
-;;   (interactive)
-;;   (if (equal "*eshell*" (buffer-name))
-;;       (call-interactively 'rename-buffer)
-;; 		(if (get-buffer "*eshell*")
-;; 			 (progn
-;; 				(update-eshell-term-directory "*eshell*")
-;; 				(switch-to-buffer "*eshell*"))
-;; 		  (eshell))))
-;; (global-set-key (kbd "C-c e") 'visit-eshell-term)
-
 
 (defun comint-delchar-or-eof-or-kill-buffer (arg)
   (interactive "p")
@@ -416,6 +400,12 @@ If there is one running, switch to that buffer."
 	 (progn
 		(setq x-select-enable-clipboard t)
 		(setq interprogram-paste-function 'x-cut-buffer-or-selection-value)))
+
+;; fix path on cygwin
+(when (iswindows)
+  (setq exec-path (remove "/usr/bin" exec-path))
+  (add-to-list 'exec-path "/usr/bin")
+  (setq find-program "/usr/bin/find.exe"))
 
 ; window movement
 (global-set-key [s-left] 'windmove-left)
