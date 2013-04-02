@@ -1,4 +1,4 @@
-;;; mo-git-blame --- An interactive, iterative 'git blame' mode for Emacs
+;;; mo-git-blame.el --- An interactive, iterative 'git blame' mode for Emacs
 
 ;; Copyright (C) 2009, 2010  Moritz Bunkus <moritz@bunkus.org>
 ;; Copyright (C) 2010  Štěpán Němec <stepnem@gmail.com>
@@ -169,6 +169,7 @@ option if this variable is non-nil."
               (if (file-directory-p cwd)
                   (let* ((default-directory cwd)
                          (dir (mo-git-blame-git-string "rev-parse" "--git-dir"))
+                         (dir (concat (or (file-remote-p cwd) "") dir))
                          (dir (if dir (file-name-directory (expand-file-name dir)) "")))
                     (if (and dir (file-directory-p dir))
                         (file-name-as-directory dir))))))
@@ -177,7 +178,12 @@ option if this variable is non-nil."
 
 (defun mo-git-blame-run (&rest args)
   (message "Running 'git %s'..." (car args))
-  (apply 'call-process mo-git-blame-git-executable nil (current-buffer) nil args)
+  (apply 'shell-command
+         (apply 'concat mo-git-blame-git-executable
+                (mapcar (lambda (arg)
+                          (concat " " (shell-quote-argument arg)))
+                        args))
+         (current-buffer) nil)
   (message "Running 'git %s'... done" (car args)))
 
 (defvar mo-git-blame-process nil)
@@ -717,7 +723,7 @@ blamed."
 (defun mo-git-blame-display-content-buffer ()
   "Show the content buffer in the content window."
   (interactive)
-  ; Declare buffer here because mo-git-blame-vars might not be available in the other buffer.
+  ;; Declare buffer here because mo-git-blame-vars might not be available in the other buffer.
   (let ((buffer (plist-get mo-git-blame-vars :content-buffer))
         (line-num (line-number-at-pos)))
     (mo-git-blame-goto-line-markless line-num)
@@ -758,3 +764,5 @@ blamed."
 ;; Leave this in for debugging purposes:
 ;; (global-set-key [?\C-c ?i ?b] (lambda () (interactive) (let ((mo-git-blame-incremental t)) (mo-git-blame-current))))
 ;; (global-set-key [?\C-c ?i ?B] (lambda () (interactive) (let ((mo-git-blame-incremental nil)) (mo-git-blame-current))))
+
+;;; mo-git-blame.el ends here
