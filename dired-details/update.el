@@ -1,0 +1,1 @@
+(zconfig-update-from-git-simple "dired-details" "git://github.com/emacsmirror/dired-details.git")
