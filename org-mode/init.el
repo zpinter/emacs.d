@@ -84,7 +84,7 @@
 				  ("n" "Note" entry (file+headline "~/org/notes.org" "Notes")
 					"* %?")
 				  ("j" "Journal" entry (file+datetree "~/org/journal.org")
-					"* %?\n%U \n"))))
+					"* %?\nEntered on %U\n  %i\n"))))
 
 (add-hook 'org-capture-after-finalize-hook #'(lambda () (org-save-all-org-buffers)))
 
