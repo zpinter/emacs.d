@@ -5,7 +5,7 @@
 (setq zconfig-emacs-cmd (concat invocation-directory invocation-name))
 
 (setq zconfig-errors nil)
-
+(setq zconfig-catch-errors t)
 
 (defun islinux ()
   (or (eq system-type "gnu/linux") (eq system-type 'gnu/linux)))
@@ -91,11 +91,12 @@
 					  (list
 						module-name
 						(benchmark-run 1
-						  (unwind-protect
-								(condition-case e
-									 (zconfig-run-module module-name "load")
-								  (error (add-to-list 'zconfig-errors (list e (backtrace))))))))))
-
+							 (if zconfig-catch-errors
+								  (unwind-protect
+										(condition-case e
+											 (zconfig-run-module module-name "load")
+										  (error (add-to-list 'zconfig-errors (list e (backtrace))))))
+								(zconfig-run-module module-name "load"))))))
 
 (defun zconfig-add-lisp-path (p)
   (add-to-list 'load-path (expand-file-name (concat zconfig-current-module-dir "/" p)))
