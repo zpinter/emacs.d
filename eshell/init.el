@@ -1,9 +1,13 @@
 ;; (eval-after-load "em-term"
 ;;   '(add-to-list 'eshell-visual-commands "git"))
 
-(eval-after-load "em-term"
-  '(add-to-list 'eshell-visual-commands "ssh"))
-
+(add-hook 'eshell-mode-hook
+	 '(lambda ()
+		 (setenv "TERM" "eterm")
+		 ;; (setenv "GIT_PAGER" "cat")		; Let's not use the default pager in eshell
+		 (setenv "EDITOR" "emacsclient -c")
+		 (add-to-list 'eshell-visual-commands "ssh")
+		 (add-to-list 'eshell-visual-commands "tail")))
 
 (require 'vc-git)
 (defun fg/eshell-git-info ()
@@ -11,7 +15,6 @@
     (if (not (string-equal "" branch))
         (concat branch " ")
       "")))
-
 
 (defun fg/eshell-replace-prompt-prefixes ()
   (let ((absolute-path (eshell/pwd)))
@@ -32,7 +35,6 @@
   (interactive)
   (setq current-prefix-arg '(4))
   (call-interactively 'eshell))
-
 
 (setq eshell-prompt-function #'fg/eshell-prompt-function)
 (setq eshell-prompt-regexp "^[^\n]*/ ")
