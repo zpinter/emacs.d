@@ -49,7 +49,8 @@
 (zconfig-load "remember")
 (zconfig-load "deft")
 ;; (zconfig-load "paredit")
-(zconfig-load "window-numbering")
+;; (zconfig-load "window-numbering")
+(zconfig-load "switch-window")
 ;; (zconfig-load "slime")
 ;; (zconfig-load "clojure-mode")
 (zconfig-load "cheat")
@@ -95,6 +96,7 @@
 (zconfig-load "tweaks")
 (zconfig-load "hulu")
 (zconfig-load "mu4e")
+(zconfig-load "yaml-mode")
 (zconfig-load "emacs-git-gutter")
 
 ;;if we're running an emacs without dired-hide-details-mode
@@ -103,8 +105,11 @@
   (zconfig-load "dired-details-plus"))
 
 (zconfig-load "ido")
+(zconfig-load "ido-ubiquitous")
+(zconfig-load "hexrgb")
+
 ;;(zconfig-load "el-get-setup")
-(zconfig-load "smex")
+;; (zconfig-load "smex")
 ;; (zconfig-load "server")
 ;; (zconfig-load "edit-server")
 
