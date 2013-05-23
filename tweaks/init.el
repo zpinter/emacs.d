@@ -115,10 +115,11 @@
 ;(add-hook 'before-save-hook 'delete-trailing-whitespace)
 
 (custom-set-faces
+ '(match ((t :foreground "green" :background "black")))
  '(flymake-errline ((t :underline "red")))
  '(flymake-warnline ((t :underline "green"))))
 
-;(global-set-key [(control return)] 'set-mark-command) 
+;(global-set-key [(control return)] 'set-mark-command)
 
 (defun reload-file ()
   (interactive)
@@ -354,6 +355,16 @@ If there is one running, switch to that buffer."
 (global-set-key [M-up] 'move-text-up)
 (global-set-key [M-down] 'move-text-down)
 
+;; Quick mysql connect
+(defun mysql-launch (host user pass db)
+  (let* (
+			(sql-user user)
+			(sql-password pass)
+			(sql-database db)
+			(sql-server host)
+			)
+	 (sql-mysql)))
+
 ;; Auto refresh buffers
 (global-auto-revert-mode 1)
 									
@@ -406,12 +417,6 @@ If there is one running, switch to that buffer."
   (setq exec-path (remove "/usr/bin" exec-path))
   (add-to-list 'exec-path "/usr/bin")
   (setq find-program "/usr/bin/find.exe"))
-
-; window movement
-(global-set-key [s-left] 'windmove-left)
-(global-set-key [s-right] 'windmove-right)
-(global-set-key [s-up] 'windmove-up)
-(global-set-key [s-down] 'windmove-down)
 
 ; make sure to set this back to nil, in case anything is misbehaving
 (setq debug-on-error nil)
