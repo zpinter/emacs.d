@@ -1,0 +1,1 @@
+(zconfig-update-from-git-simple "switch-window" "git://github.com/dimitri/switch-window.git")
