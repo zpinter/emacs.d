@@ -1,0 +1,1 @@
+(zconfig-update-from-git-simple "yaml-mode" "git://github.com/yoshiki/yaml-mode.git")
