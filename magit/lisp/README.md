@@ -1,87 +1,103 @@
 [![Build Status](https://travis-ci.org/magit/magit.png?branch=maint,master,next)](https://travis-ci.org/magit/magit)
 
-It's Magit!  An Emacs mode for Git.
-===================================
+It's Magit!  An Emacs mode for Git
+==================================
 
-Magit is an interface to Git for Emacs, supporting GNU Emacs 22 or
-later.
+Magit is an interface to [Git][git] for [Emacs][emacs].
 
- Unlike Emacs's native [version control support][vc], Magit can take
-advantage of Git's native features without breaking compatibility with
-other systems.
+Unlike Emacs's native [version control support][vc] which strives to
+provide a unified interface to various version control systems, Magit
+only supports Git and can therefor take full advantage of its native
+features.
 
-To get started see the [Magit User Manual][manual]. There's also an
-excellent [Magit screencast][screencast] by Alex Vollmer which
-demonstrates some of the major features.
+Magit supports GNU Emacs 22.1 or later; 24.1 or later is recommended.
 
-Installing
-----------
+Getting Started
+===============
 
-Download the latest tarball from [the github download page][download],
-then Magit can be installed with the popular recipe of:
+To get started with Magit, run <kbd>M-x magit-status</kbd>.  If you
+are inside a Git repository this opens a buffer that summarizes its
+status.  Otherwise you are first prompted for a repository.  Read the
+short help for `magit-mode` (<kbd>C-h m</kbd> in the status buffer),
+make some changes to your files, then stage (<kbd>s</kbd>) and commit
+(<kbd>c</kbd>) them.
 
-    $ make && sudo make install
+For more details consult the Magit user manual.  You can read it
+[on the web][manual] or in Emacs with <kbd>C-u C-h i magit.info</kbd>.
 
-This requires `emacs` and `makeinfo` binaries, so please make sure the relevant
-packages (generally `emacs` and `texinfo`) are installed on your system.
-This will put magit.el into `/usr/local/share/emacs/site-lisp`, where
-Emacs should be able to find it.  Then add
+Magit also has a [website][website].
 
-    (require 'magit)
+Installation
+============
 
-to your `.emacs` file.
+Emacs >=24.1 includes a facility that lets you easily download and
+install packages.  Using `package.el` is the easiest and recommended
+way to install Magit and its dependencies.  If you don't want to use
+it see the extended installation instructions in INSTALL.md
+([weblink][installing]).
 
-Magit also now supports extensions:
+The stable Magit version is available from the [Marmalade][marmalade]
+package repository.  If you want to install the development version
+(the `master` branch) use the [Melpa][melpa] repository instead.
+Please note that *all* packages on Melpa are built from the upstream
+`master` branch.  If you generally want stable versions but the latest
+Magit use Marmalade and install Magit from Git.
 
-### git-svn
+First tell `package.el` to use one of the package repositories:
 
-`(require 'magit-svn)` - integrates with git-svn. Hit 'N' to see your
-options.
+```lisp
+(add-to-list 'package-archives
+             '("melpa" . "http://melpa.milkbox.net/packages/") t)
+```
 
-### git-topgit
+**or**
 
-`(require 'magit-topgit)` - integrates with topgit.
+```lisp
+(add-to-list 'package-archives
+             '("marmalade" . "http://marmalade-repo.org/packages/") t)
+```
 
-### git-stgit
+For details please see the website of the package repository of your
+choosing.
 
-`(require 'magit-stgit)` - integrates with StGit.
+Then install Magit (and its run-time dependencies):
 
-Getting started
----------------
-
-To get started with Magit, open any file in a Git repository in Emacs
-and run `M-x magit-status`.  Read the short help for magit-mode (`C-h
-m` in the Magit buffer), make some changes to your files, and try to
-commit them.
-
-Learning more
--------------
-
-The [Magit User Manual][manual] describes things with more words than
-the online help.  You can read it in Emacs with `C-u C-h i
-magit.info`, or [on the web][manual].
-
-If you have any questions, please use [the mailing list][google group]
-at Google Groups.
-
-Magit's website is currently hosted [on GitHub][website].
+<kbd>M-x package-install RET magit RET</kbd>
 
 Development
------------
+===========
 
-Magit was started by Marius Vollmer. It is now collectively maintained by the
-Magit Owners Team: https://github.com/magit?tab=members
+Magit's canonical source repository is
+[hosted on Github][development].
 
-For a full list of contributors have a look at `magit.el` in the
-source distribution.
+Magit was started by Marius Vollmer and is now collectively maintained
+by the [Magit Owners Team][owners].  [Many more people][contributors]
+have contributed.
 
-Magit's canonical source repository is currently
-[hosted on GitHub][development].
+To report bugs and make feature requests please use the
+[issue tracker][issues] and Github [pull requests][pulls].  You may
+also use Magit's [Google group][group].  Before making a pull request
+please read CONTRIBUTING.md ([weblink][contributing]).
 
-[vc]: http://www.gnu.org/software/emacs/manual/html_node/emacs/Version-Control.html#Version-Control
-[website]: http://magit.github.com/magit
+
+[contributing]: https://github.com/magit/magit/blob/maint/CONTRIBUTING.md
+[contributors]: https://github.com/magit/magit/contributors
 [development]: http://github.com/magit/magit
+[download]: https://github.com/downloads/magit/magit/magit-1.2.0.tar.gz
+[group]: https://groups.google.com/forum/?fromgroups#!forum/magit
+[installing]: https://github.com/magit/magit/blob/maint/INSTALL.md
+[issues]: https://github.com/magit/magit/issues
 [manual]: http://magit.github.com/magit/magit.html
+[owners]: https://github.com/magit?tab=members
+[pulls]: https://github.com/magit/magit/pulls
 [screencast]: http://vimeo.com/2871241
-[download]: http://github.com/magit/magit/downloads
-[google group]: http://groups.google.com/group/magit/
+[website]: http://magit.github.com/magit
+
+[cl-lib]: http://elpa.gnu.org/packages/cl-lib.html
+[emacs]: http://www.gnu.org/software/emacs
+[ert]: https://github.com/ohler/ert
+[git-wip]: https://github.com/bartman/git-wip
+[git]: http://git-scm.com
+[marmalade]: http://marmalade-repo.org
+[melpa]: http://melpa.milkbox.net
+[vc]: http://www.gnu.org/software/emacs/manual/html_node/emacs/Version-Control.html

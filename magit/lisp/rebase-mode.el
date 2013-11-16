@@ -1,8 +1,8 @@
-;;; rebase-mode -- edit git rebase files.
+;;; rebase-mode -- edit git rebase files
 
 ;; Copyright (C) 2010  Phil Jackson
 ;; Copyright (C) 2011  Peter J Weisberg
-;;
+
 ;; Magit is free software; you can redistribute it and/or modify it
 ;; under the terms of the GNU General Public License as published by
 ;; the Free Software Foundation; either version 3, or (at your option)
@@ -24,23 +24,37 @@
 
 ;;; Code:
 
+(require 'easymenu)
+(require 'rx)
 (require 'server)
+(declare-function server-edit "server") 
+(require 'thingatpt)
 
 (defgroup rebase-mode nil
   "Customize Rebase Mode"
-  :group 'faces)
+  :group 'tools)
+
+(defcustom rebase-mode-auto-advance nil
+  "If non-nil, moves point forward a line after running an action."
+  :group 'rebase-mode
+  :type 'boolean)
+
+(defgroup rebase-mode-faces nil
+  "Customize Rebase Mode faces."
+  :group 'faces
+  :group 'rebase-mode)
 
 (defface rebase-mode-killed-action-face
   '((((class color))
      :inherit font-lock-comment-face
      :strike-through t))
   "Action lines in the rebase TODO list that have been commented out."
-  :group 'rebase-mode)
+  :group 'rebase-mode-faces)
 
 (defface rebase-mode-description-face
   '((t :inherit font-lock-comment-face))
-  "Face for one-line commit descriptions"
-  :group 'rebase-mode)
+  "Face for one-line commit descriptions."
+  :group 'rebase-mode-faces)
 
 (defconst rebase-mode-action-line-re
   (rx
@@ -109,21 +123,21 @@
     (define-key map (kbd "a") 'rebase-mode-abort)
     (define-key map (kbd "C-c C-k") 'rebase-mode-abort)
 
+    (define-key map (kbd "RET") 'rebase-mode-show-commit)
+
     (define-key map (kbd "M-p") 'rebase-mode-move-line-up)
     (define-key map (kbd "M-n") 'rebase-mode-move-line-down)
     (define-key map (kbd "k") 'rebase-mode-kill-line)
     (define-key map (kbd "x") 'rebase-mode-exec)
 
     (define-key map (kbd "n") 'forward-line)
-    (define-key map (kbd "p") '(lambda(n)
-                                 (interactive "p")
-                                 (forward-line (* n -1))))
+    (define-key map (kbd "p") 'rebase-mode-backward-line)
     (define-key map [remap undo] 'rebase-mode-undo)
     map)
-  "Keymap for rebase-mode.  Note this will be added to by the
-top-level code which defines the edit functions.")
+  "Keymap for rebase-mode.
+Note this will be added to by the top-level code which defines
+the edit functions.")
 
-(require 'easymenu)
 (easy-menu-define rebase-mode-menu rebase-mode-map
   "Rebase-mode menu"
   '("Rebase"
@@ -162,7 +176,9 @@ that of CHANGE-TO."
       (goto-char (point-at-bol))
       (delete-region (point) (progn (forward-word 1) (point)))
       (insert change-to)
-      (goto-char start))))
+      (goto-char start)
+      (when rebase-mode-auto-advance
+        (forward-line)))))
 
 (defun rebase-mode-looking-at-action ()
   "Return non-nil if looking at an action line."
@@ -182,7 +198,7 @@ that of CHANGE-TO."
   (string-match rebase-mode-exec-line-re (thing-at-point 'line)))
 
 (defun rebase-mode-looking-at-killed-exec ()
-  "Return non-nil if looking at an exec line that has been commented out"
+  "Return non-nil if looking at an exec line that has been commented out."
   (let ((line (thing-at-point 'line)))
     (and (eq (aref line 0) ?#)
          (string-match rebase-mode-exec-line-re line))))
@@ -213,8 +229,9 @@ that of CHANGE-TO."
       (move-to-column col))))
 
 (defun rebase-mode-abort ()
-  "Abort this rebase (by emptying the buffer, saving and closing
-server connection)."
+  "Abort this rebase.
+This is dune by emptying the buffer, saving and closing server
+connection."
   (interactive)
   (when (or (not (buffer-modified-p))
             (y-or-n-p "Abort this rebase? "))
@@ -234,8 +251,8 @@ server connection)."
     (forward-line)))
 
 (defun rebase-mode-exec (edit)
-  "Prompt the user for a shell command to be executed, and add it to
-the todo list.
+  "Prompt the user for a shell command to be executed, and
+add it to the todo list.
 
 If the cursor is on a commented-out exec line, uncomment the
 current line instead of prompting.
@@ -273,11 +290,27 @@ exec line was commented out, also uncomment it."
   (read-shell-command "Execute: " initial-line))
 
 (defun rebase-mode-undo (&optional arg)
-  "A thin wrapper around `undo', which allows undoing in
-read-only buffers."
+  "A thin wrapper around `undo', which allows undoing in read-only buffers."
   (interactive "P")
   (let ((inhibit-read-only t))
     (undo arg)))
+
+(defun rebase-mode-show-commit (&optional arg)
+  "Show the commit on the current line if any."
+  (interactive "P")
+  (save-excursion
+    (goto-char (point-at-bol))
+    (when (looking-at rebase-mode-action-line-re)
+      (let ((commit (match-string 2)))
+        (if (fboundp 'magit-show-commit)
+            (magit-show-commit commit nil nil 'select)
+          (shell-command (concat "git show " commit)))))))
+
+(defun rebase-mode-backward-line (&optional n)
+  "Move N lines backward (forward if N is negative).
+Like `forward-line' but go into the opposite direction."
+  (interactive "p")
+  (forward-line (* n -1)))
 
 ;;;###autoload
 (define-derived-mode rebase-mode special-mode "Rebase"
@@ -302,9 +335,9 @@ By default, this is the same except for the \"pick\" command."
             (command (intern (concat "rebase-mode-" (match-string 2)))))
         (when (fboundp command)
           (let ((overlay (make-overlay start end)))
-            (overlay-put overlay
-                         'display
-                         (key-description (where-is-internal command nil t)))))))))
+            (overlay-put
+             overlay 'display
+             (key-description (where-is-internal command nil t)))))))))
 
 (add-hook 'rebase-mode-hook 'rebase-mode-show-keybindings t)
 
@@ -318,5 +351,4 @@ By default, this is the same except for the \"pick\" command."
              '("git-rebase-todo" . rebase-mode))
 
 (provide 'rebase-mode)
-
 ;;; rebase-mode.el ends here

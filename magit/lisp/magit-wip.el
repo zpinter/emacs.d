@@ -1,9 +1,9 @@
 ;;; magit-wip.el --- git-wip plug-in for Magit
 
-;; Copyright (C) 2012  Jonas Bernoulli
+;; Copyright (C) 2012-2013  Jonas Bernoulli
 ;; Copyright (C) 2012  Ryan C. Thompson
 
-;; Maintainer: Jonas Bernoulli <jonas@bernoul.li>
+;; Author: Jonas Bernoulli <jonas@bernoul.li>
 
 ;; Magit is free software; you can redistribute it and/or modify it
 ;; under the terms of the GNU General Public License as published by
@@ -86,9 +86,10 @@
   "Commit message for git-wip commits.
 
 The following `format'-like specs are supported:
-%f the full name of the file being saved, and
-%r the name of the file being saved, relative to the repository root
-%g the root of the git repository."
+%f the full name of the file being saved
+%g the root of the git repository
+%r the name of the file being saved,
+   relative to the repository root."
   :group 'magit
   :type 'string)
 
@@ -96,9 +97,10 @@ The following `format'-like specs are supported:
   "Message shown in the echo area after creating a git-wip commit.
 
 The following `format'-like specs are supported:
-%f the full name of the file being saved, and
-%r the name of the file being saved, relative to the repository root.
-%g the root of the git repository."
+%f the full name of the file being saved
+%g the root of the git repository
+%r the name of the file being saved,
+   relative to the repository root."
   :group 'magit
   :type '(choice (const :tag "No message" nil) string))
 
@@ -108,13 +110,13 @@ The following `format'-like specs are supported:
 (define-minor-mode magit-wip-save-mode
   "Magit support for committing to a work-in-progress ref.
 
-When this minor mode is turned on and a file is saved inside a writable
-git repository then it is also committed to a special work-in-progress
-ref."
+When this minor mode is turned on and a file is saved inside a
+writable git repository then it is also committed to a special
+work-in-progress ref."
   :lighter magit-wip-save-mode-lighter
   (if magit-wip-save-mode
-      (add-hook  'after-save-hook 'magit-wip-save-safe t t)
-    (remove-hook 'after-save-hook 'magit-wip-save-safe t)))
+      (add-hook  'after-save-hook 'magit-wip-save t t)
+    (remove-hook 'after-save-hook 'magit-wip-save t)))
 
 ;;;###autoload
 (define-globalized-minor-mode global-magit-wip-save-mode
@@ -123,28 +125,29 @@ ref."
 
 (defun turn-on-magit-wip-save ()
   (when (and (buffer-file-name)
-             (magit-get-top-dir default-directory)
+             (magit-get-top-dir)
              (member "wip-save" (magit-get-all "magit.extension")))
     (if (= (magit-git-exit-code "wip" "-h") 0)
         (magit-wip-save-mode 1)
       (message "Git command 'git wip' cannot be found"))))
 
-(defun magit-wip-save-safe ()
-  (condition-case err
-      (magit-wip-save)
-    (error
-     (message "Magit WIP got an error: %S" err))))
-
 (defun magit-wip-save ()
-  (let* ((top-dir (magit-get-top-dir default-directory))
-         (name (file-truename (buffer-file-name)))
-         (spec `((?r . ,(file-relative-name name top-dir))
-                 (?f . ,(buffer-file-name))
-                 (?g . ,top-dir))))
-    (when (and top-dir (file-writable-p top-dir))
+  (let* ((filename (expand-file-name (file-truename (buffer-file-name))))
+         (filedir  (file-name-directory filename))
+         (toplevel (magit-get-top-dir filedir))
+         (blobname (file-relative-name filename toplevel))
+         (spec `((?f . ,filename)
+                 (?r . ,blobname)
+                 (?g . ,toplevel))))
+    (when (and toplevel (file-writable-p toplevel)
+               (not (member blobname
+                            (let ((default-directory filedir))
+                              (magit-git-lines
+                               "ls-files" "--other" "--ignored"
+                               "--exclude-standard" "--full-name")))))
       (magit-run-git "wip" "save"
                      (format-spec magit-wip-commit-message spec)
-                     "--editor" "--" name)
+                     "--editor" "--" filename)
       (when magit-wip-echo-area-message
         (message (format-spec magit-wip-echo-area-message spec))))))
 

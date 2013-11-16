@@ -1,7 +1,9 @@
 ;;; magit-stgit.el --- StGit plug-in for Magit
 
-;; Copyright (C) 2011  Lluis Vilanova
-;;
+;; Copyright (C) 2011  Lluís Vilanova
+
+;; Author: Lluís Vilanova <vilanova@ac.upc.edu>
+
 ;; Magit is free software; you can redistribute it and/or modify it
 ;; under the terms of the GNU General Public License as published by
 ;; the Free Software Foundation; either version 3, or (at your option)
@@ -40,8 +42,7 @@
 ;;; Code:
 
 (require 'magit)
-(eval-when-compile
-  (require 'cl))
+(eval-when-compile (require 'cl-lib))
 
 ;;; Customizables:
 
@@ -77,9 +78,8 @@
 
 ;;; Common code:
 
-(defvar magit-stgit--enabled nil
+(defvar-local magit-stgit--enabled nil
   "Whether this buffer has StGit support.")
-(make-variable-buffer-local 'magit-stgit--enabled)
 
 (defvar magit-stgit-mode)
 
@@ -101,9 +101,8 @@
   "Reset the StGit enabled state."
   (kill-local-variable 'magit-stgit--enabled))
 
-(defvar magit-stgit--marked-patch nil
+(defvar-local magit-stgit--marked-patch nil
   "The (per-buffer) currently marked patch in an StGit series.")
-(make-variable-buffer-local 'magit-stgit--marked-patch)
 
 ;;; Menu:
 
@@ -139,15 +138,22 @@
         (delete-region (line-beginning-position) (line-end-position))
         (insert
          (cond ((string= empty "0")
-                (propertize (concat empty-str " " state " " descr) 'face 'magit-stgit-empty))
+                (propertize (concat empty-str " " state " " descr)
+                            'face 'magit-stgit-empty))
                ((string= magit-stgit--marked-patch patch)
-                (propertize (concat indent-str " " state " " descr) 'face 'magit-stgit-marked))
+                (propertize (concat indent-str " " state " " descr)
+                            'face 'magit-stgit-marked))
                ((string= state "+")
-                (concat indent-str " " (propertize state 'face 'magit-stgit-applied) " " descr))
+                (concat indent-str " "
+                        (propertize state
+                                    'face 'magit-stgit-applied) " " descr))
                ((string= state ">")
-                (propertize (concat indent-str " " state " " descr) 'face 'magit-stgit-current))
+                (propertize (concat indent-str " " state " " descr)
+                            'face 'magit-stgit-current))
                ((string= state "-")
-                (concat indent-str " " (propertize state 'face 'magit-stgit-other) " " descr))))
+                (concat indent-str " "
+                        (propertize state
+                                    'face 'magit-stgit-other) " " descr))))
         (goto-char (line-beginning-position))
         (magit-with-section patch 'series
           (magit-set-section-info patch)
@@ -202,31 +208,29 @@
              (magit-mode-init dir 'magit-commit-mode
                               #'magit-stgit--refresh-patch-buffer patch))))))
 
-(magit-add-action (item info "visit")
+(magit-add-action-clauses (item info "visit")
   ((series)
    (magit-stgit--show-patch info)
    (pop-to-buffer magit-commit-buffer-name)))
 
-(magit-add-action (item info "apply")
+(magit-add-action-clauses (item info "apply")
   ((series)
    (magit-run magit-stgit-executable "goto" info)))
 
-(magit-add-action (item info "discard")
+(magit-add-action-clauses (item info "discard")
   ((series)
    (let ((patch (or magit-stgit--marked-patch info)))
-     (if (yes-or-no-p (format "Delete patch '%s' in series? " patch))
-         (progn
-           (if (string= magit-stgit--marked-patch patch)
-               (setq magit-stgit--marked-patch nil))
-           (magit-run magit-stgit-executable "delete" patch))))))
+     (when (yes-or-no-p (format "Delete patch '%s' in series? " patch))
+       (when (string= magit-stgit--marked-patch patch)
+         (setq magit-stgit--marked-patch nil))
+       (magit-run magit-stgit-executable "delete" patch)))))
 
 (defun magit-stgit--set-marked-patch (patch)
   (setq magit-stgit--marked-patch
-        (if (string= magit-stgit--marked-patch patch)
-            nil
+        (unless (string= magit-stgit--marked-patch patch)
           patch)))
 
-(magit-add-action (item info "mark")
+(magit-add-action-clauses (item info "mark")
   ((series)
    (magit-stgit--set-marked-patch info)
    (magit-refresh-all)))
@@ -236,11 +240,11 @@
 (defun magit-stgit-refresh ()
   "Refresh the contents of a patch in an StGit series.
 If there is no marked patch in the series, refreshes the current
-patch.
-Otherwise, refreshes the marked patch."
+patch.  Otherwise, refreshes the marked patch."
   (interactive)
   (if magit-stgit--marked-patch
-      (magit-run magit-stgit-executable "refresh" "-p" magit-stgit--marked-patch)
+      (magit-run magit-stgit-executable
+                 "refresh" "-p" magit-stgit--marked-patch)
     (magit-run magit-stgit-executable "refresh")))
 
 (defun magit-stgit-repair ()
@@ -255,16 +259,14 @@ into the series."
 (defun magit-stgit-rebase ()
   "Rebase an StGit patch series."
   (interactive)
-  (if (magit-get-current-remote)
-      (progn
-        (if (yes-or-no-p "Update remotes? ")
-            (progn
-              (message "Updating remotes...")
-              (magit-run-git-async "remote" "update")))
-        (magit-run magit-stgit-executable "rebase"
-                   (format "remotes/%s/%s"
-                           (magit-get-current-remote)
-                           (magit-get-current-branch))))))
+  (when (magit-get-current-remote)
+    (when (yes-or-no-p "Update remotes? ")
+      (message "Updating remotes...")
+      (magit-run-git-async "remote" "update"))
+    (magit-run magit-stgit-executable "rebase"
+               (format "remotes/%s/%s"
+                       (magit-get-current-remote)
+                       (magit-get-current-branch)))))
 
 ;;;###autoload
 (define-minor-mode magit-stgit-mode "StGit support for Magit"
@@ -272,10 +274,8 @@ into the series."
   (or (derived-mode-p 'magit-mode)
       (error "This mode only makes sense with magit"))
   (if magit-stgit-mode
-      (progn
-        (add-hook 'magit-after-insert-stashes-hook 'magit-insert-series nil t))
-    (progn
-      (remove-hook 'magit-after-insert-stashes-hook 'magit-insert-series t)))
+      (add-hook  'magit-after-insert-stashes-hook 'magit-insert-series nil t)
+    (remove-hook 'magit-after-insert-stashes-hook 'magit-insert-series t))
   (when (called-interactively-p 'any)
     (magit-refresh)))
 
