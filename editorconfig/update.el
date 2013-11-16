@@ -1,0 +1,1 @@
+(zconfig-update-from-git-simple "editorconfig" "https://github.com/editorconfig/editorconfig-emacs")
