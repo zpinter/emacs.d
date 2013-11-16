@@ -1,6 +1,6 @@
 ;;; ob-picolisp.el --- org-babel functions for picolisp evaluation
 
-;; Copyright (C) 2010-2012  Free Software Foundation, Inc.
+;; Copyright (C) 2010-2013 Free Software Foundation, Inc.
 
 ;; Authors: Thorsten Jolitz
 ;;	 Eric Schulte
@@ -54,8 +54,6 @@
 
 ;;; Code:
 (require 'ob)
-(require 'ob-eval)
-(require 'ob-comint)
 (require 'comint)
 (eval-when-compile (require 'cl))
 
@@ -80,7 +78,7 @@
   :version "24.1"
   :type 'string)
 
-(defun org-babel-expand-body:picolisp (body params &optional processed-params)
+(defun org-babel-expand-body:picolisp (body params)
   "Expand BODY according to PARAMS, return the expanded body."
   (let ((vars (mapcar #'cdr (org-babel-get-header params :var)))
         (result-params (cdr (assoc :result-params params)))
@@ -123,13 +121,8 @@
            (t full-body))))
 
     ((lambda (result)
-       (if (or (member "verbatim" result-params)
-               (member "scalar" result-params)
-               (member "output" result-params)
-               (member "code" result-params)
-               (member "pp" result-params)
-               (= (length result) 0))
-           result
+       (org-babel-result-cond result-params
+	 result
          (read result)))
      (if (not (string= session-name "none"))
          ;; session based evaluation

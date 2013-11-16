@@ -39,7 +39,7 @@
 
 (setq org-directory "~/org")
 (setq org-agenda-files '("~/org"))
-
+(setq org-export-backends '(ascii html icalendar latex md))
 
 ;; Disable C-c [ and C-c ] in org-mode, since that screws with org-agenda-files
 (add-hook 'org-mode-hook
@@ -101,8 +101,8 @@
 ;;         ("Journal" ?j "* %U %?\n\n  %i\n  %a" "~/org/journal.txt")
 ;; 		  ))
 
-(setq org-export-html-style
-		"<link rel=\"stylesheet\" type=\"text/css\" href=\"http://dl.dropbox.com/u/31884/org-style.css\" />")
+;; (setq org-export-html-style
+;; 		"<link rel=\"stylesheet\" type=\"text/css\" href=\"http://dl.dropbox.com/u/31884/org-style.css\" />")
 
 ;; (require 'org-publish)
 ;; (setq org-publish-project-alist

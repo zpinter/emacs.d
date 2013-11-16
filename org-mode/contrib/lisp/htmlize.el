@@ -1,10 +1,12 @@
 ;;; htmlize.el --- Convert buffer text and decorations to HTML.
 
-;; Copyright (C) 1997-2003,2005,2006,2009,2011,2012 Hrvoje Niksic
+;; Copyright (C) 1997-2013 Hrvoje Niksic
 
 ;; Author: Hrvoje Niksic <hniksic@xemacs.org>
 ;; Keywords: hypermedia, extensions
 ;; Version: 1.43
+
+;; This file is not part of GNU Emacs.
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -599,10 +601,12 @@ list."
                      (htmlize-attr-escape (file-relative-name file))
                      alt-attr)))
           ((plist-get imgprops :data)
-           (format "<img src=\"data:image/%s;base64,%s\"%s />"
-                   (or (plist-get imgprops :type) "")
-                   (base64-encode-string (plist-get imgprops :data))
-                   alt-attr)))))
+	   (if (equalp (plist-get imgprops :type) 'svg)
+	       (plist-get imgprops :data)
+	     (format "<img src=\"data:image/%s;base64,%s\"%s />"
+		     (or (plist-get imgprops :type) "")
+		     (base64-encode-string (plist-get imgprops :data))
+		     alt-attr))))))
 
 (defconst htmlize-ellipsis "...")
 (put-text-property 0 (length htmlize-ellipsis) 'htmlize-ellipsis t htmlize-ellipsis)
@@ -819,7 +823,7 @@ This is used to protect mailto links without modifying their meaning."
              (uri (concat "mailto:" (htmlize-despam-address address))))
         (htmlize-make-link-overlay beg end uri)))
     (goto-char (point-min))
-    (while (re-search-forward "<\\(\\(URL:\\)?\\([a-zA-Z]+://[^;]+\\)\\)>"
+    (while (re-search-forward "<\\(\\(URL:\\)?\\([a-zA-Z]+://[^;>]+\\)\\)>"
                               nil t)
       (htmlize-make-link-overlay
        (match-beginning 0) (match-end 0) (match-string 3)))))
