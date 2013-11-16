@@ -1,0 +1,1 @@
+(zconfig-update-from-git-simple "coffee-mode" "https://github.com/defunkt/coffee-mode.git")
