@@ -1,37 +1,60 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"go/build"
+	"log"
 	"os"
 	"os/exec"
 	"path"
 	"strings"
 )
 
-const prefix = "flymake_"
+const (
+	testSuffix = "_test.go"
+)
+
+var (
+	prefix = flag.String("prefix", "flymake_", "The prefix for generated Flymake artifacts.")
+	debug  = flag.Bool("debug", false, "Enable extra diagnostic output to determine why errors are occurring.")
+
+	testArguments  = []string{"test", "-c"}
+	buildArguments = []string{"build", "-o", "/dev/null"}
+)
 
 func main() {
-	file := os.Args[len(os.Args)-1]
-	sdir := path.Dir(file)
-	base := path.Base(file)
-	orig := base[len(prefix):]
+	flag.Parse()
+	goflymakeArguments := flag.Args()
 
-	isTest := false
-	var args []string
-
-	if strings.HasSuffix(orig, "_test.go") {
-		isTest = true
-		// shame there is no '-o' option
-		args = append(args, "test", "-c")
-	} else {
-		args = append(args, "build", "-o", "/dev/null")
+	if len(goflymakeArguments) != 1 {
+		log.Fatalf("%s %ssome_file.go", path.Base(os.Args[0]), *prefix)
 	}
 
+	file := goflymakeArguments[0]
+	base := path.Base(file)
+
+	if !strings.HasPrefix(base, *prefix) {
+		log.Fatalf("%s lacks the appropriate filename prefix %s", base, *prefix)
+	}
+
+	orig := base[len(*prefix):]
+	isTest := false
+	var goArguments []string
+
+	if strings.HasSuffix(orig, testSuffix) {
+		isTest = true
+		// shame there is no '-o' option
+		goArguments = append(goArguments, testArguments...)
+	} else {
+		goArguments = append(goArguments, buildArguments...)
+	}
+
+	sdir := path.Dir(file)
 	pkg, err := build.ImportDir(sdir, build.AllowBinary)
 
 	if err != nil {
-		args = append(args, file)
+		goArguments = append(goArguments, file)
 	} else {
 		var files []string
 		files = append(files, pkg.GoFiles...)
@@ -44,16 +67,28 @@ func main() {
 			if f == orig {
 				continue
 			}
-			args = append(args, f)
+			goArguments = append(goArguments, f)
 		}
 	}
 
-	cmd := exec.Command("go", args...)
+	cmd := exec.Command("go", goArguments...)
 	out, err := cmd.CombinedOutput()
 
 	fmt.Print(string(out))
 
 	if err != nil {
-		os.Exit(1)
+		if *debug {
+			banner := strings.Repeat("*", 80)
+
+			log.Println(banner)
+			log.Println("Encountered a problem:", err)
+			log.Println("goflymake ARGUMENTS:", os.Args)
+			log.Println("Go ARGUMENTS:", goArguments)
+			log.Println("ENVIRONMENT VARIABLES")
+			log.Println("PATH:", os.Getenv("PATH"))
+			log.Println("GOPATH", os.Getenv("GOPATH"))
+			log.Println("GOROOT", os.Getenv("GOROOT"))
+			log.Println(banner)
+		}
 	}
 }
