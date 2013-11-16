@@ -1,0 +1,25 @@
+<template name="testMenu">
+  <div id="testMenu">
+    {{> header}}
+    <fieldset>
+      <legend>Boards</legend>
+      <ul>
+        {{#isolate}}
+        {{#each boards}}
+        <li data-board_id="{{_id}}" class="{{activeBoardClass}} {{designBoardClass}}">{{name}}</li>
+        {{else}}
+        No data
+        {{/each}}
+
+        {{/isolate}}
+      </ul>
+    </fieldset>
+    {{#list nav id="nav-bar" class="top"}}
+    <a href="{{url}}">{{title}}</a>
+    {{/list}}
+    {{#list array}}
+    {{@index}}. {{title}}
+    {{/list}}
+    {{! this is a comment }}
+  </div>
+</template>
