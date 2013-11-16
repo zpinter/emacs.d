@@ -47,6 +47,15 @@ You can [watch an intro to multiple-cursors at Emacs Rocks](http://emacsrocks.co
  - `mc/mark-previous-symbol-like-this`: Like `mc/mark-previous-like-this` but only for whole symbols.
  - `mc/mark-more-like-this-extended`: Use arrow keys to quickly mark/skip next/previous occurances.
  - `mc/add-cursor-on-click`: Bind to a mouse event to add cursors by clicking. See tips-section.
+ - `mc/pop-mark`: Set a cursor at the current point and move to the next (different) position on the mark stack.  This allows for fine grained control over the placement of cursors.
+
+### Juggle around with the current cursors
+
+ - `mc/unmark-next-like-this`: Remove the cursor furthest down in the buffer.
+ - `mc/unmark-previous-like-this`: Remove the cursor furthest up in the buffer.
+ - `mc/skip-to-next-like-this`: Remove the cursor furthest down, marking the next occurance down.
+ - `mc/skip-to-previous-like-this`: Remove the cursor furthest up, marking the next occurance up.
+ - `mc/mark-next-like-this-extended`: Temporarily bind the arrow keys to mark/unmark/skip cursors.
 
 ### Mark many occurrences
 
@@ -60,7 +69,7 @@ You can [watch an intro to multiple-cursors at Emacs Rocks](http://emacsrocks.co
  - `mc/mark-all-like-this-in-defun`: Marks all parts of the current defun that matches the current region.
  - `mc/mark-all-words-like-this-in-defun`: Like `mc/mark-all-like-this-in-defun` but only for whole words.
  - `mc/mark-all-symbols-like-this-in-defun`: Like `mc/mark-all-like-this-in-defun` but only for whole symbols.
- - `mc/mark-all-like-this-dwim`: Tries to be smart about marking everything you want. Can be pressed multiple times.
+ - `mc/mark-all-dwim`: Tries to be smart about marking everything you want. Can be pressed multiple times.
 
 ### Special
 
@@ -123,11 +132,12 @@ the location with:
 
     (setq mc/list-file "/my/preferred/file")
 
+NB! Make sure to do so before requiring multiple-cursors.
 
 ## Known limitations
 
 * isearch-forward and isearch-backward aren't supported with multiple cursors.
-  You should feel free to add a simplified version that can work with it.
+  If you want this functionality, you can use [phi-search](https://github.com/zk-phi/phi-search).
 * Commands run with `M-x` won't be repeated for all cursors.
 * All key bindings that refer to lambdas are always run for all cursors. If you
   need to limit it, you will have to give it a name.
@@ -143,21 +153,25 @@ You'll find the repo at:
 
     https://github.com/magnars/multiple-cursors.el
 
-To fetch the test dependencies:
+To fetch the test dependencies, install
+[cask](https://github.com/rejeep/cask.el) if you haven't already,
+then:
 
     $ cd /path/to/multiple-cursors
-    $ git submodule update --init
+    $ cask
 
 Run the tests with:
 
-    $ ./util/ecukes/ecukes --graphical
+    $ ./run-tests.sh
 
 ## Contributors
 
-* [Takafumi Arakaki](https://github.com/tkf) made .mc-lists.el diff friendly
+* [Takafumi Arakaki](https://github.com/tkf) has contributed several small improvements
 * [Marco Baringer](https://github.com/segv) contributed looping to mc/cycle and adding cursors without region for mark-more.
 * [Ivan Andrus](https://github.com/gvol) added showing number of cursors in mode-line
 * [Fuco](https://github.com/Fuco1) added the first version of `mc/mark-all-like-this-dwim`
+* [Zach Kost-Smith](https://github.com/smithzvk) added `mc/mark-pop`
+* [Maciej Katafiasz](https://github.com/mathrick) added `mc/mark-all-dwim`
 
 Thanks!
 
