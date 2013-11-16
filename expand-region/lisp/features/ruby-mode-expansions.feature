@@ -3,6 +3,20 @@ Feature: ruby-mode expansions
   As an Emacs user
   I want to expand to them
 
+  Scenario: Mark instance variable
+    Given I turn on ruby-mode
+    When I insert:
+    """
+    class Bar
+      def initialize
+         @foo = 123
+      end
+    end
+    """
+    And I place the cursor before "@foo"
+    And I press "C-@"
+    Then the region should be "@foo"
+
   Scenario: Mark ruby block
     Given I turn on ruby-mode
     And there is no region selected
@@ -65,6 +79,28 @@ Feature: ruby-mode expansions
     """
     something do
         foo
+      end
+
+    """
+
+  Scenario: Mark empty ruby block from within
+    Given I turn on ruby-mode
+    And there is no region selected
+    When I insert:
+    """
+    module Bar
+      something do
+
+      end
+    end
+    """
+    And I go to line "3"
+    And I press "C-@"
+    And I press "C-@"
+    Then the region should be:
+    """
+    something do
+
       end
 
     """
@@ -185,7 +221,7 @@ Feature: ruby-mode expansions
     end
 
     """
-    And I go to line "7"
+    And I go to line "8"
     And I press "C-@"
     And I press "C-@"
     And I press "C-@"

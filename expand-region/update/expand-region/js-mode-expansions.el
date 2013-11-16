@@ -20,16 +20,6 @@
 
 ;;; Commentary:
 
-;; Normal javascript-mode does not have a javascript-mode-hook, which is one of
-;; the reasons I switched to js2-mode. If you want to use this with
-;; javascript-mode, try putting this in your init:
-
-;;     (add-hook 'find-file-hook
-;;               (lambda ()
-;;                 (when (string-match-p "\\.js$" (buffer-file-name))
-;;                   (require 'js-mode-expansions)
-;;                   (er/add-js-mode-expansions))))
-
 ;; Extra expansions for JavaScript that I've found useful so far:
 ;;
 ;;    er/mark-js-function
@@ -132,7 +122,7 @@
     (if (looking-at "\\s(")
         (forward-list)
       (forward-char)))
-  (when (looking-back "[\s\n]")
+  (when (er/looking-back-max "[\s\n]" 400)
     (search-backward-regexp "[^\s\n]")
     (forward-char))
   (exchange-point-and-mark))
@@ -143,18 +133,19 @@ If point is inside the value, that will be marked first anyway."
   (interactive)
   (when (or (looking-at "\"?\\(\\s_\\|\\sw\\| \\)*\":")
             (looking-at "\\(\\s_\\|\\sw\\)*:")
-            (looking-back ": ?"))
+            (er/looking-back-max ": ?" 2))
     (search-backward-regexp "[{,]")
     (forward-char)
     (search-forward-regexp "[^\s\n]")
     (backward-char)
     (set-mark (point))
     (search-forward ":")
-    (while (not (looking-at "[},]"))
+    (while (or (not (looking-at "[},]"))
+               (er--point-inside-string-p))
       (if (looking-at "\\s(")
           (forward-list)
         (forward-char)))
-    (when (looking-back "[\s\n]")
+    (when (er/looking-back-max "[\s\n]" 400)
       (search-backward-regexp "[^\s\n]")
       (forward-char))
     (exchange-point-and-mark)))
@@ -170,8 +161,9 @@ If point is inside the value, that will be marked first anyway."
                                                     er/mark-js-inner-return
                                                     er/mark-js-outer-return))))
 
-(add-hook 'js2-mode-hook 'er/add-js-mode-expansions)
-(add-hook 'js3-mode-hook 'er/add-js-mode-expansions)
+(er/enable-mode-expansions 'js-mode 'er/add-js-mode-expansions)
+(er/enable-mode-expansions 'js2-mode 'er/add-js-mode-expansions)
+(er/enable-mode-expansions 'js3-mode 'er/add-js-mode-expansions)
 
 (provide 'js-mode-expansions)
 

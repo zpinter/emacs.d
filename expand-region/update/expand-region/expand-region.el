@@ -51,8 +51,6 @@
 ;;     er/mark-word
 ;;     er/mark-symbol
 ;;     er/mark-method-call
-;;     er/mark-comment
-;;     er/mark-comment-block
 ;;     er/mark-inside-quotes
 ;;     er/mark-outside-quotes
 ;;     er/mark-inside-pairs
@@ -88,7 +86,7 @@
 ;;                                 '(mark-paragraph
 ;;                                   mark-page))))
 
-;;     (add-hook 'text-mode-hook 'er/add-text-mode-expansions)
+;;     (er/enable-mode-expansions 'text-mode 'er/add-text-mode-expansions)
 
 ;; Add that to its own file, and require it at the bottom of this one,
 ;; where it says "Mode-specific expansions"
@@ -139,6 +137,7 @@
 
 (require 'expand-region-core)
 (require 'expand-region-custom)
+(require 'er-basic-expansions)
 
 ;;;###autoload
 (defun er/expand-region (arg)
@@ -155,42 +154,40 @@ before calling `er/expand-region' for the first time."
     (while (>= arg 1)
       (setq arg (- arg 1))
       (er--expand-region-1))
-    (when expand-region-fast-keys-enabled
+    (when (and expand-region-fast-keys-enabled
+               (not (memq last-command '(er/expand-region er/contract-region))))
       (er/prepare-for-more-expansions))))
 
-(eval-after-load "clojure-mode" '(require 'clojure-mode-expansions))
-(eval-after-load "css-mode"     '(require 'css-mode-expansions))
-(eval-after-load "erlang-mode"  '(require 'erlang-mode-expansions))
-(eval-after-load "feature-mode" '(require 'feature-mode-expansions))
-(eval-after-load "sgml-mode"    '(require 'html-mode-expansions)) ;; html-mode is defined in sgml-mode.el
-(eval-after-load "rhtml-mode"   '(require 'html-mode-expansions))
-(eval-after-load "nxhtml-mode"  '(require 'html-mode-expansions))
-(eval-after-load "js2-mode"     '(require 'js-mode-expansions))
-(eval-after-load "js2-mode"     '(require 'js2-mode-expansions))
-(eval-after-load "js3-mode"     '(require 'js-mode-expansions))
-(eval-after-load "latex"        '(require 'latex-mode-expansions))
-(eval-after-load "nxml-mode"    '(require 'nxml-mode-expansions))
-(eval-after-load "python"       '(progn
-                                   (when expand-region-guess-python-mode
-                                     (expand-region-guess-python-mode))
-                                   (if (eq 'python expand-region-preferred-python-mode)
-                                       (require 'python-el-expansions)
-                                     (require 'python-el-fgallina-expansions))))
-(eval-after-load "python-mode"  '(require 'python-mode-expansions))
-(eval-after-load "ruby-mode"    '(require 'ruby-mode-expansions))
-(eval-after-load "org"          '(require 'org-mode-expansions))
-(eval-after-load "cc-mode"      '(require 'cc-mode-expansions))
-
-(defadvice javascript-mode (after enable-expand-region activate)
-  (require 'js-mode-expansions)
-  (er/add-js-mode-expansions))
-
-;; unfortunately html-mode inherits from text-mode
-;; and text-mode-expansions don't work well in html-mode
-;; so if you want text-mode-expansions, add this to your
-;; own init:
-;;
-;; (eval-after-load "text-mode"    '(require 'text-mode-expansions))
+(eval-after-load "clojure-mode"  '(require 'clojure-mode-expansions))
+(eval-after-load "css-mode"      '(require 'css-mode-expansions))
+(eval-after-load "erlang-mode"   '(require 'erlang-mode-expansions))
+(eval-after-load "feature-mode"  '(require 'feature-mode-expansions))
+(eval-after-load "sgml-mode"     '(require 'html-mode-expansions)) ;; html-mode is defined in sgml-mode.el
+(eval-after-load "rhtml-mode"    '(require 'html-mode-expansions))
+(eval-after-load "nxhtml-mode"   '(require 'html-mode-expansions))
+(eval-after-load "web-mode"      '(require 'web-mode-expansions))
+(eval-after-load "js"            '(require 'js-mode-expansions))
+(eval-after-load "js2-mode"      '(require 'js-mode-expansions))
+(eval-after-load "js2-mode"      '(require 'js2-mode-expansions))
+(eval-after-load "js3-mode"      '(require 'js-mode-expansions))
+(eval-after-load "latex"         '(require 'latex-mode-expansions))
+(eval-after-load "nxml-mode"     '(require 'nxml-mode-expansions))
+(eval-after-load "octave-mod"    '(require 'octave-expansions))
+(eval-after-load "octave"        '(require 'octave-expansions))
+(eval-after-load "python"        '(progn
+                                    (when expand-region-guess-python-mode
+                                      (expand-region-guess-python-mode))
+                                    (if (eq 'python expand-region-preferred-python-mode)
+                                        (require 'python-el-expansions)
+                                      (require 'python-el-fgallina-expansions))))
+(eval-after-load "python-mode"   '(require 'python-mode-expansions))
+(eval-after-load "ruby-mode"     '(require 'ruby-mode-expansions))
+(eval-after-load "org"           '(require 'the-org-mode-expansions))
+(eval-after-load "cc-mode"       '(require 'cc-mode-expansions))
+(eval-after-load "text-mode"     '(require 'text-mode-expansions))
+(eval-after-load "cperl-mode"    '(require 'cperl-mode-expansions))
+(eval-after-load "sml-mode"      '(require 'sml-mode-expansions))
+(eval-after-load "enh-ruby-mode" '(require 'enh-ruby-mode-expansions))
 
 (provide 'expand-region)
 

@@ -26,6 +26,7 @@
 ;;    - `er/mark-python-statement'
 ;;    - `er/mark-python-block'
 ;;    - `er/mark-outer-python-block'
+;;    - `er/mark-python-block-and-decorator'
 ;;  - Supports multi-line strings
 
 ;;; Code:
@@ -139,6 +140,31 @@ Command that wraps `er/mark-python-block'."
   (interactive)
   (er/mark-python-block (current-indentation)))
 
+(defun er/mark-python-block-and-decorator ()
+  (interactive)
+  (back-to-indentation)
+  (if (or (er--python-looking-at-decorator) (er--python-looking-at-decorator -1))
+      (progn
+	(while (er--python-looking-at-decorator -1)
+	  (forward-line -1)
+	  (back-to-indentation)
+	  )
+	(set-mark (point))
+	(while (er--python-looking-at-decorator)
+	  (forward-line)
+	  )
+	(python-nav-end-of-block)
+	(exchange-point-and-mark))))
+
+(defun er--python-looking-at-decorator (&optional line-offset)
+  (save-excursion
+    (if line-offset
+	(forward-line line-offset)
+	)
+    (back-to-indentation)
+    (looking-at "@")
+    ))
+
 (defun er/add-python-mode-expansions ()
   "Adds python-mode-specific expansions for buffers in python-mode"
   (let ((try-expand-list-additions '(
@@ -146,18 +172,16 @@ Command that wraps `er/mark-python-block'."
                                      er/mark-outside-python-string
                                      er/mark-python-statement
                                      er/mark-python-block
+				     er/mark-python-block-and-decorator
                                      er/mark-outer-python-block
                                      )))
+    (set (make-local-variable 'expand-region-skip-whitespace) nil)
     (set (make-local-variable 'er/try-expand-list)
          (remove 'er/mark-inside-quotes
                  (remove 'er/mark-outside-quotes
                          (append er/try-expand-list try-expand-list-additions))))))
 
-
-(add-hook 'python-mode-hook
-          #'(lambda ()
-              (set (make-local-variable 'expand-region-skip-whitespace) nil)
-              (er/add-python-mode-expansions)))
+(er/enable-mode-expansions 'python-mode 'er/add-python-mode-expansions)
 
 (provide 'python-el-fgallina-expansions)
 

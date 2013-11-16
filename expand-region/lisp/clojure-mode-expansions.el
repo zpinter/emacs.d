@@ -39,19 +39,33 @@
   (interactive)
   (let ((word-regexp "\\(\\sw\\|-\\)"))
     (when (or (looking-at word-regexp)
-              (looking-back word-regexp))
+              (er/looking-back-on-line word-regexp))
       (while (looking-at word-regexp)
         (forward-char))
       (set-mark (point))
-      (while (looking-back word-regexp)
+      (while (er/looking-back-on-line word-regexp)
         (backward-char)))))
+
+(defun er/mark-clj-set-literal ()
+  "Mark clj-set-literal presumes that point is outside the brackets.
+If point is inside the brackets, those will be marked first anyway."
+  (interactive)
+  (when (or (looking-at "#{")
+            (er/looking-back-exact "#"))
+    (forward-char 1)
+    (search-backward "#")
+    (set-mark (point))
+    (search-forward "{")
+    (forward-char -1)
+    (forward-list 1)
+    (exchange-point-and-mark)))
 
 (defun er/mark-clj-regexp-literal ()
   "Mark clj-regexp-literal presumes that point is outside the string.
 If point is inside the string, the quotes will be marked first anyway."
   (interactive)
   (when (or (looking-at "#\"")
-            (looking-back "#"))
+            (er/looking-back-exact "#"))
     (forward-char 1)
     (search-backward "#")
     (set-mark (point))
@@ -65,7 +79,7 @@ If point is inside the string, the quotes will be marked first anyway."
 If point is inside the parens, they will be marked first anyway."
   (interactive)
   (when (or (looking-at "#(")
-            (looking-back "#"))
+            (er/looking-back-exact "#"))
     (forward-char)
     (search-backward "#")
     (set-mark (point))
@@ -80,9 +94,11 @@ If point is inside the parens, they will be marked first anyway."
                                                   er/try-expand-list
                                                   '(er/mark-clj-word
                                                     er/mark-clj-regexp-literal
+                                                    er/mark-clj-set-literal
                                                     er/mark-clj-function-literal))))
 
-(add-hook 'clojure-mode-hook 'er/add-clojure-mode-expansions)
+(er/enable-mode-expansions 'clojure-mode 'er/add-clojure-mode-expansions)
+(er/enable-mode-expansions 'nrepl-mode 'er/add-clojure-mode-expansions)
 
 (provide 'clojure-mode-expansions)
 
