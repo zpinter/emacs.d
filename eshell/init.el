@@ -39,7 +39,7 @@
 (setq eshell-prompt-function #'fg/eshell-prompt-function)
 (setq eshell-prompt-regexp "^[^\n]*/ ")
 
-(global-set-key (kbd "C-c e") 'eshell)
+(global-set-key (kbd "C-c E") 'eshell)
 
 (defun eshell/git (&rest args)
      (apply 'eshell-exec-visual (cons "git" args)))

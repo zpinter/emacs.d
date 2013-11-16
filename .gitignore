@@ -22,3 +22,5 @@ hulu/
 /recentf
 /recentf~
 /%backup%~
+.cask
+/projectile-bookmarks.eld

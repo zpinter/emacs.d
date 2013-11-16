@@ -3,16 +3,18 @@
 
 (setq mc/cmds-to-run-for-all
       '(
-		  cua--prefix-repeat-handler
-		  cua--shift-control-c-prefix
-		  cua-resize-rectangle-left
-		  cua-resize-rectangle-right
-		  mc/add-cursor-on-click
-		  org-beginning-of-line
-		  org-self-insert-command
-		  ))
+        cua--prefix-repeat-handler
+        cua--shift-control-c-prefix
+        cua-delete-region
+        cua-resize-rectangle-left
+        cua-resize-rectangle-right
+        mc/add-cursor-on-click
+        org-beginning-of-line
+        org-self-insert-command
+        sp--cua-replace-region
+        ))
 
 (setq mc/cmds-to-run-once
       '(
-		  exit-recursive-edit
-		  ))
+        exit-recursive-edit
+        ))

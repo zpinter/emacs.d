@@ -1,9 +1,10 @@
 ; -*- mode: emacs-lisp; -*-
 (load "~/.emacs.d/zconfig.el")
 
-(zconfig-start-benchmark)
+;; (zconfig-start-benchmark)
 
 (zconfig-load "core")
+(zconfig-load "cask-support")
 (zconfig-load "customize")
 (zconfig-load "org-mode")
 (zconfig-load "org-jira")
@@ -20,13 +21,14 @@
 ;; (zconfig-load "ruby")
 (zconfig-load "ruby-minimal")
 (zconfig-load "auto-complete")
+(zconfig-load "flycheck")
 (zconfig-load "go-mode")
 (zconfig-load "gocode")
-(zconfig-load "goflymake")
-(zconfig-load "python-mode")
+;; (zconfig-load "goflymake")
+;; (zconfig-load "python-mode")
 ;; (zconfig-load "pymacs")
 (zconfig-load "mirah")
-(zconfig-load "js2-mode")
+;; (zconfig-load "js2-mode")
 (zconfig-load "android-mode")
 ;; (zconfig-load "yasnippet")
 (zconfig-load "git-contrib")
@@ -34,6 +36,8 @@
 (zconfig-load "magit")
 (zconfig-load "mo-git-blame")
 (zconfig-load "git-minimal")
+
+
 (zconfig-load "twitter")
 (zconfig-load "post-mode")
 ;; (zconfig-load "gnus")
@@ -49,8 +53,8 @@
 (zconfig-load "remember")
 (zconfig-load "deft")
 ;; (zconfig-load "paredit")
-;; (zconfig-load "window-numbering")
-(zconfig-load "switch-window")
+(zconfig-load "window-numbering")
+;; (zconfig-load "switch-window")
 ;; (zconfig-load "slime")
 ;; (zconfig-load "clojure-mode")
 (zconfig-load "cheat")
@@ -61,8 +65,8 @@
 (zconfig-load "helm")
 (zconfig-load "helm-git")
 ;; (zconfig-load "anything")
-(if (not (iswindows)) (zconfig-load "w3m")) ;not important enough to solve on windows
-(zconfig-load "flyspell")
+;; (if (not (iswindows)) (zconfig-load "w3m")) ;not important enough to solve on windows
+;; (zconfig-load "flyspell")
 (zconfig-load "rinari")
 ;; (zconfig-load "flex")
 (zconfig-load "nav")
@@ -82,21 +86,28 @@
 (zconfig-load "ack")
 (zconfig-load "csv-mode")
 (zconfig-load "scss-mode")
+(zconfig-load "less-css-mode")
 (zconfig-load "ace-jump-mode")
 (zconfig-load "erlang-mode")
 (zconfig-load "rvm")
 (zconfig-load "rainbow-delimiters")
 ;; (zconfig-load "emacs-eclim")
+(zconfig-load "handlebars-sgml-mode")
 (zconfig-load "expand-region") ;;should come after undo-tree
 (zconfig-load "multiple-cursors")
 (zconfig-load "etags")
 (zconfig-load "smart-tab")
 (zconfig-load "ws-trim")
 (zconfig-load "eshell")
+;; (zconfig-load "web-mode")
+(zconfig-load "thrift-mode")
+(zconfig-load "coffee-mode")
+(zconfig-load "macros")
 (zconfig-load "tweaks")
 (zconfig-load "hulu")
 (zconfig-load "mu4e")
 (zconfig-load "yaml-mode")
+(zconfig-load "editorconfig")
 (zconfig-load "emacs-git-gutter")
 
 ;;if we're running an emacs without dired-hide-details-mode
@@ -113,7 +124,8 @@
 ;; (zconfig-load "server")
 ;; (zconfig-load "edit-server")
 
-(zconfig-finish-benchmark)
+
+;; (zconfig-finish-benchmark)
 
 (put 'narrow-to-region 'disabled nil)
 (put 'set-goal-column 'disabled nil)
