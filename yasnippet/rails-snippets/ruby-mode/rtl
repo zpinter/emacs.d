@@ -1,3 +1,0 @@
-#name : render :text => " ... ", :layout => " ... "
-# --
-render :text => "${Text here...}", :layout => "${layoutname}"

@@ -1,1 +1,0 @@
-(zconfig-update-from-git-simple "rainbow-delimiters" "git://github.com/jlr/rainbow-delimiters.git")

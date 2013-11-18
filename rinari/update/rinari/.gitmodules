@@ -1,9 +1,0 @@
-[submodule "util/jump"]
-	path = util/jump
-	url = https://github.com/eschulte/jump.el.git
-[submodule "util/test/ert"]
-	path = util/test/ert
-	url = https://github.com/nex3/ert.git
-[submodule "util/inf-ruby"]
-	path = util/inf-ruby
-	url = https://github.com/nonsequitur/inf-ruby.git

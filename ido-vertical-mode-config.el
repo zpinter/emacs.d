@@ -1,0 +1,1 @@
+(ido-vertical-mode)

@@ -1,1 +1,0 @@
-(zconfig-update-from-git-simple "handlebars-sgml-mode" "https://github.com/jacott/handlebars-sgml-mode.git")

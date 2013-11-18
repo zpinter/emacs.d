@@ -1,0 +1,7 @@
+;; (require 'helm)
+(helm-mode 1)
+(setq enable-recursive-minibuffers t)
+(setq helm-ff-transformer-show-only-basename nil)
+(setq helm-ff-auto-update-initial-value nil)
+(global-set-key (kbd "C-c C-h") 'helm-mini)
+(global-set-key (kbd "C-c d") 'helm-google-suggest)

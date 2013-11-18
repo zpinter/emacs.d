@@ -1,1 +1,0 @@
-(zconfig-update-from-git-simple "json" "git://github.com/thorstadt/json.el.git")

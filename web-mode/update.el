@@ -1,1 +1,0 @@
-(zconfig-update-from-git-simple "web-mode" "https://github.com/fxbois/web-mode.git")

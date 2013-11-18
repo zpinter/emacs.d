@@ -1,3 +1,0 @@
-#name : assert_response : ... 
-# --
-assert_response :${success}

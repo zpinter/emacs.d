@@ -1,3 +1,0 @@
-#name : render :nothing =>  ... , :status =>  ... 
-# --
-render :nothing => ${true}, :status => ${401}

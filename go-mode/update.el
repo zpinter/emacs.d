@@ -1,1 +1,0 @@
-(zconfig-update-from-git-simple "go-mode" "git://github.com/dominikh/go-mode.el.git")

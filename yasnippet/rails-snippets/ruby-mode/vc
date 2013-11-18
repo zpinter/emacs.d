@@ -1,3 +1,0 @@
-#name : validates_confirmation_of : ... 
-# --
-validates_confirmation_of :${attr}

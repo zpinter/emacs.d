@@ -1,1 +1,0 @@
-(zconfig-update-from-git-simple "gocode" "git://github.com/nsf/gocode.git")

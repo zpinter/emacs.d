@@ -1,1 +1,0 @@
-(require 'thrift-mode)

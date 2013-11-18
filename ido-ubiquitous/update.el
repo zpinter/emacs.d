@@ -1,1 +1,0 @@
-(zconfig-update-from-git-simple "ido-ubiquitous" "git://github.com/technomancy/ido-ubiquitous.git")

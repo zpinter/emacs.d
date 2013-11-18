@@ -1,1 +1,0 @@
-(zconfig-update-from-git-simple "multiple-cursors" "git://github.com/magnars/multiple-cursors.el.git")

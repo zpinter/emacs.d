@@ -1,3 +1,0 @@
-#name : render :file => " ... "
-# --
-render :file => "${filepath}"
