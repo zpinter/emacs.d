@@ -65,28 +65,6 @@
   (indent-according-to-mode))
 
 (global-set-key [(control o)] 'vi-open-next-line)
-
-(defconst use-backup-dir t)
-
-(defvar user-temporary-file-directory "/tmp/emacs")
-
-(make-directory user-temporary-file-directory t)
-(setq backup-directory-alist
-      `(("." . ,user-temporary-file-directory) (,tramp-file-name-regexp nil))
-      version-control t        ; Use version numbers for backups
-      kept-new-versions 16     ; Number of newest versions to keep
-      kept-old-versions 2      ; Number of oldest versions to keep
-      delete-old-versions t    ; Ask to delete excess backup versions?
-      backup-by-copying-when-linked t) ; Copy linked files, don't rename.
-(setq auto-save-list-file-prefix
-      (concat user-temporary-file-directory ".auto-saves-"))
-(setq auto-save-file-name-transforms
-      `((".*" ,user-temporary-file-directory t)))
-
-;; (defvar user-temporary-file-directory-semantic (concat user-temporary-file-directory "/semantic-cache"))
-;; (make-directory user-temporary-file-directory-semantic t)
-;; (setq semanticdb-default-save-directory  user-temporary-file-directory-semantic)
-
 (global-set-key (kbd "<f8>") 'ns-toggle-fullscreen)
 
 (require 'misc) ;;needed for zap-up-to-char
