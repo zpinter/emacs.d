@@ -18,6 +18,8 @@
  '(css-indent-offset 2)
  '(ecb-options-version "2.40")
  '(ediff-window-setup-function (quote ediff-setup-windows-plain))
+ '(expand-region-guess-python-mode nil)
+ '(expand-region-preferred-python-mode (quote python))
  '(indent-tabs-mode nil)
  '(jde-global-classpath (quote ("/Users/zpinter/repos/emacs.d/jdee/classes")))
  '(jde-jdk (quote ("1.6.0")))

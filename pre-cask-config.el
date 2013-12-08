@@ -1,6 +1,9 @@
 ;;default to home directory
 (setq default-directory "~/")
 
+;;replace selection when typing
+(delete-selection-mode 1)
+
  ;;core functions
 (defun islinux ()
   (or (eq system-type "gnu/linux") (eq system-type 'gnu/linux)))
@@ -69,7 +72,7 @@ determining the maximize number of columns to fit on a display"
 (if (and (ismac) window-system)
     (progn
 
-		(set-frame-font "-apple-inconsolata-medium-r-normal--14-*-*-*-*-*-iso10646-1")
+		;; (set-frame-font "-apple-inconsolata-medium-r-normal--14-*-*-*-*-*-iso10646-1")
 
 		(require 'cua-base)
 		(cua-mode t)
