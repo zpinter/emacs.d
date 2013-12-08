@@ -122,10 +122,11 @@ determining the maximize number of columns to fit on a display"
 ;;ido tweaks
 (require 'ido)
 (ido-mode t)
-;; (ido-everywhere t)
+(ido-everywhere t)
 
 (setq ido-enable-flex-matching t)      ; fuzzy matching is a must have
 (setq ido-enable-tramp-completion t)
+(setq ido-auto-merge-work-directories-length -1) ; don't screw with mkdir
 (setq tramp-default-method "ssh")
 
 ;; (setq ido-default-file-method 'selected-window)

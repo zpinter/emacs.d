@@ -1,5 +1,5 @@
 ;; (require 'helm)
-(helm-mode 1)
+;; (helm-mode 1)
 (setq enable-recursive-minibuffers t)
 (setq helm-ff-transformer-show-only-basename nil)
 (setq helm-ff-auto-update-initial-value nil)

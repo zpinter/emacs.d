@@ -4,7 +4,8 @@
 (source org)
 
 (depends-on "ido-vertical-mode")
-;; (depends-on "ido-ubiquitous")
+(depends-on "ido-ubiquitous")
+(depends-on "smex")
 (depends-on "org")
 (depends-on "elscreen")
 (depends-on "solarized-theme")
