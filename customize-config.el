@@ -31,14 +31,16 @@
  '(ns-pop-up-frames nil)
  '(nxml-child-indent 4)
  '(python-indent-guess-indent-offset nil)
-  '(smart-tab-disabled-major-modes (quote (org-mode term-mode mu4e-compose-mode))))
+ '(smart-tab-disabled-major-modes (quote (org-mode term-mode mu4e-compose-mode)))
+ '(sp-autoescape-string-quote nil))
 
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(match ((t :foreground "green" :background "black")))
+ '(flymake-errline ((t :underline "red")))
+ '(flymake-warnline ((t :underline "green")))
  '(mumamo-background-chunk-major ((((class color) (min-colors 88) (background dark)) nil)))
  '(mumamo-background-chunk-submode ((((class color) (min-colors 88) (background dark)) (:background "#222222"))))
  '(twit-author-face ((t (:height 0.8))))
