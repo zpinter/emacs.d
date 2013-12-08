@@ -1,3 +1,6 @@
+;;default to home directory
+(setq default-directory "~/")
+
  ;;core functions
 (defun islinux ()
   (or (eq system-type "gnu/linux") (eq system-type 'gnu/linux)))
