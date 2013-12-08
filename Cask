@@ -41,6 +41,7 @@
 (depends-on "csv-nav")
 (depends-on "sass-mode")
 (depends-on "scss-mode")
+(depends-on "whitespace-cleanup-mode")
 (depends-on "less-css-mode")
 (depends-on "erlang")
 (depends-on "rainbow-delimiters")
