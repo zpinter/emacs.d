@@ -2,8 +2,9 @@
 
 (if (ismac)
 	 (progn
-		(setenv "PATH" (concat (getenv "PATH") ":~/homebrew/bin"))
-		(setq exec-path (append exec-path '("~/homebrew/bin")))))
+      (setq magit-emacsclient-executable "/usr/local/bin/emacsclient")
+		(setenv "PATH" (concat (getenv "PATH") "/usr/local/bin"))
+		(setq exec-path (append exec-path '("/usr/local/bin")))))
 
 (defalias 'gs 'magit-status)
 
