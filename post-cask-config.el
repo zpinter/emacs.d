@@ -406,3 +406,5 @@ If there is one running, switch to that buffer."
 				 (progn
 					(save-buffer)
 					(kill-buffer (buffer-name (current-buffer)))))))
+
+(server-start)
