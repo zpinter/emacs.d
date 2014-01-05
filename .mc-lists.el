@@ -3,6 +3,7 @@
 
 (setq mc/cmds-to-run-for-all
       '(
+        coffee-dedent-line-backspace
         cua--prefix-repeat-handler
         cua--shift-control-c-prefix
         cua-delete-region
@@ -17,4 +18,5 @@
 (setq mc/cmds-to-run-once
       '(
         exit-recursive-edit
+        sp--self-insert-command
         ))
