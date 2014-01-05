@@ -128,6 +128,10 @@
 ;; (if PREVIOUS-IF)) 
 ;(setq default-major-mode 'org-mode)
 
+(add-hook 'lisp-mode-hook
+          '(lambda ()
+             (define-key lisp-mode-map (kbd "C-.") 'find-function)))
+
 (add-to-list 'auto-mode-alist '("\\.el$" . lisp-mode))
 (add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
 (add-to-list 'auto-mode-alist '("\\.txt$" . org-mode))
